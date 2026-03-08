@@ -42,8 +42,8 @@ export default function ContactPage() {
     <>
       <Navbar />
       <main style={{ paddingTop: 80 }}>
-        <div className="max-w-[1280px] mx-auto px-12 py-20 pb-36">
-          <div className="grid gap-20 items-start" style={{ gridTemplateColumns:'1fr 1.4fr' }}>
+        <div className="max-w-[1280px] mx-auto px-4 md:px-12 py-12 md:py-20 pb-20 md:pb-36">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-start">
 
             {/* Left — info */}
             <div>
@@ -58,7 +58,7 @@ export default function ContactPage() {
 
               {[
                 { icon:'📍', label:'Location',          value:'Port Harcourt, Rivers State, Nigeria' },
-                { icon:'📧', label:'Email',              value:'contact@prostackng.com' },
+                { icon:'📧', label:'Email',              value:'hello@prostackng.com' },
                 { icon:'📱', label:'Phone / WhatsApp',   value:'+234 810 000 0000' },
                 { icon:'⚡', label:'Response Time',      value:'Within 2 business hours' },
               ].map((c,i) => (

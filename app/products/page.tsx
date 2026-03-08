@@ -15,13 +15,13 @@ export default function ProductsPage() {
     <>
       <Navbar />
       <main style={{ paddingTop: 80 }}>
-        <div className="max-w-[1280px] mx-auto px-12 py-20 pb-36">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-12 py-12 md:py-20 pb-20 md:pb-36">
           <p className="font-mono text-accent mb-3" style={{ fontSize:11, letterSpacing:'.18em' }}>PRODUCT ECOSYSTEM</p>
           <h1 className="font-display font-black text-text mb-5"
-            style={{ fontSize:'clamp(42px,6vw,80px)', letterSpacing:'-.04em', lineHeight:1.0 }}>
+            style={{ fontSize:'clamp(36px,6vw,80px)', letterSpacing:'-.04em', lineHeight:1.0 }}>
             Six platforms.<br /><span className="text-accent">One mission.</span>
           </h1>
-          <p className="text-sub mb-24" style={{ fontSize:17, lineHeight:1.9, maxWidth:560 }}>
+          <p className="text-sub mb-12 md:mb-24" style={{ fontSize:17, lineHeight:1.9, maxWidth:560 }}>
             Every ProStack NG product shares core infrastructure — auth, payments, notifications, and analytics.
             We build once. The ecosystem compounds.
           </p>
@@ -29,8 +29,8 @@ export default function ProductsPage() {
           <div className="flex flex-col gap-0.5">
             {PRODUCTS.map((p, i) => (
               <div key={p.id} id={p.id}
-                className="bg-card border border-border grid relative overflow-hidden hover:border-borderhi transition-all duration-300"
-                style={{ gridTemplateColumns:'1fr 1fr 1fr', gap:56, padding:'52px 56px' }}>
+                className="bg-card border border-border relative overflow-hidden hover:border-borderhi transition-all duration-300 grid grid-cols-1 md:grid-cols-3"
+                style={{ gap:'clamp(24px,4vw,56px)', padding:'clamp(24px,4vw,52px)' }}>
                 <div className="absolute top-0 left-0 right-0 h-0.5 opacity-70" style={{ background:p.color }} />
 
                 {/* Left: identity */}

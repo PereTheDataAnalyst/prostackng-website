@@ -26,7 +26,7 @@ export default function HomePage() {
           <div className="absolute left-0 right-0 h-px pointer-events-none animate-scan"
             style={{ background:'linear-gradient(90deg,transparent 0%,rgba(0,232,122,.35) 50%,transparent 100%)' }} />
 
-          <div className="max-w-[1280px] mx-auto w-full px-12 py-20 relative">
+          <div className="max-w-[1280px] mx-auto w-full px-4 md:px-12 py-12 md:py-20 relative">
             {/* Eyebrow */}
             <div className="flex items-center gap-2.5 mb-8 animate-fadeUp">
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
@@ -107,7 +107,7 @@ export default function HomePage() {
         <Ticker />
 
         {/* ══ PRODUCTS GRID ══════════════════════════════════════════ */}
-        <section className="max-w-[1280px] mx-auto px-12 py-28">
+        <section className="max-w-[1280px] mx-auto px-4 md:px-12 py-16 md:py-28">
           <div className="flex justify-between items-end mb-16 flex-wrap gap-5">
             <div>
               <p className="font-mono text-accent mb-3" style={{ fontSize:11, letterSpacing:'.18em' }}>PRODUCT ECOSYSTEM</p>
@@ -157,7 +157,7 @@ export default function HomePage() {
 
         {/* ══ CASE STUDIES ══════════════════════════════════════════ */}
         <section className="bg-surface border-t border-border py-28">
-          <div className="max-w-[1280px] mx-auto px-12">
+          <div className="max-w-[1280px] mx-auto px-4 md:px-12">
             <div className="flex justify-between items-end mb-16 flex-wrap gap-5">
               <div>
                 <p className="font-mono text-accent mb-3" style={{ fontSize:11, letterSpacing:'.18em' }}>CASE STUDIES</p>
@@ -196,7 +196,7 @@ export default function HomePage() {
         </section>
 
         {/* ══ ROADMAP ═══════════════════════════════════════════════ */}
-        <section className="max-w-[1280px] mx-auto px-12 py-28">
+        <section className="max-w-[1280px] mx-auto px-4 md:px-12 py-16 md:py-28">
           <p className="font-mono text-accent mb-3" style={{ fontSize:11, letterSpacing:'.18em' }}>COMPANY ROADMAP</p>
           <h2 className="font-display font-black text-text mb-16" style={{ fontSize:'clamp(30px,4vw,52px)', letterSpacing:'-.03em' }}>
             Where we're going.
@@ -233,7 +233,7 @@ export default function HomePage() {
         <section className="relative py-36 text-center overflow-hidden bg-grid" style={{ backgroundSize:'80px 80px' }}>
           <div className="absolute inset-0 pointer-events-none"
             style={{ background:'radial-gradient(ellipse at 50% 50%,rgba(0,232,122,.06) 0%,transparent 60%)' }} />
-          <div className="relative max-w-[700px] mx-auto px-12">
+          <div className="relative max-w-[700px] mx-auto px-4 md:px-12">
             <p className="font-mono text-accent mb-3" style={{ fontSize:11, letterSpacing:'.18em' }}>LET'S BUILD TOGETHER</p>
             <h2 className="font-display font-black text-text mb-6"
               style={{ fontSize:'clamp(40px,6vw,80px)', letterSpacing:'-.04em', lineHeight:1.0 }}>

@@ -22,11 +22,10 @@ export default function CompanyPage() {
     <>
       <Navbar />
       <main style={{ paddingTop: 80 }}>
-        <div className="max-w-[1280px] mx-auto px-12 py-20 pb-36">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-12 py-12 md:py-20 pb-20 md:pb-36">
 
           {/* Hero */}
-          <div className="grid gap-20 items-start mb-28"
-            style={{ gridTemplateColumns:'1fr 1fr' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-start mb-16 md:mb-28">
             <div>
               <p className="font-mono text-accent mb-3" style={{ fontSize:11, letterSpacing:'.18em' }}>THE COMPANY</p>
               <h1 className="font-display font-black text-text mb-7"

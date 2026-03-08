@@ -13,10 +13,10 @@ export default function TechnologyPage() {
     <>
       <Navbar />
       <main style={{ paddingTop: 80 }}>
-        <div className="max-w-[1280px] mx-auto px-12 py-20 pb-36">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-12 py-12 md:py-20 pb-20 md:pb-36">
           <p className="font-mono text-accent mb-3" style={{ fontSize:11, letterSpacing:'.18em' }}>TECHNOLOGY</p>
           <h1 className="font-display font-black text-text mb-5"
-            style={{ fontSize:'clamp(42px,6vw,80px)', letterSpacing:'-.04em', lineHeight:1.0 }}>
+            style={{ fontSize:'clamp(36px,6vw,80px)', letterSpacing:'-.04em', lineHeight:1.0 }}>
             The stack behind<br /><span className="text-accent">everything we build.</span>
           </h1>
           <p className="text-sub mb-24" style={{ fontSize:17, lineHeight:1.9, maxWidth:580 }}>
