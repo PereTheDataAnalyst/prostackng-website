@@ -1,0 +1,151 @@
+export const PRODUCTS = [
+  {
+    id: 'protrackng',
+    name: 'ProTrackNG',
+    tagline: 'Tender Intelligence Platform',
+    desc: 'AI-powered tender discovery and tracking for Nigerian businesses. Never miss a government or private contract opportunity again. Automated matching, deadline alerts, and document management built for procurement teams.',
+    status: 'LIVE' as const,
+    color: '#00E87A',
+    icon: '◎',
+    domain: 'protrackng.com',
+    metrics: ['Oil & Gas sector live', 'Multi-tender pipeline', 'Real-time deadline alerts'],
+    stack: ['React', 'Node.js', 'PostgreSQL', 'Python'],
+    category: 'B2B SaaS',
+  },
+  {
+    id: 'nightops',
+    name: 'NightOps',
+    tagline: 'Nightlife Operating System',
+    desc: 'Full operational intelligence for nightclubs and entertainment venues. Table management, bottle tracking, staff shifts, real-time revenue, inventory control, and end-of-night reconciliation — everything a club needs in one unified platform.',
+    status: 'LIVE' as const,
+    color: '#A78BFA',
+    icon: '◈',
+    domain: 'nightops.prostackng.com',
+    metrics: ['100% ops digitised', 'Real-time revenue dashboard', 'Multi-venue architecture'],
+    stack: ['React', 'Node.js', 'PostgreSQL', 'Python'],
+    category: 'SaaS / POS',
+  },
+  {
+    id: 'autoreport',
+    name: 'AutoReport',
+    tagline: 'Automated Executive Reporting',
+    desc: 'An 8-second reporting pipeline that loads raw sales data, cleans it, calculates all KPIs, builds 4 professional charts, generates a 6-page PDF and 7-sheet Excel workbook, then emails everything automatically at 8AM daily.',
+    status: 'LIVE' as const,
+    color: '#FF5757',
+    icon: '▦',
+    domain: 'autoreport.prostackng.com',
+    metrics: ['~8 seconds full pipeline', '6-page branded PDF', '7-sheet Excel export'],
+    stack: ['Python', 'Pandas', 'ReportLab', 'OpenPyXL', 'SMTP'],
+    category: 'Data Automation',
+  },
+  {
+    id: 'myharriet',
+    name: 'MyHarriet',
+    tagline: 'Commerce & Marketplace Platform',
+    desc: 'A full-featured marketplace built for Nigerian commerce — vendor profiles, escrow payments, parcel tracking, and campus marketplaces. Connecting buyers and sellers with trust built in at every layer.',
+    status: 'BUILDING' as const,
+    color: '#F5B530',
+    icon: '⬡',
+    domain: 'myharriet.com',
+    metrics: ['Escrow payment system', 'Vendor profiles & ratings', 'Campus-first launch'],
+    stack: ['Next.js', 'Node.js', 'PostgreSQL', 'Paystack'],
+    category: 'Marketplace',
+  },
+  {
+    id: 'swiftride',
+    name: 'SwiftRide',
+    tagline: 'Mobility & Ride-Hailing Platform',
+    desc: 'Modern ride-hailing built for Rivers State and beyond. Real-time GPS tracking, driver earnings dashboards, live ride sharing, SOS safety features, and Mapbox-powered navigation optimised for Nigerian roads.',
+    status: 'ROADMAP' as const,
+    color: '#00C8FF',
+    icon: '⟁',
+    domain: 'swiftride.com',
+    metrics: ['Rivers & Bayelsa launch', 'Live GPS tracking', 'Driver earnings dashboard'],
+    stack: ['React Native', 'Node.js', 'WebSockets', 'Mapbox', 'Redis'],
+    category: 'Mobility Tech',
+  },
+  {
+    id: 'stakex',
+    name: 'StakeX',
+    tagline: 'Digital Staking Platform',
+    desc: 'A next-generation digital staking and prediction platform designed for Africa\'s growing digital economy. Built on secure, auditable infrastructure with real-time settlement and responsible gaming controls.',
+    status: 'ROADMAP' as const,
+    color: '#FF9500',
+    icon: '◑',
+    domain: 'stakex.com',
+    metrics: ['Phase 4 launch', 'Crypto-ready settlement', 'Responsible gaming built-in'],
+    stack: ['React', 'Node.js', 'PostgreSQL', 'Blockchain'],
+    category: 'FinTech',
+  },
+];
+
+export const CASE_STUDIES = [
+  {
+    product: 'AutoReport',
+    color: '#FF5757',
+    title: 'From 3-hour manual grind to 8-second intelligence',
+    client: 'Corporate Sales Organisation',
+    problem: 'A corporate sales team manually compiled weekly Excel reports — a 3-hour process prone to errors, missed metrics, and inconsistent formatting that frustrated management.',
+    solution: 'We built a fully automated Python pipeline: loads raw CSV, cleans data, calculates all KPIs, generates 4 charts, produces a 6-page branded PDF and 7-sheet Excel workbook, then emails both files with an HTML summary.',
+    result: 'Zero human effort. Perfect accuracy. Board-ready reports in the inbox every morning in 8 seconds.',
+    metric: '8 seconds',
+    metricLabel: 'Full pipeline runtime',
+  },
+  {
+    product: 'NightOps',
+    color: '#A78BFA',
+    title: 'A nightclub that knows its numbers in real time',
+    client: 'Nightclub & Entertainment Venue, Port Harcourt',
+    problem: 'A high-volume nightclub was losing track of inventory, reconciling cash manually at 4AM, and had zero visibility into which tables, staff, or products were actually driving revenue.',
+    solution: 'NightOps replaced every manual process — table reservations, bottle tracking, shift management, stock alerts, and end-of-night reconciliation — with a unified real-time intelligence dashboard.',
+    result: '100% of operations digitised. Reconciliation time dropped from 2 hours to 5 minutes.',
+    metric: '2hrs → 5min',
+    metricLabel: 'Nightly reconciliation',
+  },
+  {
+    product: 'ProTrackNG',
+    color: '#00E87A',
+    title: 'Tender deadlines never missed again',
+    client: 'Oil & Gas Procurement Team, Port Harcourt',
+    problem: 'An oil and gas procurement team tracked tenders across government portals, email chains, and spreadsheets simultaneously — missing deadlines and losing bids due to disorganisation.',
+    solution: 'ProTrackNG centralised the entire tender pipeline with role-based access, deadline alerts, bid document management, and a management dashboard showing real-time bid status.',
+    result: 'Full pipeline visibility from day one. Bid success rate measurably improved in the first quarter.',
+    metric: '100%',
+    metricLabel: 'Pipeline visibility',
+  },
+];
+
+export const STACK = [
+  { label: 'Frontend',       color: '#00E87A', items: ['Next.js', 'React', 'React Native', 'TypeScript', 'Tailwind CSS', 'Framer Motion'] },
+  { label: 'Backend',        color: '#00C8FF', items: ['Node.js', 'Python', 'FastAPI', 'REST APIs', 'GraphQL', 'WebSockets'] },
+  { label: 'Database',       color: '#A78BFA', items: ['PostgreSQL', 'Supabase', 'Redis', 'SQLite', 'MongoDB'] },
+  { label: 'Infrastructure', color: '#F5B530', items: ['Vercel', 'Cloudflare', 'Docker', 'CI/CD', 'GitHub Actions'] },
+  { label: 'Payments',       color: '#FF5757', items: ['Paystack', 'Flutterwave', 'Remita', 'Stripe', 'Escrow Wallets'] },
+  { label: 'Data & AI',      color: '#FF9500', items: ['Pandas', 'ReportLab', 'OpenPyXL', 'OpenAI APIs', 'Umami Analytics'] },
+];
+
+export const SHARED_SERVICES = [
+  { subdomain: 'auth.prostackng.com',     desc: 'SSO across all products — one account, every platform', color: '#00E87A' },
+  { subdomain: 'api.prostackng.com',      desc: 'Central API gateway for all product backends',           color: '#00C8FF' },
+  { subdomain: 'payments.prostackng.com', desc: 'Paystack & Flutterwave unified payment hub',             color: '#F5B530' },
+  { subdomain: 'notify.prostackng.com',   desc: 'Email, SMS & push notifications for all products',       color: '#A78BFA' },
+  { subdomain: 'analytics.prostackng.com',desc: 'Umami — self-hosted, GDPR-clean, no data limits',       color: '#FF5757' },
+  { subdomain: 'cdn.prostackng.com',      desc: 'Cloudflare-powered static asset & media delivery',       color: '#FF9500' },
+];
+
+export const TIMELINE = [
+  { phase: 'Phase 1', period: 'Now — 2025',   status: 'active',   desc: 'ProTrackNG, NightOps & AutoReport live. Consulting revenue. Building client base and brand credibility.' },
+  { phase: 'Phase 2', period: 'Q3 2025',       status: 'next',     desc: 'MyHarriet beta — campus marketplace launch in Port Harcourt and Abuja. Escrow payments, vendor onboarding.' },
+  { phase: 'Phase 3', period: 'Q1 2026',       status: 'planned',  desc: 'SwiftRide — Rivers State and Bayelsa launch. Shared auth & payment infrastructure fully operational.' },
+  { phase: 'Phase 4', period: 'Q3 2026',       status: 'planned',  desc: 'StakeX launch. Full platform ecosystem complete. Series A fundraise targeting $500K–$2M.' },
+];
+
+export const COMPANY_STATS = [
+  { value: 5,  suffix: '+', label: 'Products Built' },
+  { value: 20, suffix: '+', label: 'Clients Served' },
+  { value: 8,  suffix: '',  label: 'Team Members' },
+  { value: 3,  suffix: '',  label: 'Live Platforms' },
+];
+
+export type Product    = typeof PRODUCTS[number];
+export type CaseStudy  = typeof CASE_STUDIES[number];

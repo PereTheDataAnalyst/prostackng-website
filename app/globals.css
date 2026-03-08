@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+/* Cabinet Grotesk via Fontshare CDN */
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800,900&display=swap');
+
+:root {
+  --font-cabinet: 'Cabinet Grotesk';
+  --font-space:   'Space Grotesk';
+  --font-mono:    'DM Mono';
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: #050709;
+  color: #E2EAF4;
+  font-family: 'Space Grotesk', sans-serif;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar       { width: 2px; }
+::-webkit-scrollbar-track { background: #050709; }
+::-webkit-scrollbar-thumb { background: #00E87A; }
+
+/* ── Typography utilities ── */
+.font-display { font-family: 'Cabinet Grotesk', sans-serif; }
+.font-mono    { font-family: 'DM Mono', monospace; }
+
+/* ── Shimmer gradient text ── */
+.shimmer-text {
+  background: linear-gradient(90deg, #E2EAF4 0%, #00E87A 40%, #00C8FF 60%, #E2EAF4 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/* ── Product card top accent ── */
+.prod-accent::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--prod-color, #00E87A);
+  opacity: 0.7;
+}
+
+/* ── Input focus style ── */
+.ps-input {
+  background: #080C12;
+  border: 1px solid #111D2E;
+  color: #E2EAF4;
+  padding: 13px 16px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+.ps-input:focus { border-color: #00E87A; }
+.ps-input::placeholder { color: #445566; }
+
+/* ── Ticker ── */
+.ticker-wrap  { overflow: hidden; }
+.ticker-inner { display: flex; width: max-content; animation: marquee 30s linear infinite; }
+.ticker-inner:hover { animation-play-state: paused; }
+
+/* ── Nav active state ── */
+.nav-active { color: #E2EAF4 !important; }
+.nav-active::after { transform: scaleX(1) !important; }
