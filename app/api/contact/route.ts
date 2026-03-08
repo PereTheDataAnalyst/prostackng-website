@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     await resend.emails.send({
       from:    'ProStack NG Website <noreply@prostackng.com>',
       to:      [contactEmail],
-      replyTo: email,
+      reply_to: email,
       subject: `New enquiry from ${name} — ${type || 'General'}`,
       html: `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0C1220;color:#E2EAF4;padding:40px;border-radius:8px">
