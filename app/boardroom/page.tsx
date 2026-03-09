@@ -36,18 +36,13 @@ type Message = {
 type Peer = { peerId: string; name: string; color: string; stream: MediaStream | null; audioOnly: boolean };
 
 export default function BoardroomPage() {
-  // ── Auth ───────────────────────────────────────────────
   const [screen, setScreen]           = useState<'login'|'app'>('login');
   const [tokenInput, setTokenInput]   = useState('');
   const [tokenError, setTokenError]   = useState('');
   const [authLoading, setAuthLoading] = useState(false);
   const [user, setUser]               = useState<User|null>(null);
-
-  // ── Mobile ─────────────────────────────────────────────
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile]       = useState(false);
-
-  // ── Chat ───────────────────────────────────────────────
   const [activeRoom, setActiveRoom]   = useState('general');
   const [messages, setMessages]       = useState<Message[]>([]);
   const [pinned, setPinned]           = useState<Message[]>([]);
@@ -64,16 +59,12 @@ export default function BoardroomPage() {
   const [editingId, setEditingId]     = useState<number|null>(null);
   const [editText, setEditText]       = useState('');
   const typingTimerRef                = useRef<ReturnType<typeof setTimeout>|null>(null);
-
-  // ── Voice recording ────────────────────────────────────
   const [recording, setRecording]     = useState(false);
   const [recordSecs, setRecordSecs]   = useState(0);
   const [uploading, setUploading]     = useState(false);
   const mediaRecorderRef              = useRef<MediaRecorder|null>(null);
   const audioChunksRef                = useRef<Blob[]>([]);
   const recordTimerRef                = useRef<ReturnType<typeof setInterval>|null>(null);
-
-  // ── WebRTC Call ────────────────────────────────────────
   const [callActive, setCallActive]   = useState(false);
   const [callMode, setCallMode]       = useState<'audio'|'video'|null>(null);
   const [callRoom, setCallRoom]       = useState<string|null>(null);
@@ -88,8 +79,6 @@ export default function BoardroomPage() {
   const localVideoRef                 = useRef<HTMLVideoElement>(null);
   const signalChannelRef              = useRef<any>(null);
   const myPeerId                      = useRef(`${Date.now()}-${Math.random().toString(36).slice(2)}`);
-
-  // ── Settings ───────────────────────────────────────────
   const [notifSound, setNotifSound]   = useState(true);
   const [compactMode, setCompact]     = useState(false);
   const [showTs, setShowTs]           = useState(true);
@@ -98,15 +87,16 @@ export default function BoardroomPage() {
   const [profileSaving, setProfileSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const fileInputRef                  = useRef<HTMLInputElement>(null);
-
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const inputRef  = useRef<HTMLInputElement>(null);
+  const bottomRef                     = useRef<HTMLDivElement>(null);
+  const inputRef                      = useRef<HTMLInputElement>(null);
 
   const BG  = theme === 'darker' ? '#020305' : '#050709';
   const BG2 = theme === 'darker' ? '#060810' : '#080C12';
   const BG3 = theme === 'darker' ? '#080C14' : '#0C1220';
 
-  // ── Detect mobile ──────────────────────────────────────
+  // Chat wallpaper — subtle circuit/grid pattern in SVG data URI
+  const WALLPAPER = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cdefs%3E%3Cpattern id='g' width='120' height='120' patternUnits='userSpaceOnUse'%3E%3Crect width='120' height='120' fill='%23050709'/%3E%3Ccircle cx='60' cy='60' r='1.2' fill='%2300E87A' opacity='0.07'/%3E%3Ccircle cx='0' cy='0' r='1.2' fill='%2300E87A' opacity='0.07'/%3E%3Ccircle cx='120' cy='0' r='1.2' fill='%2300E87A' opacity='0.07'/%3E%3Ccircle cx='0' cy='120' r='1.2' fill='%2300E87A' opacity='0.07'/%3E%3Ccircle cx='120' cy='120' r='1.2' fill='%2300E87A' opacity='0.07'/%3E%3Ccircle cx='60' cy='0' r='0.7' fill='%2300C8FF' opacity='0.05'/%3E%3Ccircle cx='0' cy='60' r='0.7' fill='%2300C8FF' opacity='0.05'/%3E%3Ccircle cx='120' cy='60' r='0.7' fill='%2300C8FF' opacity='0.05'/%3E%3Ccircle cx='60' cy='120' r='0.7' fill='%2300C8FF' opacity='0.05'/%3E%3Cline x1='0' y1='60' x2='120' y2='60' stroke='%2300E87A' stroke-width='0.3' opacity='0.04'/%3E%3Cline x1='60' y1='0' x2='60' y2='120' stroke='%2300E87A' stroke-width='0.3' opacity='0.04'/%3E%3Cline x1='0' y1='0' x2='120' y2='120' stroke='%23A78BFA' stroke-width='0.2' opacity='0.025'/%3E%3Cline x1='120' y1='0' x2='0' y2='120' stroke='%23A78BFA' stroke-width='0.2' opacity='0.025'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='120' height='120' fill='url(%23g)'/%3E%3C/svg%3E")`;
+
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
@@ -114,7 +104,6 @@ export default function BoardroomPage() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // Close sidebar when switching rooms on mobile
   const switchRoom = (roomId: string) => {
     setActiveRoom(roomId);
     setPanel('chat');
@@ -122,7 +111,6 @@ export default function BoardroomPage() {
     if (isMobile) setSidebarOpen(false);
   };
 
-  // ── Notification beep ──────────────────────────────────
   const playBeep = useCallback((freq = 880) => {
     if (!notifSound) return;
     try {
@@ -139,7 +127,6 @@ export default function BoardroomPage() {
     [0,300,600].forEach(d => setTimeout(() => playBeep(660), d));
   }, [playBeep]);
 
-  // ── Load profile ───────────────────────────────────────
   const loadProfile = useCallback(async (u: User) => {
     const { data } = await supabase.from('staff_profiles').select('*').eq('token', u.token).single();
     if (data) {
@@ -150,7 +137,6 @@ export default function BoardroomPage() {
     }
   }, []);
 
-  // ── Load messages ──────────────────────────────────────
   const loadMessages = useCallback(async (roomId: string) => {
     const { data } = await supabase.from('boardroom_messages').select('*')
       .eq('room_id', roomId).order('created_at', { ascending: true }).limit(150);
@@ -163,7 +149,6 @@ export default function BoardroomPage() {
     loadMessages(activeRoom);
   }, [activeRoom, screen, loadMessages]);
 
-  // ── Realtime messages ──────────────────────────────────
   useEffect(() => {
     if (screen !== 'app') return;
     const ch = supabase.channel(`msgs-${activeRoom}`)
@@ -188,7 +173,6 @@ export default function BoardroomPage() {
     return () => { supabase.removeChannel(ch); };
   }, [activeRoom, screen, user, playBeep]);
 
-  // ── Typing ─────────────────────────────────────────────
   useEffect(() => {
     if (screen !== 'app') return;
     const ch = supabase.channel(`typing-${activeRoom}`)
@@ -213,7 +197,6 @@ export default function BoardroomPage() {
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
-  // Close menus on outside click
   useEffect(() => {
     const h = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
@@ -223,9 +206,7 @@ export default function BoardroomPage() {
     return () => document.removeEventListener('mousedown', h);
   }, []);
 
-  // ═══════════════════════════════════════════════════════
-  // WebRTC
-  // ═══════════════════════════════════════════════════════
+  // ── WebRTC ─────────────────────────────────────────────
   const getSignalChannel = useCallback((roomId: string) => {
     if (signalChannelRef.current) return signalChannelRef.current;
     const ch = supabase.channel(`call-signal-${roomId}`, { config: { broadcast: { self: false } } });
@@ -242,8 +223,7 @@ export default function BoardroomPage() {
       signalChannelRef.current?.send({ type: 'broadcast', event: 'ice', payload: { to: peerId, from: myPeerId.current, candidate } });
     };
     pc.ontrack = ({ streams }) => {
-      const remoteStream = streams[0];
-      setPeers(p => p.map(peer => peer.peerId === peerId ? { ...peer, stream: remoteStream } : peer));
+      setPeers(p => p.map(peer => peer.peerId === peerId ? { ...peer, stream: streams[0] } : peer));
     };
     pc.onconnectionstatechange = () => {
       if (pc.connectionState === 'failed' || pc.connectionState === 'disconnected') {
@@ -257,15 +237,9 @@ export default function BoardroomPage() {
   const startCall = useCallback(async (mode: 'audio'|'video') => {
     if (!user) return;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: mode === 'video' ? { width: 1280, height: 720 } : false,
-      });
-      setLocalStream(stream);
-      setCallActive(true); setCallMode(mode); setCallRoom(activeRoom);
-      setTimeout(() => {
-        if (localVideoRef.current) { localVideoRef.current.srcObject = stream; localVideoRef.current.muted = true; localVideoRef.current.play().catch(() => {}); }
-      }, 100);
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: mode === 'video' ? { width: 1280, height: 720 } : false });
+      setLocalStream(stream); setCallActive(true); setCallMode(mode); setCallRoom(activeRoom);
+      setTimeout(() => { if (localVideoRef.current) { localVideoRef.current.srcObject = stream; localVideoRef.current.muted = true; localVideoRef.current.play().catch(() => {}); } }, 100);
       const ch = getSignalChannel(activeRoom).subscribe(async (status: string) => {
         if (status !== 'SUBSCRIBED') return;
         ch.send({ type: 'broadcast', event: 'call_invite', payload: { from: user.displayName || user.name, fromColor: user.color, fromId: myPeerId.current, mode, room: activeRoom } });
@@ -273,12 +247,11 @@ export default function BoardroomPage() {
       signalChannelRef.current = ch;
       ch.on('broadcast', { event: 'call_accept' }, async ({ payload }: any) => {
         if (payload.room !== activeRoom) return;
-        const peerId = payload.fromId;
-        const pc = createPC(peerId, stream);
-        setPeers(p => [...p.filter(x => x.peerId !== peerId), { peerId, name: payload.from, color: payload.fromColor, stream: null, audioOnly: mode === 'audio' }]);
+        const pc = createPC(payload.fromId, stream);
+        setPeers(p => [...p.filter(x => x.peerId !== payload.fromId), { peerId: payload.fromId, name: payload.from, color: payload.fromColor, stream: null, audioOnly: mode === 'audio' }]);
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
-        ch.send({ type: 'broadcast', event: 'offer', payload: { to: peerId, from: myPeerId.current, offer } });
+        ch.send({ type: 'broadcast', event: 'offer', payload: { to: payload.fromId, from: myPeerId.current, offer } });
       });
       ch.on('broadcast', { event: 'answer' }, async ({ payload }: any) => {
         if (payload.to !== myPeerId.current) return;
@@ -290,12 +263,8 @@ export default function BoardroomPage() {
         const pc = pcsRef.current[payload.from];
         if (pc) await pc.addIceCandidate(new RTCIceCandidate(payload.candidate));
       });
-      ch.on('broadcast', { event: 'call_end' }, ({ payload }: any) => {
-        if (payload.room !== activeRoom) return; endCall();
-      });
-    } catch {
-      alert(`Could not access ${mode === 'video' ? 'camera/microphone' : 'microphone'}. Check browser permissions.`);
-    }
+      ch.on('broadcast', { event: 'call_end' }, ({ payload }: any) => { if (payload.room !== activeRoom) return; endCall(); });
+    } catch { alert(`Could not access ${mode === 'video' ? 'camera/microphone' : 'microphone'}. Check browser permissions.`); }
   }, [user, activeRoom, createPC, getSignalChannel]);
 
   const acceptCall = useCallback(async () => {
@@ -311,13 +280,12 @@ export default function BoardroomPage() {
       ch.send({ type: 'broadcast', event: 'call_accept', payload: { from: user.displayName || user.name, fromColor: user.color, fromId: myPeerId.current, room } });
       ch.on('broadcast', { event: 'offer' }, async ({ payload }: any) => {
         if (payload.to !== myPeerId.current) return;
-        const peerId = payload.from;
-        const pc = createPC(peerId, stream);
-        setPeers(p => [...p.filter(x => x.peerId !== peerId), { peerId, name: from, color: fromColor, stream: null, audioOnly: mode === 'audio' }]);
+        const pc = createPC(payload.from, stream);
+        setPeers(p => [...p.filter(x => x.peerId !== payload.from), { peerId: payload.from, name: from, color: fromColor, stream: null, audioOnly: mode === 'audio' }]);
         await pc.setRemoteDescription(new RTCSessionDescription(payload.offer));
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
-        ch.send({ type: 'broadcast', event: 'answer', payload: { to: peerId, from: myPeerId.current, answer } });
+        ch.send({ type: 'broadcast', event: 'answer', payload: { to: payload.from, from: myPeerId.current, answer } });
       });
       ch.on('broadcast', { event: 'ice' }, async ({ payload }: any) => {
         if (payload.to !== myPeerId.current) return;
@@ -354,30 +322,28 @@ export default function BoardroomPage() {
     setPeers([]); setMuted(false); setCamOff(false); setSharing(false);
   }, [localStream, screenStream, callRoom]);
 
-  const toggleMute = () => { localStream?.getAudioTracks().forEach(t => { t.enabled = muted; }); setMuted(!muted); };
+  const toggleMute   = () => { localStream?.getAudioTracks().forEach(t => { t.enabled = muted; }); setMuted(!muted); };
   const toggleCamera = () => { localStream?.getVideoTracks().forEach(t => { t.enabled = camOff; }); setCamOff(!camOff); };
 
   const toggleScreenShare = async () => {
     if (sharing) {
       screenStream?.getTracks().forEach(t => t.stop());
-      const videoTrack = localStream?.getVideoTracks()[0];
-      if (videoTrack) Object.values(pcsRef.current).forEach(pc => { const s = pc.getSenders().find(s => s.track?.kind === 'video'); s?.replaceTrack(videoTrack); });
+      const vt = localStream?.getVideoTracks()[0];
+      if (vt) Object.values(pcsRef.current).forEach(pc => { const s = pc.getSenders().find(s => s.track?.kind === 'video'); s?.replaceTrack(vt); });
       setScreenStream(null); setSharing(false);
     } else {
       try {
         const ss = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
         setScreenStream(ss); setSharing(true);
-        const screenTrack = ss.getVideoTracks()[0];
-        Object.values(pcsRef.current).forEach(pc => { const s = pc.getSenders().find(s => s.track?.kind === 'video'); s?.replaceTrack(screenTrack); });
+        const st = ss.getVideoTracks()[0];
+        Object.values(pcsRef.current).forEach(pc => { const s = pc.getSenders().find(s => s.track?.kind === 'video'); s?.replaceTrack(st); });
         if (localVideoRef.current) localVideoRef.current.srcObject = ss;
-        screenTrack.onended = () => toggleScreenShare();
+        st.onended = () => toggleScreenShare();
       } catch {}
     }
   };
 
-  // ═══════════════════════════════════════════════════════
-  // MESSAGES
-  // ═══════════════════════════════════════════════════════
+  // ── Messages ───────────────────────────────────────────
   const sendMessage = async () => {
     if (!input.trim() || !user || sending) return;
     setSending(true);
@@ -398,8 +364,8 @@ export default function BoardroomPage() {
 
   const deleteForMe  = (id: number) => { setMessages(p => p.filter(m => m.id !== id)); setMenuMsgId(null); };
   const deleteForAll = async (id: number) => {
-    const { error } = await supabase.from('boardroom_messages').delete().eq('id', id);
-    if (!error) setMenuMsgId(null);
+    await supabase.from('boardroom_messages').delete().eq('id', id);
+    setMenuMsgId(null);
   };
 
   const togglePin = async (msg: Message) => {
@@ -417,20 +383,18 @@ export default function BoardroomPage() {
     setReactionMsgId(null);
   };
 
-  // ── Voice recording ────────────────────────────────────
+  // ── Voice ──────────────────────────────────────────────
   const startRecording = async (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 44100 } as any });
       const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : 'audio/webm';
       const mr = new MediaRecorder(stream, { mimeType });
-      mediaRecorderRef.current = mr;
-      audioChunksRef.current   = [];
+      mediaRecorderRef.current = mr; audioChunksRef.current = [];
       mr.ondataavailable = e => { if (e.data && e.data.size > 0) audioChunksRef.current.push(e.data); };
-      mr.start(100);
-      setRecording(true); setRecordSecs(0);
+      mr.start(100); setRecording(true); setRecordSecs(0);
       recordTimerRef.current = setInterval(() => setRecordSecs(s => s + 1), 1000);
-    } catch { alert('Microphone access denied. Allow microphone in browser settings.'); }
+    } catch { alert('Microphone access denied.'); }
   };
 
   const stopRecording = async (e: React.MouseEvent | React.TouchEvent) => {
@@ -453,9 +417,7 @@ export default function BoardroomPage() {
             message: '🎤 Voice message', message_type: 'audio', audio_url: u.publicUrl, reactions: {}, pinned: false,
           });
         }
-        setUploading(false);
-        mr.stream.getTracks().forEach(t => t.stop());
-        resolve();
+        setUploading(false); mr.stream.getTracks().forEach(t => t.stop()); resolve();
       };
       mr.stop();
     });
@@ -493,9 +455,7 @@ export default function BoardroomPage() {
       const res  = await fetch('/api/boardroom/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: tokenInput }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      setUser(data.user);
-      await loadProfile(data.user);
-      setScreen('app');
+      setUser(data.user); await loadProfile(data.user); setScreen('app');
     } catch (err: any) { setTokenError(err.message || 'Invalid token'); }
     finally { setAuthLoading(false); }
   };
@@ -534,7 +494,7 @@ export default function BoardroomPage() {
   // LOGIN
   // ─────────────────────────────────────────────────────
   if (screen === 'login') return (
-    <div style={{ minHeight: '100dvh', background: '#050709', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Space Grotesk, sans-serif', backgroundImage: 'linear-gradient(rgba(0,232,122,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,122,.025) 1px,transparent 1px)', backgroundSize: '60px 60px', padding: '16px' }}>
+    <div style={{ minHeight: '100dvh', background: '#050709', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Space Grotesk, sans-serif', backgroundImage: 'linear-gradient(rgba(0,232,122,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,122,.025) 1px,transparent 1px)', backgroundSize: '60px 60px', padding: 16 }}>
       <div style={{ position: 'absolute', top: '18%', left: '50%', transform: 'translateX(-50%)', width: 500, height: 500, background: 'radial-gradient(circle,rgba(0,232,122,.06) 0%,transparent 65%)', pointerEvents: 'none' }} />
       <div style={{ width: '100%', maxWidth: 420, position: 'relative' }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
@@ -571,45 +531,43 @@ export default function BoardroomPage() {
   // APP
   // ─────────────────────────────────────────────────────
   return (
-    <div style={{ height: '100dvh', display: 'flex', background: BG, fontFamily: 'Space Grotesk, sans-serif', overflow: 'hidden', position: 'relative', maxWidth: '100vw' }}>
+    <div style={{ height: '100dvh', width: '100vw', display: 'flex', background: BG, fontFamily: 'Space Grotesk, sans-serif', overflow: 'hidden', position: 'relative' }}>
 
-      {/* ── MOBILE SIDEBAR OVERLAY ── */}
+      {/* Mobile overlay */}
       {isMobile && sidebarOpen && (
-        <div onClick={() => setSidebarOpen(false)}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', zIndex: 90, backdropFilter: 'blur(2px)' }} />
+        <div onClick={() => setSidebarOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.65)', zIndex: 90, backdropFilter: 'blur(2px)' }} />
       )}
 
-      {/* ── INCOMING CALL OVERLAY ── */}
+      {/* Incoming call */}
       {incomingCall && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(5,7,9,.88)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)', padding: 16 }}>
-          <div style={{ background: BG2, border: '1px solid #1A2E48', padding: '40px 32px', textAlign: 'center', maxWidth: 380, width: '100%', position: 'relative' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(5,7,9,.9)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(6px)', padding: 16 }}>
+          <div style={{ background: BG2, border: '1px solid #1A2E48', padding: '40px 28px', textAlign: 'center', maxWidth: 360, width: '100%', position: 'relative' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,${incomingCall.fromColor},transparent)` }} />
             <div style={{ fontSize: 44, marginBottom: 14 }}>{incomingCall.mode === 'video' ? '📹' : '🎙'}</div>
             <div style={{ fontFamily: 'monospace', color: '#00E87A', fontSize: 10, letterSpacing: '.12em', marginBottom: 10 }}>INCOMING {incomingCall.mode.toUpperCase()} CALL</div>
             <div style={{ color: '#E2EAF4', fontWeight: 700, fontSize: 20, marginBottom: 4 }}>{incomingCall.from}</div>
             <div style={{ color: '#445566', fontSize: 13, marginBottom: 32 }}>calling in #{incomingCall.room}</div>
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <button onClick={() => setIncomingCall(null)} style={{ background: '#FF5757', border: 'none', color: '#fff', padding: '13px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif', flex: 1 }}>📵 Decline</button>
-              <button onClick={acceptCall} style={{ background: '#00E87A', border: 'none', color: '#000', padding: '13px 28px', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif', flex: 1 }}>📞 Accept</button>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button onClick={() => setIncomingCall(null)} style={{ flex: 1, background: '#FF5757', border: 'none', color: '#fff', padding: '13px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>📵 Decline</button>
+              <button onClick={acceptCall} style={{ flex: 1, background: '#00E87A', border: 'none', color: '#000', padding: '13px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>📞 Accept</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ══ SIDEBAR ══════════════════════════════════════════ */}
+      {/* ══ SIDEBAR ══ */}
       <div style={{
-        width: 228, background: BG2, borderRight: '1px solid #111D2E',
-        display: 'flex', flexDirection: 'column', flexShrink: 0,
-        // Mobile: slide in/out
+        width: 228, minWidth: 228, background: BG2, borderRight: '1px solid #111D2E',
+        display: 'flex', flexDirection: 'column', flexShrink: 0, zIndex: isMobile ? 100 : 1,
         ...(isMobile ? {
-          position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 100,
+          position: 'fixed', top: 0, left: 0, bottom: 0,
           transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
-          transition: 'transform 0.25s ease',
-          boxShadow: sidebarOpen ? '4px 0 24px rgba(0,0,0,.5)' : 'none',
+          transition: 'transform 0.28s cubic-bezier(.4,0,.2,1)',
+          boxShadow: sidebarOpen ? '8px 0 32px rgba(0,0,0,.6)' : 'none',
         } : {}),
       }}>
-        {/* Header */}
-        <div style={{ padding: '14px 16px 12px', borderBottom: '1px solid #111D2E', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {/* Logo */}
+        <div style={{ padding: '14px 16px 12px', borderBottom: '1px solid #111D2E', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 30, height: 30, background: '#00E87A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 11, color: '#000', flexShrink: 0 }}>PS</div>
             <div>
@@ -617,14 +575,12 @@ export default function BoardroomPage() {
               <div style={{ color: '#00E87A', fontSize: 9, fontFamily: 'monospace', letterSpacing: '.08em' }}>● WORKSPACE</div>
             </div>
           </div>
-          {isMobile && (
-            <button onClick={() => setSidebarOpen(false)} style={{ background: 'none', border: 'none', color: '#445566', fontSize: 20, cursor: 'pointer', padding: 4 }}>×</button>
-          )}
+          {isMobile && <button onClick={() => setSidebarOpen(false)} style={{ background: 'none', border: 'none', color: '#445566', fontSize: 22, cursor: 'pointer', padding: 4, lineHeight: 1 }}>×</button>}
         </div>
 
-        {/* Active call banner */}
+        {/* Call banner */}
         {callActive && (
-          <div style={{ margin: '8px 10px 0', background: 'rgba(0,232,122,.07)', border: '1px solid rgba(0,232,122,.2)', padding: '8px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ margin: '8px 10px 0', background: 'rgba(0,232,122,.07)', border: '1px solid rgba(0,232,122,.2)', padding: '8px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
             <div>
               <div style={{ color: '#00E87A', fontSize: 9, fontFamily: 'monospace', letterSpacing: '.06em' }}>● {callMode?.toUpperCase()} CALL · #{callRoom}</div>
               <div style={{ color: '#445566', fontSize: 10, marginTop: 1 }}>{peers.length} participant{peers.length !== 1 ? 's' : ''}</div>
@@ -634,22 +590,21 @@ export default function BoardroomPage() {
         )}
 
         {/* Channels */}
-        <div style={{ flex: 1, overflow: 'auto', padding: '12px 0' }}>
+        <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '12px 0' }}>
           <div style={{ padding: '4px 16px 6px', fontFamily: 'monospace', color: '#445566', fontSize: 9, letterSpacing: '.12em' }}>CHANNELS</div>
           {ROOMS.map(room => (
             <button key={room.id} onClick={() => switchRoom(room.id)}
               style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: activeRoom === room.id ? 'rgba(0,232,122,.08)' : 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', borderLeft: activeRoom === room.id ? '2px solid #00E87A' : '2px solid transparent', fontFamily: 'Space Grotesk, sans-serif' }}>
-              <span style={{ color: activeRoom === room.id ? '#00E87A' : '#445566', fontSize: 14 }}>{room.icon}</span>
-              <span style={{ color: activeRoom === room.id ? '#E2EAF4' : '#8899AA', fontSize: 13, fontWeight: activeRoom === room.id ? 600 : 400, flex: 1 }}>{room.name}</span>
+              <span style={{ color: activeRoom === room.id ? '#00E87A' : '#445566', fontSize: 14, flexShrink: 0 }}>{room.icon}</span>
+              <span style={{ color: activeRoom === room.id ? '#E2EAF4' : '#8899AA', fontSize: 13, fontWeight: activeRoom === room.id ? 600 : 400, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{room.name}</span>
             </button>
           ))}
-
           {pinned.length > 0 && (
-            <div style={{ marginTop: 12 }}>
+            <div style={{ marginTop: 10 }}>
               <div style={{ padding: '4px 16px 6px', fontFamily: 'monospace', color: '#445566', fontSize: 9, letterSpacing: '.12em' }}>PINNED · {pinned.length}</div>
               <button onClick={() => setShowPinned(!showPinned)}
                 style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: showPinned ? 'rgba(245,181,48,.06)' : 'transparent', border: 'none', cursor: 'pointer', borderLeft: showPinned ? '2px solid #F5B530' : '2px solid transparent', fontFamily: 'Space Grotesk, sans-serif' }}>
-                <span style={{ color: '#F5B530', fontSize: 13 }}>📌</span>
+                <span style={{ color: '#F5B530', fontSize: 13, flexShrink: 0 }}>📌</span>
                 <span style={{ color: '#8899AA', fontSize: 13 }}>Pinned Messages</span>
               </button>
             </div>
@@ -657,10 +612,10 @@ export default function BoardroomPage() {
         </div>
 
         {/* Bottom */}
-        <div style={{ borderTop: '1px solid #111D2E' }}>
+        <div style={{ borderTop: '1px solid #111D2E', flexShrink: 0 }}>
           <button onClick={() => { setPanel(p => p === 'settings' ? 'chat' : 'settings'); if (isMobile) setSidebarOpen(false); }}
             style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: panel === 'settings' ? 'rgba(0,232,122,.06)' : 'transparent', border: 'none', cursor: 'pointer', borderLeft: panel === 'settings' ? '2px solid #00E87A' : '2px solid transparent', fontFamily: 'Space Grotesk, sans-serif' }}>
-            <span style={{ fontSize: 14, color: panel === 'settings' ? '#00E87A' : '#445566' }}>⚙</span>
+            <span style={{ fontSize: 14, color: panel === 'settings' ? '#00E87A' : '#445566', flexShrink: 0 }}>⚙</span>
             <span style={{ color: panel === 'settings' ? '#E2EAF4' : '#8899AA', fontSize: 13 }}>Settings</span>
           </button>
           <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, borderTop: '1px solid #111D2E' }}>
@@ -670,82 +625,81 @@ export default function BoardroomPage() {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ color: '#E2EAF4', fontSize: 12, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
-              <div style={{ color: '#445566', fontSize: 10, fontFamily: 'monospace' }}>{user!.role}</div>
+              <div style={{ color: '#445566', fontSize: 10, fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user!.role}</div>
             </div>
-            <button onClick={() => { endCall(); setScreen('login'); setUser(null); }} style={{ background: 'none', border: 'none', color: '#445566', cursor: 'pointer', fontSize: 15 }}>⎋</button>
+            <button onClick={() => { endCall(); setScreen('login'); setUser(null); }} style={{ background: 'none', border: 'none', color: '#445566', cursor: 'pointer', fontSize: 15, flexShrink: 0 }}>⎋</button>
           </div>
         </div>
       </div>
 
-      {/* ══ MAIN ════════════════════════════════════════════ */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
+      {/* ══ MAIN ══ */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, width: 0, overflow: 'hidden' }}>
 
-        {/* Header */}
-        <div style={{ padding: '0 12px 0 8px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #111D2E', background: BG2, flexShrink: 0, gap: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, flex: 1 }}>
-            {/* Mobile menu toggle */}
+        {/* ── HEADER ── */}
+        <div style={{ height: 50, display: 'flex', alignItems: 'center', borderBottom: '1px solid #111D2E', background: BG2, flexShrink: 0, paddingLeft: 8, paddingRight: 8, gap: 6 }}>
+          {/* Left: hamburger + room name */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, minWidth: 0 }}>
             {isMobile && (
-              <button onClick={() => setSidebarOpen(true)} style={{ background: 'none', border: 'none', color: '#445566', fontSize: 20, cursor: 'pointer', padding: '4px 6px', flexShrink: 0 }}>☰</button>
+              <button onClick={() => setSidebarOpen(true)} style={{ background: 'none', border: 'none', color: '#8899AA', fontSize: 20, cursor: 'pointer', padding: '2px 4px', flexShrink: 0, lineHeight: 1 }}>☰</button>
             )}
-            <span style={{ color: '#00E87A', fontSize: 15, flexShrink: 0 }}>{currentRoom?.icon}</span>
-            <span style={{ color: '#E2EAF4', fontWeight: 700, fontSize: 14, flexShrink: 0 }}>{currentRoom?.name}</span>
+            <span style={{ color: '#00E87A', fontSize: 14, flexShrink: 0 }}>{currentRoom?.icon}</span>
+            <span style={{ color: '#E2EAF4', fontWeight: 700, fontSize: 13, flexShrink: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: isMobile ? 80 : 160 }}>{currentRoom?.name}</span>
             {!isMobile && <span style={{ color: '#445566', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{currentRoom?.desc}</span>}
           </div>
-          <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0 }}>
+          {/* Right: actions — always visible, compact on mobile */}
+          <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexShrink: 0 }}>
             <button onClick={() => setSearchOpen(s => !s)}
-              style={{ background: searchOpen ? 'rgba(0,232,122,.1)' : BG3, border: `1px solid ${searchOpen ? '#00E87A' : '#1A2E48'}`, color: searchOpen ? '#00E87A' : '#8899AA', padding: '6px 10px', cursor: 'pointer', fontSize: 13, fontFamily: 'Space Grotesk, sans-serif' }}>🔍</button>
+              style={{ background: searchOpen ? 'rgba(0,232,122,.12)' : 'transparent', border: `1px solid ${searchOpen ? '#00E87A' : '#1A2E48'}`, color: searchOpen ? '#00E87A' : '#8899AA', width: 32, height: 32, cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>🔍</button>
             <button onClick={() => startCall('audio')} disabled={callActive}
-              style={{ background: BG3, border: '1px solid #1A2E48', color: callActive ? '#2A4060' : '#00E87A', padding: isMobile ? '6px 8px' : '6px 13px', cursor: callActive ? 'default' : 'pointer', fontWeight: 600, fontSize: 12, fontFamily: 'Space Grotesk, sans-serif' }}>
-              {isMobile ? '🎙' : '🎙 Audio'}
+              style={{ background: 'transparent', border: '1px solid #1A2E48', color: callActive ? '#2A4060' : '#00E87A', height: 32, padding: '0 10px', cursor: callActive ? 'default' : 'pointer', fontWeight: 600, fontSize: 11, fontFamily: 'Space Grotesk, sans-serif', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+              🎙{!isMobile && <span> Audio</span>}
             </button>
             <button onClick={() => startCall('video')} disabled={callActive}
-              style={{ background: callActive ? '#1A2E48' : '#00E87A', color: callActive ? '#2A4060' : '#000', border: 'none', padding: isMobile ? '7px 8px' : '7px 14px', cursor: callActive ? 'default' : 'pointer', fontWeight: 700, fontSize: 12, fontFamily: 'Space Grotesk, sans-serif' }}>
-              {isMobile ? '📹' : '📹 Video'}
+              style={{ background: callActive ? '#1A2E48' : '#00E87A', color: callActive ? '#2A4060' : '#000', border: 'none', height: 32, padding: '0 10px', cursor: callActive ? 'default' : 'pointer', fontWeight: 700, fontSize: 11, fontFamily: 'Space Grotesk, sans-serif', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+              📹{!isMobile && <span> Video</span>}
             </button>
           </div>
         </div>
 
-        {/* Search */}
+        {/* Search bar */}
         {searchOpen && (
-          <div style={{ padding: '8px 12px', borderBottom: '1px solid #111D2E', background: BG2, display: 'flex', gap: 8, alignItems: 'center' }}>
+          <div style={{ padding: '8px 10px', borderBottom: '1px solid #111D2E', background: BG2, display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
             <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search messages…" autoFocus
-              style={{ flex: 1, background: BG3, border: '1px solid #1A2E48', color: '#E2EAF4', padding: '8px 12px', fontSize: 13, outline: 'none', fontFamily: 'Space Grotesk, sans-serif' }} />
-            {searchQuery && <span style={{ fontFamily: 'monospace', color: '#445566', fontSize: 11, whiteSpace: 'nowrap' }}>{filteredMsgs.length} found</span>}
-            <button onClick={() => { setSearchOpen(false); setSearchQuery(''); }} style={{ background: 'none', border: 'none', color: '#445566', cursor: 'pointer', fontSize: 20 }}>×</button>
+              style={{ flex: 1, background: BG3, border: '1px solid #1A2E48', color: '#E2EAF4', padding: '8px 12px', fontSize: 13, outline: 'none', fontFamily: 'Space Grotesk, sans-serif', minWidth: 0 }} />
+            {searchQuery && <span style={{ fontFamily: 'monospace', color: '#445566', fontSize: 11, whiteSpace: 'nowrap', flexShrink: 0 }}>{filteredMsgs.length} found</span>}
+            <button onClick={() => { setSearchOpen(false); setSearchQuery(''); }} style={{ background: 'none', border: 'none', color: '#445566', cursor: 'pointer', fontSize: 20, flexShrink: 0 }}>×</button>
           </div>
         )}
 
-        {/* Active call panel */}
+        {/* ── CALL PANEL ── */}
         {callActive && (
           <div style={{ borderBottom: '1px solid #111D2E', background: '#000', flexShrink: 0 }}>
-            <div style={{ display: 'flex', gap: 4, padding: 8, height: callMode === 'video' ? (isMobile ? 180 : 240) : 72, overflow: 'hidden' }}>
-              <div style={{ flex: 1, background: '#0a0a0a', border: '1px solid #1A2E48', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', gap: 3, padding: 6, height: callMode === 'video' ? (isMobile ? 170 : 230) : 68, overflow: 'hidden' }}>
+              <div style={{ flex: 1, background: '#0A0A0A', border: '1px solid #1A2E48', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                 {callMode === 'video'
                   ? <video ref={localVideoRef} autoPlay muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }} />
-                  : <div style={{ textAlign: 'center' }}>
-                      <Avatar name={displayName} color={user!.color} url={user?.avatarUrl} size={36} />
-                      <div style={{ color: '#445566', fontSize: 9, fontFamily: 'monospace', marginTop: 4 }}>YOU</div>
-                    </div>
+                  : <div style={{ textAlign: 'center' }}><Avatar name={displayName} color={user!.color} url={user?.avatarUrl} size={34} /></div>
                 }
-                <div style={{ position: 'absolute', bottom: 4, left: 6, background: 'rgba(0,0,0,.7)', padding: '2px 6px', fontFamily: 'monospace', color: '#00E87A', fontSize: 9 }}>
-                  {muted ? '🔇' : '🎙'} {displayName}
-                </div>
+                <div style={{ position: 'absolute', bottom: 4, left: 6, background: 'rgba(0,0,0,.75)', padding: '2px 6px', fontFamily: 'monospace', color: '#00E87A', fontSize: 9 }}>{muted ? '🔇' : '🎙'} You</div>
+                {sharing && <div style={{ position: 'absolute', top: 4, right: 6, background: 'rgba(0,232,122,.2)', border: '1px solid #00E87A', padding: '2px 6px', fontFamily: 'monospace', color: '#00E87A', fontSize: 9 }}>SHARING</div>}
               </div>
               {peers.map(peer => (
-                <div key={peer.peerId} style={{ flex: 1, background: '#0a0a0a', border: '1px solid #1A2E48', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                <div key={peer.peerId} style={{ flex: 1, background: '#0A0A0A', border: '1px solid #1A2E48', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                   {peer.stream && !peer.audioOnly
                     ? <video autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} ref={el => { if (el && peer.stream) { el.srcObject = peer.stream; el.play().catch(() => {}); } }} />
                     : <div style={{ textAlign: 'center' }}>
-                        <Avatar name={peer.name} color={peer.color} size={36} />
+                        <Avatar name={peer.name} color={peer.color} size={34} />
                         {peer.stream && <audio autoPlay ref={el => { if (el && peer.stream) { el.srcObject = peer.stream; el.play().catch(() => {}); } }} />}
                       </div>
                   }
-                  <div style={{ position: 'absolute', bottom: 4, left: 6, background: 'rgba(0,0,0,.7)', padding: '2px 6px', fontFamily: 'monospace', color: peer.color, fontSize: 9 }}>{peer.name}</div>
+                  <div style={{ position: 'absolute', bottom: 4, left: 6, background: 'rgba(0,0,0,.75)', padding: '2px 6px', fontFamily: 'monospace', color: peer.color, fontSize: 9 }}>{peer.name}</div>
                 </div>
               ))}
-              {peers.length === 0 && <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2A4060', fontSize: 12, fontFamily: 'monospace' }}>Waiting for others…</div>}
+              {peers.length === 0 && (
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2A4060', fontSize: 11, fontFamily: 'monospace', textAlign: 'center', padding: '0 12px' }}>Waiting for others to join…</div>
+              )}
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 6, padding: '6px 8px 8px', borderTop: '1px solid #111D2E', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 5, padding: '5px 8px 7px', borderTop: '1px solid #111D2E', flexWrap: 'wrap' }}>
               {[
                 { label: muted ? '🔇 Unmute' : '🎙 Mute', action: toggleMute, active: muted },
                 ...(callMode === 'video' ? [{ label: camOff ? '📷 On' : '📷 Off', action: toggleCamera, active: camOff }] : []),
@@ -753,7 +707,7 @@ export default function BoardroomPage() {
                 { label: '📵 End', action: endCall, danger: true },
               ].map((btn: any) => (
                 <button key={btn.label} onClick={btn.action}
-                  style={{ background: btn.danger ? '#FF5757' : btn.active ? 'rgba(0,232,122,.2)' : BG3, border: `1px solid ${btn.danger ? '#FF5757' : btn.active ? '#00E87A' : '#1A2E48'}`, color: btn.danger ? '#fff' : btn.active ? '#00E87A' : '#8899AA', padding: '6px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'Space Grotesk, sans-serif', fontWeight: btn.danger ? 700 : 400 }}>
+                  style={{ background: btn.danger ? '#FF5757' : btn.active ? 'rgba(0,232,122,.15)' : BG3, border: `1px solid ${btn.danger ? '#FF5757' : btn.active ? '#00E87A' : '#1A2E48'}`, color: btn.danger ? '#fff' : btn.active ? '#00E87A' : '#8899AA', padding: '5px 11px', cursor: 'pointer', fontSize: 11, fontFamily: 'Space Grotesk, sans-serif', fontWeight: btn.danger ? 700 : 400, whiteSpace: 'nowrap' }}>
                   {btn.label}
                 </button>
               ))}
@@ -763,54 +717,54 @@ export default function BoardroomPage() {
 
         {/* ══ SETTINGS ══ */}
         {panel === 'settings' ? (
-          <div style={{ flex: 1, overflow: 'auto', padding: isMobile ? '20px 16px' : '28px 32px', background: BG }}>
-            <div style={{ maxWidth: 560 }}>
-              <div style={{ fontFamily: 'monospace', color: '#00E87A', fontSize: 10, letterSpacing: '.15em', marginBottom: 6 }}>WORKSPACE SETTINGS</div>
+          <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: isMobile ? '16px 14px' : '24px 28px', background: BG }}>
+            <div style={{ maxWidth: 540 }}>
+              <div style={{ fontFamily: 'monospace', color: '#00E87A', fontSize: 10, letterSpacing: '.15em', marginBottom: 4 }}>WORKSPACE SETTINGS</div>
               <h2 style={{ color: '#E2EAF4', fontWeight: 800, fontSize: 20, margin: '0 0 4px' }}>Settings</h2>
-              <div style={{ color: '#445566', fontSize: 13, marginBottom: 24 }}>Manage your profile and preferences</div>
+              <div style={{ color: '#445566', fontSize: 13, marginBottom: 22 }}>Manage your profile and preferences</div>
 
-              {/* Profile card */}
-              <div style={{ background: BG2, border: '1px solid #111D2E', padding: 20, marginBottom: 12, position: 'relative' }}>
+              {/* Profile */}
+              <div style={{ background: BG2, border: '1px solid #111D2E', padding: 18, marginBottom: 10, position: 'relative' }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg,#00E87A,#00C8FF,transparent)' }} />
-                <div style={{ fontFamily: 'monospace', color: '#445566', fontSize: 9, letterSpacing: '.12em', marginBottom: 16 }}>YOUR PROFILE</div>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, marginBottom: 18 }}>
+                <div style={{ fontFamily: 'monospace', color: '#445566', fontSize: 9, letterSpacing: '.12em', marginBottom: 14 }}>YOUR PROFILE</div>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 16 }}>
                   <div style={{ position: 'relative', flexShrink: 0 }}>
-                    <Avatar name={displayName} color={user!.color} url={user?.avatarUrl} size={60} />
+                    <Avatar name={displayName} color={user!.color} url={user?.avatarUrl} size={58} />
                     <button onClick={() => fileInputRef.current?.click()}
-                      style={{ position: 'absolute', bottom: -4, right: -4, width: 22, height: 22, background: '#00E87A', border: 'none', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 11 }}>
+                      style={{ position: 'absolute', bottom: -3, right: -3, width: 22, height: 22, background: '#00E87A', border: 'none', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 11 }}>
                       {avatarUploading ? '…' : '📷'}
                     </button>
                     <input ref={fileInputRef} type="file" accept="image/*" onChange={uploadAvatar} style={{ display: 'none' }} />
                   </div>
-                  <div>
-                    <div style={{ color: '#E2EAF4', fontWeight: 700, fontSize: 15 }}>{displayName}</div>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ color: '#E2EAF4', fontWeight: 700, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
                     <div style={{ color: user!.color, fontFamily: 'monospace', fontSize: 11, marginTop: 2 }}>{user!.role}</div>
-                    <div style={{ color: '#2A4060', fontFamily: 'monospace', fontSize: 10, marginTop: 4 }}>Token: {user!.token}</div>
-                    {avatarUploading && <div style={{ color: '#00E87A', fontSize: 11, marginTop: 4, fontFamily: 'monospace' }}>Uploading…</div>}
+                    <div style={{ color: '#2A4060', fontFamily: 'monospace', fontSize: 10, marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Token: {user!.token}</div>
+                    {avatarUploading && <div style={{ color: '#00E87A', fontSize: 11, marginTop: 3, fontFamily: 'monospace' }}>Uploading…</div>}
                   </div>
                 </div>
-                <div style={{ color: '#445566', fontSize: 11, fontFamily: 'monospace', marginBottom: 6, letterSpacing: '.08em' }}>DISPLAY NAME</div>
+                <div style={{ color: '#445566', fontSize: 10, fontFamily: 'monospace', marginBottom: 6, letterSpacing: '.08em' }}>DISPLAY NAME</div>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <input value={profileName} onChange={e => setProfileName(e.target.value)} placeholder="Your display name"
-                    style={{ flex: 1, background: BG3, border: '1px solid #1A2E48', color: '#E2EAF4', padding: '10px 12px', fontSize: 14, outline: 'none', fontFamily: 'Space Grotesk, sans-serif' }} />
+                    style={{ flex: 1, minWidth: 0, background: BG3, border: '1px solid #1A2E48', color: '#E2EAF4', padding: '9px 12px', fontSize: 14, outline: 'none', fontFamily: 'Space Grotesk, sans-serif' }} />
                   <button onClick={saveProfile} disabled={profileSaving}
-                    style={{ background: '#00E87A', border: 'none', color: '#000', padding: '10px 16px', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>
+                    style={{ background: '#00E87A', border: 'none', color: '#000', padding: '9px 14px', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif', flexShrink: 0 }}>
                     {profileSaving ? '…' : 'Save'}
                   </button>
                 </div>
               </div>
 
-              {/* Preferences */}
-              <div style={{ background: BG2, border: '1px solid #111D2E', padding: 20, marginBottom: 12 }}>
-                <div style={{ fontFamily: 'monospace', color: '#445566', fontSize: 9, letterSpacing: '.12em', marginBottom: 14 }}>PREFERENCES</div>
+              {/* Prefs */}
+              <div style={{ background: BG2, border: '1px solid #111D2E', padding: 18, marginBottom: 10 }}>
+                <div style={{ fontFamily: 'monospace', color: '#445566', fontSize: 9, letterSpacing: '.12em', marginBottom: 12 }}>PREFERENCES</div>
                 {[
                   { label: 'Notification sounds', desc: 'Tone when a new message arrives', val: notifSound, set: setNotifSound },
                   { label: 'Compact view', desc: 'Reduce spacing between messages', val: compactMode, set: setCompact },
-                  { label: 'Show timestamps', desc: 'Display time next to messages', val: showTs, set: setShowTs },
+                  { label: 'Show timestamps', desc: 'Time next to each message', val: showTs, set: setShowTs },
                 ].map((item, idx, arr) => (
-                  <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: idx < arr.length - 1 ? '1px solid #0D1525' : 'none' }}>
-                    <div style={{ paddingRight: 12 }}>
-                      <div style={{ color: '#E2EAF4', fontSize: 14, fontWeight: 600 }}>{item.label}</div>
+                  <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 0', borderBottom: idx < arr.length - 1 ? '1px solid #0D1525' : 'none' }}>
+                    <div style={{ paddingRight: 10, minWidth: 0 }}>
+                      <div style={{ color: '#E2EAF4', fontSize: 13, fontWeight: 600 }}>{item.label}</div>
                       <div style={{ color: '#445566', fontSize: 12, marginTop: 2 }}>{item.desc}</div>
                     </div>
                     <button onClick={() => item.set(!item.val)}
@@ -822,12 +776,12 @@ export default function BoardroomPage() {
               </div>
 
               {/* Theme */}
-              <div style={{ background: BG2, border: '1px solid #111D2E', padding: 20, marginBottom: 12 }}>
-                <div style={{ fontFamily: 'monospace', color: '#445566', fontSize: 9, letterSpacing: '.12em', marginBottom: 14 }}>APPEARANCE</div>
+              <div style={{ background: BG2, border: '1px solid #111D2E', padding: 18, marginBottom: 10 }}>
+                <div style={{ fontFamily: 'monospace', color: '#445566', fontSize: 9, letterSpacing: '.12em', marginBottom: 12 }}>APPEARANCE</div>
                 <div style={{ display: 'flex', gap: 10 }}>
                   {(['dark','darker'] as const).map(t => (
                     <button key={t} onClick={() => setTheme(t)}
-                      style={{ flex: 1, padding: '12px 10px', background: t === 'dark' ? '#080C12' : '#020305', border: `2px solid ${theme === t ? '#00E87A' : '#1A2E48'}`, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>
+                      style={{ flex: 1, padding: '12px 8px', background: t === 'dark' ? '#080C12' : '#020305', border: `2px solid ${theme === t ? '#00E87A' : '#1A2E48'}`, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>
                       <div style={{ color: theme === t ? '#00E87A' : '#445566', fontSize: 13, fontWeight: 600, textTransform: 'capitalize' }}>{t}</div>
                       <div style={{ color: '#2A4060', fontSize: 11, marginTop: 3 }}>{t === 'dark' ? 'Default' : 'Extra dark'}</div>
                     </button>
@@ -836,15 +790,15 @@ export default function BoardroomPage() {
               </div>
 
               {/* Sign out */}
-              <div style={{ background: BG2, border: '1px solid #2A1515', padding: 20 }}>
-                <div style={{ fontFamily: 'monospace', color: '#FF5757', fontSize: 9, letterSpacing: '.12em', marginBottom: 14 }}>ACCOUNT</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-                  <div>
-                    <div style={{ color: '#E2EAF4', fontSize: 14, fontWeight: 600 }}>Sign out</div>
+              <div style={{ background: BG2, border: '1px solid #2A1515', padding: 18 }}>
+                <div style={{ fontFamily: 'monospace', color: '#FF5757', fontSize: 9, letterSpacing: '.12em', marginBottom: 12 }}>ACCOUNT</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ color: '#E2EAF4', fontSize: 13, fontWeight: 600 }}>Sign out</div>
                     <div style={{ color: '#445566', fontSize: 12, marginTop: 2 }}>You'll need your token to sign back in</div>
                   </div>
                   <button onClick={() => { endCall(); setScreen('login'); setUser(null); }}
-                    style={{ background: 'rgba(255,87,87,.1)', border: '1px solid #FF5757', color: '#FF5757', padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif', whiteSpace: 'nowrap' }}>
+                    style={{ background: 'rgba(255,87,87,.1)', border: '1px solid #FF5757', color: '#FF5757', padding: '8px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif', whiteSpace: 'nowrap', flexShrink: 0 }}>
                     Sign Out
                   </button>
                 </div>
@@ -856,34 +810,46 @@ export default function BoardroomPage() {
           /* ══ CHAT ══ */
           <>
             {showPinned && pinned.length > 0 && (
-              <div style={{ borderBottom: '1px solid #111D2E', background: 'rgba(245,181,48,.04)', padding: '8px 16px', maxHeight: 120, overflow: 'auto' }}>
+              <div style={{ borderBottom: '1px solid #111D2E', background: 'rgba(245,181,48,.04)', padding: '8px 14px', maxHeight: 110, overflowY: 'auto', flexShrink: 0 }}>
                 <div style={{ fontFamily: 'monospace', color: '#F5B530', fontSize: 9, letterSpacing: '.12em', marginBottom: 6 }}>📌 PINNED</div>
                 {pinned.map(msg => (
-                  <div key={msg.id} style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'flex-start' }}>
+                  <div key={msg.id} style={{ display: 'flex', gap: 6, marginBottom: 4, alignItems: 'flex-start' }}>
                     <div style={{ width: 5, height: 5, background: '#F5B530', borderRadius: '50%', marginTop: 6, flexShrink: 0 }} />
-                    <span style={{ color: '#F5B530', fontSize: 11, fontWeight: 600, flexShrink: 0 }}>{msg.author_name}:</span>
-                    <span style={{ color: '#8899AA', fontSize: 12 }}>{msg.message.slice(0,80)}{msg.message.length > 80 ? '…' : ''}</span>
+                    <span style={{ color: '#F5B530', fontSize: 11, fontWeight: 600, flexShrink: 0 }}>{msg.author_name}: </span>
+                    <span style={{ color: '#8899AA', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{msg.message.slice(0,80)}{msg.message.length > 80 ? '…' : ''}</span>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Messages */}
-            <div style={{ flex: 1, overflow: 'auto', padding: '10px 12px', display: 'flex', flexDirection: 'column' }}>
+            {/* ── MESSAGES AREA with wallpaper ── */}
+            <div style={{
+              flex: 1, overflowY: 'auto', overflowX: 'hidden',
+              padding: '10px 12px',
+              display: 'flex', flexDirection: 'column',
+              backgroundImage: WALLPAPER,
+              backgroundSize: '120px 120px',
+              backgroundRepeat: 'repeat',
+              position: 'relative',
+            }}>
+              {/* Subtle overlay to darken wallpaper slightly */}
+              <div style={{ position: 'fixed', pointerEvents: 'none', inset: 0, background: 'rgba(5,7,9,.45)', zIndex: 0 }} />
+
               {filteredMsgs.length === 0 && (
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#2A4060', textAlign: 'center' }}>
-                  <div style={{ fontSize: 28, marginBottom: 10 }}>{currentRoom?.icon}</div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#2A4060', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                  <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.4 }}>{currentRoom?.icon}</div>
                   <div style={{ fontWeight: 700, fontSize: 14, color: '#445566', marginBottom: 4 }}>#{currentRoom?.name}</div>
-                  <div style={{ fontSize: 13 }}>{searchQuery ? 'No messages match.' : 'No messages yet.'}</div>
+                  <div style={{ fontSize: 13 }}>{searchQuery ? 'No messages match.' : 'No messages yet. Say hello!'}</div>
                 </div>
               )}
 
               {msgGroups.map(group => (
-                <div key={group.date}>
+                <div key={group.date} style={{ position: 'relative', zIndex: 1 }}>
+                  {/* Date divider */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '14px 0 10px' }}>
-                    <div style={{ flex: 1, height: 1, background: '#111D2E' }} />
-                    <span style={{ fontFamily: 'monospace', color: '#2A4060', fontSize: 9, letterSpacing: '.1em', whiteSpace: 'nowrap' }}>{group.date}</span>
-                    <div style={{ flex: 1, height: 1, background: '#111D2E' }} />
+                    <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,.06)' }} />
+                    <span style={{ fontFamily: 'monospace', color: '#445566', fontSize: 9, letterSpacing: '.1em', whiteSpace: 'nowrap', background: 'rgba(5,7,9,.8)', padding: '2px 10px', border: '1px solid #111D2E' }}>{group.date}</span>
+                    <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,.06)' }} />
                   </div>
 
                   {group.msgs.map((msg, i) => {
@@ -896,7 +862,7 @@ export default function BoardroomPage() {
                       <div key={msg.id}
                         onMouseEnter={() => !isMobile && setHoveredMsg(msg.id)}
                         onMouseLeave={() => !isMobile && setHoveredMsg(null)}
-                        style={{ display: 'flex', gap: 8, marginTop: showHeader ? (compactMode ? 6 : 12) : (compactMode ? 1 : 2), position: 'relative', padding: '2px 4px', background: hoveredMsg === msg.id ? 'rgba(255,255,255,.015)' : msg.pinned ? 'rgba(245,181,48,.025)' : 'transparent' }}>
+                        style={{ display: 'flex', gap: 8, marginTop: showHeader ? (compactMode ? 6 : 14) : (compactMode ? 1 : 2), position: 'relative', padding: '4px 6px 4px 4px', borderRadius: 2, background: hoveredMsg === msg.id ? 'rgba(255,255,255,.04)' : msg.pinned ? 'rgba(245,181,48,.05)' : 'transparent', transition: 'background .1s' }}>
 
                         {showHeader
                           ? <Avatar name={msg.author_name} color={msg.author_color} size={32} />
@@ -907,8 +873,8 @@ export default function BoardroomPage() {
                           {showHeader && (
                             <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 3, flexWrap: 'wrap' }}>
                               <span style={{ color: msg.author_color, fontWeight: 700, fontSize: 13 }}>{msg.author_name}</span>
-                              <span style={{ fontFamily: 'monospace', color: '#2A4060', fontSize: 9 }}>{msg.author_role}</span>
-                              {showTs && <span style={{ fontFamily: 'monospace', color: '#2A4060', fontSize: 9 }}>{fmt(msg.created_at)}</span>}
+                              <span style={{ fontFamily: 'monospace', color: '#3A5070', fontSize: 9 }}>{msg.author_role}</span>
+                              {showTs && <span style={{ fontFamily: 'monospace', color: '#3A5070', fontSize: 9 }}>{fmt(msg.created_at)}</span>}
                               {msg.pinned && <span style={{ fontSize: 10 }}>📌</span>}
                             </div>
                           )}
@@ -917,17 +883,29 @@ export default function BoardroomPage() {
                             <div style={{ display: 'flex', gap: 6, marginTop: 4, flexWrap: 'wrap' }}>
                               <input value={editText} onChange={e => setEditText(e.target.value)}
                                 onKeyDown={e => { if (e.key === 'Enter') saveEdit(msg.id); if (e.key === 'Escape') { setEditingId(null); setEditText(''); } }}
-                                autoFocus style={{ flex: 1, minWidth: 120, background: BG3, border: '1px solid #00E87A', color: '#E2EAF4', padding: '8px 10px', fontSize: 13, outline: 'none', fontFamily: 'Space Grotesk, sans-serif' }} />
-                              <button onClick={() => saveEdit(msg.id)} style={{ background: '#00E87A', color: '#000', border: 'none', padding: '8px 12px', fontWeight: 700, fontSize: 12, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>Save</button>
-                              <button onClick={() => { setEditingId(null); setEditText(''); }} style={{ background: '#111D2E', color: '#8899AA', border: 'none', padding: '8px 10px', fontSize: 12, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>✕</button>
+                                autoFocus style={{ flex: 1, minWidth: 100, background: BG3, border: '1px solid #00E87A', color: '#E2EAF4', padding: '7px 10px', fontSize: 13, outline: 'none', fontFamily: 'Space Grotesk, sans-serif' }} />
+                              <button onClick={() => saveEdit(msg.id)} style={{ background: '#00E87A', color: '#000', border: 'none', padding: '7px 12px', fontWeight: 700, fontSize: 12, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>Save</button>
+                              <button onClick={() => { setEditingId(null); setEditText(''); }} style={{ background: '#111D2E', color: '#8899AA', border: 'none', padding: '7px 10px', fontSize: 12, cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>✕</button>
                             </div>
                           ) : msg.message_type === 'audio' && msg.audio_url ? (
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: BG3, border: '1px solid #1A2E48', padding: '8px 12px', maxWidth: '100%' }}>
-                              <span style={{ color: '#00E87A', fontSize: 15 }}>🎤</span>
-                              <audio controls src={msg.audio_url} style={{ height: 30, maxWidth: 'calc(100vw - 160px)' }} />
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(8,12,18,.85)', border: '1px solid #1A2E48', padding: '8px 12px', maxWidth: '100%', backdropFilter: 'blur(4px)' }}>
+                              <span style={{ color: '#00E87A', fontSize: 15, flexShrink: 0 }}>🎤</span>
+                              <audio controls src={msg.audio_url} style={{ height: 28, maxWidth: 'calc(100vw - 180px)' }} />
                             </div>
                           ) : (
-                            <div style={{ color: '#C8D8E8', fontSize: 14, lineHeight: 1.6, wordBreak: 'break-word' }}>{msg.message}</div>
+                            // Message bubble with glass effect
+                            <div style={{
+                              display: 'inline-block',
+                              background: isOwn ? 'rgba(0,232,122,.1)' : 'rgba(8,12,18,.75)',
+                              border: `1px solid ${isOwn ? 'rgba(0,232,122,.2)' : 'rgba(255,255,255,.06)'}`,
+                              backdropFilter: 'blur(8px)',
+                              padding: '8px 12px',
+                              maxWidth: '100%',
+                              wordBreak: 'break-word',
+                              color: '#D8E8F4',
+                              fontSize: 14,
+                              lineHeight: 1.6,
+                            }}>{msg.message}</div>
                           )}
 
                           {hasReact && (
@@ -935,7 +913,7 @@ export default function BoardroomPage() {
                               {Object.entries(reactions).map(([emoji, users]: [string, any]) =>
                                 (users as string[]).length > 0 && (
                                   <button key={emoji} onClick={() => addReaction(msg, emoji)} title={(users as string[]).join(', ')}
-                                    style={{ background: (users as string[]).includes(displayName) ? 'rgba(0,232,122,.15)' : 'rgba(255,255,255,.05)', border: `1px solid ${(users as string[]).includes(displayName) ? 'rgba(0,232,122,.4)' : '#1A2E48'}`, color: '#E2EAF4', padding: '3px 7px', fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontFamily: 'Space Grotesk, sans-serif' }}>
+                                    style={{ background: (users as string[]).includes(displayName) ? 'rgba(0,232,122,.15)' : 'rgba(8,12,18,.7)', border: `1px solid ${(users as string[]).includes(displayName) ? 'rgba(0,232,122,.4)' : '#1A2E48'}`, color: '#E2EAF4', padding: '3px 7px', fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3, fontFamily: 'Space Grotesk, sans-serif', backdropFilter: 'blur(4px)' }}>
                                     {emoji} <span style={{ fontSize: 11, color: '#8899AA' }}>{(users as string[]).length}</span>
                                   </button>
                                 )
@@ -943,51 +921,38 @@ export default function BoardroomPage() {
                             </div>
                           )}
 
-                          {/* Mobile: long press actions / tap actions */}
+                          {/* Mobile action row */}
                           {isMobile && (
-                            <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
+                            <div style={{ display: 'flex', gap: 4, marginTop: 5, flexWrap: 'wrap' }}>
                               <button onClick={e => { e.stopPropagation(); setReactionMsgId(reactionMsgId === msg.id ? null : msg.id); setMenuMsgId(null); }}
-                                style={{ background: 'none', border: '1px solid #1A2E48', color: '#445566', cursor: 'pointer', fontSize: 13, padding: '3px 8px', fontFamily: 'Space Grotesk, sans-serif' }}>😊</button>
+                                style={{ background: 'rgba(8,12,18,.7)', border: '1px solid #1A2E48', color: '#445566', cursor: 'pointer', fontSize: 12, padding: '3px 7px', backdropFilter: 'blur(4px)' }}>😊</button>
                               {isOwn && msg.message_type === 'text' && (
                                 <button onClick={() => { setEditingId(msg.id); setEditText(msg.message.replace(' ✎','')); }}
-                                  style={{ background: 'none', border: '1px solid #1A2E48', color: '#445566', cursor: 'pointer', fontSize: 12, padding: '3px 8px', fontFamily: 'Space Grotesk, sans-serif' }}>✎</button>
+                                  style={{ background: 'rgba(8,12,18,.7)', border: '1px solid #1A2E48', color: '#445566', cursor: 'pointer', fontSize: 12, padding: '3px 7px', backdropFilter: 'blur(4px)' }}>✎</button>
                               )}
                               <button onClick={e => { e.stopPropagation(); setMenuMsgId(menuMsgId === msg.id ? null : msg.id); setReactionMsgId(null); }}
-                                style={{ background: 'none', border: '1px solid #1A2E48', color: '#445566', cursor: 'pointer', fontSize: 13, padding: '3px 8px', fontFamily: 'Space Grotesk, sans-serif' }}>⋯</button>
+                                style={{ background: 'rgba(8,12,18,.7)', border: '1px solid #1A2E48', color: '#445566', cursor: 'pointer', fontSize: 12, padding: '3px 7px', backdropFilter: 'blur(4px)' }}>⋯</button>
                             </div>
                           )}
 
                           {/* Reaction picker */}
                           {reactionMsgId === msg.id && (
-                            <div data-menu onClick={e => e.stopPropagation()} style={{ display: 'flex', gap: 4, flexWrap: 'wrap', background: BG2, border: '1px solid #1A2E48', padding: '8px', marginTop: 6, width: 'fit-content', zIndex: 30, boxShadow: '0 4px 16px rgba(0,0,0,.5)' }}>
+                            <div data-menu onClick={e => e.stopPropagation()} style={{ display: 'flex', gap: 4, flexWrap: 'wrap', background: BG2, border: '1px solid #1A2E48', padding: 8, marginTop: 5, width: 'fit-content', zIndex: 30, boxShadow: '0 4px 20px rgba(0,0,0,.6)' }}>
                               {REACTIONS.map(emoji => (
-                                <button key={emoji} onClick={() => addReaction(msg, emoji)}
-                                  style={{ background: 'none', border: '1px solid #1A2E48', fontSize: 18, padding: '4px 5px', cursor: 'pointer' }}>
-                                  {emoji}
-                                </button>
+                                <button key={emoji} onClick={() => addReaction(msg, emoji)} style={{ background: 'none', border: '1px solid #1A2E48', fontSize: 18, padding: '4px 5px', cursor: 'pointer' }}>{emoji}</button>
                               ))}
                             </div>
                           )}
 
                           {/* Options menu */}
                           {menuMsgId === msg.id && (
-                            <div data-menu onClick={e => e.stopPropagation()} style={{ background: BG2, border: '1px solid #1A2E48', width: 200, zIndex: 30, boxShadow: '0 8px 24px rgba(0,0,0,.6)', marginTop: 4 }}>
+                            <div data-menu onClick={e => e.stopPropagation()} style={{ background: BG2, border: '1px solid #1A2E48', width: 196, zIndex: 30, boxShadow: '0 8px 24px rgba(0,0,0,.7)', marginTop: 4 }}>
                               <div style={{ padding: '4px 0' }}>
-                                <button onClick={() => togglePin(msg)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'none', border: 'none', color: '#C8D8E8', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>
-                                  📌 {msg.pinned ? 'Unpin' : 'Pin message'}
-                                </button>
-                                <button onClick={() => { navigator.clipboard?.writeText(msg.message); setMenuMsgId(null); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'none', border: 'none', color: '#C8D8E8', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>
-                                  📋 Copy text
-                                </button>
+                                <button onClick={() => togglePin(msg)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: 'none', border: 'none', color: '#C8D8E8', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>📌 {msg.pinned ? 'Unpin' : 'Pin message'}</button>
+                                <button onClick={() => { navigator.clipboard?.writeText(msg.message); setMenuMsgId(null); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: 'none', border: 'none', color: '#C8D8E8', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>📋 Copy text</button>
                                 <div style={{ height: 1, background: '#111D2E', margin: '4px 0' }} />
-                                <button onClick={() => deleteForMe(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'none', border: 'none', color: '#8899AA', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>
-                                  🙈 Delete for me
-                                </button>
-                                {isOwn && (
-                                  <button onClick={() => deleteForAll(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'none', border: 'none', color: '#FF5757', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>
-                                    🗑 Delete for everyone
-                                  </button>
-                                )}
+                                <button onClick={() => deleteForMe(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: 'none', border: 'none', color: '#8899AA', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>🙈 Delete for me</button>
+                                {isOwn && <button onClick={() => deleteForAll(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: 'none', border: 'none', color: '#FF5757', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>🗑 Delete for everyone</button>}
                               </div>
                             </div>
                           )}
@@ -995,15 +960,13 @@ export default function BoardroomPage() {
 
                         {/* Desktop hover actions */}
                         {!isMobile && hoveredMsg === msg.id && editingId !== msg.id && (
-                          <div data-menu style={{ position: 'absolute', right: 6, top: 0, display: 'flex', gap: 2, alignItems: 'center', background: BG2, border: '1px solid #1A2E48', padding: '3px 4px', zIndex: 20 }}>
+                          <div data-menu style={{ position: 'absolute', right: 6, top: 0, display: 'flex', gap: 2, alignItems: 'center', background: BG2, border: '1px solid #1A2E48', padding: '3px 4px', zIndex: 20, boxShadow: '0 2px 12px rgba(0,0,0,.5)' }}>
                             <div data-menu style={{ position: 'relative' }}>
                               <button onClick={e => { e.stopPropagation(); setReactionMsgId(reactionMsgId === msg.id ? null : msg.id); setMenuMsgId(null); }}
                                 style={{ background: 'none', border: 'none', color: '#445566', cursor: 'pointer', fontSize: 14, padding: '4px 6px' }}>😊</button>
                               {reactionMsgId === msg.id && (
-                                <div data-menu style={{ position: 'absolute', right: 0, bottom: 'calc(100% + 4px)', background: BG2, border: '1px solid #1A2E48', padding: '8px', display: 'flex', gap: 5, flexWrap: 'wrap', width: 188, zIndex: 30, boxShadow: '0 8px 24px rgba(0,0,0,.6)' }}>
-                                  {REACTIONS.map(emoji => (
-                                    <button key={emoji} onClick={() => addReaction(msg, emoji)} style={{ background: 'none', border: '1px solid #1A2E48', fontSize: 18, padding: '4px 5px', cursor: 'pointer' }}>{emoji}</button>
-                                  ))}
+                                <div data-menu style={{ position: 'absolute', right: 0, bottom: 'calc(100% + 4px)', background: BG2, border: '1px solid #1A2E48', padding: 8, display: 'flex', gap: 5, flexWrap: 'wrap', width: 188, zIndex: 30, boxShadow: '0 8px 24px rgba(0,0,0,.6)' }}>
+                                  {REACTIONS.map(emoji => <button key={emoji} onClick={() => addReaction(msg, emoji)} style={{ background: 'none', border: '1px solid #1A2E48', fontSize: 18, padding: '4px 5px', cursor: 'pointer' }}>{emoji}</button>)}
                                 </div>
                               )}
                             </div>
@@ -1021,9 +984,7 @@ export default function BoardroomPage() {
                                     <button onClick={() => { navigator.clipboard?.writeText(msg.message); setMenuMsgId(null); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'none', border: 'none', color: '#C8D8E8', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>📋 Copy text</button>
                                     <div style={{ height: 1, background: '#111D2E', margin: '4px 0' }} />
                                     <button onClick={() => deleteForMe(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'none', border: 'none', color: '#8899AA', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>🙈 Delete for me</button>
-                                    {isOwn && (
-                                      <button onClick={() => deleteForAll(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'none', border: 'none', color: '#FF5757', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>🗑 Delete for everyone</button>
-                                    )}
+                                    {isOwn && <button onClick={() => deleteForAll(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'none', border: 'none', color: '#FF5757', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Space Grotesk, sans-serif' }}>🗑 Delete for everyone</button>}
                                   </div>
                                 </div>
                               )}
@@ -1035,12 +996,12 @@ export default function BoardroomPage() {
                   })}
                 </div>
               ))}
-              <div ref={bottomRef} />
+              <div ref={bottomRef} style={{ position: 'relative', zIndex: 1 }} />
             </div>
 
             {/* Typing */}
             {typing.length > 0 && (
-              <div style={{ padding: '3px 16px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ padding: '3px 14px 0', display: 'flex', alignItems: 'center', gap: 7, flexShrink: 0, background: BG2 }}>
                 <div style={{ display: 'flex', gap: 3 }}>
                   {[0,1,2].map(i => <div key={i} style={{ width: 4, height: 4, background: '#445566', borderRadius: '50%', animation: `bounce 1.2s ${i*0.2}s ease-in-out infinite` }} />)}
                 </div>
@@ -1048,21 +1009,21 @@ export default function BoardroomPage() {
               </div>
             )}
 
-            {/* Input */}
-            <div style={{ padding: '8px 12px 10px', borderTop: '1px solid #111D2E', background: BG2, flexShrink: 0 }}>
-              {uploading && <div style={{ fontFamily: 'monospace', color: '#00E87A', fontSize: 10, marginBottom: 6, letterSpacing: '.08em' }}>⬆ Uploading voice…</div>}
+            {/* ── INPUT ── */}
+            <div style={{ padding: '8px 10px 10px', borderTop: '1px solid #111D2E', background: BG2, flexShrink: 0 }}>
+              {uploading && <div style={{ fontFamily: 'monospace', color: '#00E87A', fontSize: 10, marginBottom: 6, letterSpacing: '.06em' }}>⬆ Uploading voice…</div>}
               <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                 <button onMouseDown={startRecording} onMouseUp={stopRecording} onTouchStart={startRecording} onTouchEnd={stopRecording}
                   disabled={uploading} title="Hold to record"
-                  style={{ width: 38, height: 38, background: recording ? '#FF5757' : BG3, border: `1px solid ${recording ? '#FF5757' : '#1A2E48'}`, color: recording ? '#fff' : '#445566', fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer', userSelect: 'none', touchAction: 'none' }}>
+                  style={{ width: 36, height: 36, background: recording ? '#FF5757' : BG3, border: `1px solid ${recording ? '#FF5757' : '#1A2E48'}`, color: recording ? '#fff' : '#445566', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer', userSelect: 'none', touchAction: 'none' }}>
                   🎤
                 </button>
                 {recording ? (
-                  <div style={{ flex: 1, background: BG3, border: '1px solid #FF5757', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ flex: 1, background: BG3, border: '1px solid #FF5757', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                     <div style={{ width: 6, height: 6, background: '#FF5757', borderRadius: '50%', animation: 'pulse 1s ease-in-out infinite', flexShrink: 0 }} />
-                    <span style={{ color: '#FF5757', fontSize: 10, fontFamily: 'monospace' }}>REC</span>
-                    <span style={{ color: '#E2EAF4', fontSize: 13, fontFamily: 'monospace' }}>{fmtSec(recordSecs)}</span>
-                    <span style={{ color: '#445566', fontSize: 11 }}>Release to send</span>
+                    <span style={{ color: '#FF5757', fontSize: 9, fontFamily: 'monospace', flexShrink: 0 }}>REC</span>
+                    <span style={{ color: '#E2EAF4', fontSize: 13, fontFamily: 'monospace', flexShrink: 0 }}>{fmtSec(recordSecs)}</span>
+                    <span style={{ color: '#445566', fontSize: 11, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Release to send</span>
                   </div>
                 ) : (
                   <input ref={inputRef} value={input} onChange={e => handleInputChange(e.target.value)}
@@ -1071,15 +1032,11 @@ export default function BoardroomPage() {
                     style={{ flex: 1, background: BG3, border: '1px solid #1A2E48', color: '#E2EAF4', padding: '9px 12px', fontSize: 14, outline: 'none', fontFamily: 'Space Grotesk, sans-serif', minWidth: 0 }} />
                 )}
                 <button onClick={sendMessage} disabled={!input.trim() || sending || recording}
-                  style={{ width: 38, height: 38, background: input.trim() && !recording ? '#00E87A' : BG3, border: `1px solid ${input.trim() && !recording ? '#00E87A' : '#111D2E'}`, color: input.trim() && !recording ? '#000' : '#445566', fontWeight: 700, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: input.trim() && !recording ? 'pointer' : 'default' }}>
+                  style={{ width: 36, height: 36, background: input.trim() && !recording ? '#00E87A' : BG3, border: `1px solid ${input.trim() && !recording ? '#00E87A' : '#111D2E'}`, color: input.trim() && !recording ? '#000' : '#445566', fontWeight: 700, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: input.trim() && !recording ? 'pointer' : 'default' }}>
                   →
                 </button>
               </div>
-              {!isMobile && (
-                <div style={{ fontFamily: 'monospace', color: '#2A4060', fontSize: 10, marginTop: 6, letterSpacing: '.04em' }}>
-                  ENTER to send · Hold 🎤 for voice · Hover message for actions
-                </div>
-              )}
+              {!isMobile && <div style={{ fontFamily: 'monospace', color: '#2A4060', fontSize: 10, marginTop: 5, letterSpacing: '.04em' }}>ENTER to send · Hold 🎤 for voice · Hover message for actions</div>}
             </div>
           </>
         )}
@@ -1088,6 +1045,11 @@ export default function BoardroomPage() {
       <style>{`
         @keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:.3} }
         @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+        * { box-sizing: border-box; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #1A2E48; border-radius: 2px; }
+        audio { max-width: 100%; }
       `}</style>
     </div>
   );
