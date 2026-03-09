@@ -593,7 +593,7 @@ export default function BoardroomPage() {
   //        so main content always takes 100% width
   // ─────────────────────────────────────────────────────
   return (
-    <div style={{ height: '100dvh', width: '100vw', display: 'flex', background: BG, fontFamily: 'Space Grotesk, sans-serif', overflow: 'hidden' }}>
+    <div style={{ height: '100dvh', width: '100vw', maxWidth: '100vw', display: 'flex', background: BG, fontFamily: 'Space Grotesk, sans-serif', overflow: 'hidden', position: 'fixed', top: 0, left: 0 }}>
 
       {/* ── MOBILE SIDEBAR (fixed, outside flex flow) ── */}
       {isMobile && (
@@ -640,8 +640,8 @@ export default function BoardroomPage() {
         </div>
       )}
 
-      {/* ══ MAIN — always full width on mobile ══ */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden', width: isMobile ? '100%' : undefined }}>
+      {/* ══ MAIN — takes all space after sidebar ══ */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0, width: 0 }}>
 
         {/* HEADER */}
         <div style={{ height: 50, display: 'flex', alignItems: 'center', borderBottom: '1px solid #111D2E', background: BG2, flexShrink: 0, padding: '0 10px', gap: 8 }}>
@@ -818,24 +818,14 @@ export default function BoardroomPage() {
               </div>
             )}
 
-            {/* ── MESSAGES with wallpaper ── */}
-            <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '10px 12px', display: 'flex', flexDirection: 'column', position: 'relative', background: BG }}>
-              {/* Wallpaper layer */}
-              <div style={{
-                position: 'fixed', top: 0, left: isMobile ? 0 : 228, right: 0, bottom: 0,
-                pointerEvents: 'none', zIndex: 0,
-                backgroundImage: `
-                  radial-gradient(circle at 20% 20%, rgba(0,232,122,0.03) 0%, transparent 50%),
-                  radial-gradient(circle at 80% 80%, rgba(0,200,255,0.03) 0%, transparent 50%),
-                  radial-gradient(circle at 50% 50%, rgba(167,139,250,0.02) 0%, transparent 60%)
-                `,
-              }} />
-              <div style={{
-                position: 'fixed', top: 0, left: isMobile ? 0 : 228, right: 0, bottom: 0,
-                pointerEvents: 'none', zIndex: 0, opacity: 0.4,
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='30' cy='30' r='1' fill='%2300E87A' opacity='0.12'/%3E%3Ccircle cx='0' cy='0' r='0.8' fill='%2300E87A' opacity='0.08'/%3E%3Ccircle cx='60' cy='0' r='0.8' fill='%2300E87A' opacity='0.08'/%3E%3Ccircle cx='0' cy='60' r='0.8' fill='%2300E87A' opacity='0.08'/%3E%3Ccircle cx='60' cy='60' r='0.8' fill='%2300E87A' opacity='0.08'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='60' height='60' fill='url(%23p)'/%3E%3C/svg%3E")`,
-                backgroundSize: '60px 60px',
-              }} />
+            {/* ── MESSAGES with wallpaper directly on container ── */}
+            <div style={{
+              flex: 1, overflowY: 'auto', overflowX: 'hidden',
+              padding: '10px 12px', display: 'flex', flexDirection: 'column',
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Crect width='60' height='60' fill='%23050709'/%3E%3Ccircle cx='30' cy='30' r='1.2' fill='%2300E87A' opacity='0.13'/%3E%3Ccircle cx='0' cy='0' r='0.9' fill='%2300E87A' opacity='0.09'/%3E%3Ccircle cx='60' cy='0' r='0.9' fill='%2300E87A' opacity='0.09'/%3E%3Ccircle cx='0' cy='60' r='0.9' fill='%2300E87A' opacity='0.09'/%3E%3Ccircle cx='60' cy='60' r='0.9' fill='%2300E87A' opacity='0.09'/%3E%3Ccircle cx='30' cy='0' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='0' cy='30' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='60' cy='30' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='30' cy='60' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='60' height='60' fill='url(%23p)'/%3E%3C/svg%3E")`,
+              backgroundSize: '60px 60px',
+              backgroundRepeat: 'repeat',
+            }}>
 
               {filteredMsgs.length === 0 && (
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#2A4060', textAlign: 'center', position: 'relative', zIndex: 1 }}>
