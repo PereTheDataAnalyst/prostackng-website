@@ -593,7 +593,7 @@ export default function BoardroomPage() {
   //        so main content always takes 100% width
   // ─────────────────────────────────────────────────────
   return (
-    <div style={{ height: '100dvh', width: '100vw', maxWidth: '100vw', display: 'flex', background: BG, fontFamily: 'Space Grotesk, sans-serif', overflow: 'hidden', position: 'fixed', top: 0, left: 0 }}>
+    <div style={{ height: '100dvh', width: '100vw', maxWidth: '100vw', display: 'flex', background: BG, fontFamily: 'Space Grotesk, sans-serif', overflow: 'hidden', position: 'fixed', top: 0, left: 0, paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' } as any}>
 
       {/* ── MOBILE SIDEBAR (fixed, outside flex flow) ── */}
       {isMobile && (
@@ -1029,6 +1029,12 @@ export default function BoardroomPage() {
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #1A2E48; border-radius: 2px; }
         audio { max-width: 100%; }
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #050709; }
+        input, button { -webkit-tap-highlight-color: transparent; }
+        @supports (-webkit-touch-callout: none) {
+          /* iOS Safari specific */
+          body { height: -webkit-fill-available; }
+        }
       `}</style>
     </div>
   );
