@@ -87,6 +87,11 @@ export default function BoardroomPage() {
   const [profileSaving, setProfileSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const fileInputRef                    = useRef<HTMLInputElement>(null);
+  const imageInputRef                   = useRef<HTMLInputElement>(null);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const EMOJI_LIST = ['😀','😂','😍','🥰','😎','🤔','😅','🤣','❤️','🔥','👍','👎','🙌','🎉','💯','🚀','✅','⚡','💡','🎯','💪','🤝','👀','😮','😢','😡','🙏','💰','🌍','⭐','📊','📈','🏆','⚠️','🔒','📌','💬','📞','📧','🖥'];
   const bottomRef                       = useRef<HTMLDivElement>(null);
   const inputRef                        = useRef<HTMLInputElement>(null);
 
@@ -417,7 +422,33 @@ export default function BoardroomPage() {
     });
   };
 
-  // ── Profile save/upload ────────────────────────────────
+  // ── Image upload ──────────────────────────────────────
+  const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (!file.type.startsWith('image/')) { alert('Please select an image file.'); return; }
+    if (file.size > 5 * 1024 * 1024) { alert('Image must be under 5MB.'); return; }
+    setImageUploading(true);
+    const ext = file.name.split('.').pop() || 'jpg';
+    const { data, error } = await supabase.storage.from('voice-messages').upload(
+      `${activeRoom}/img-${Date.now()}.${ext}`, file, { contentType: file.type, upsert: false }
+    );
+    if (!error && data) {
+      const { data: u } = supabase.storage.from('voice-messages').getPublicUrl(data.path);
+      await supabase.from('boardroom_messages').insert({
+        room_id: activeRoom, author_name: user.displayName || user.name,
+        author_role: user.role, author_color: user.color,
+        message: '📷 Image', message_type: 'image', audio_url: u.publicUrl,
+        reactions: {}, pinned: false,
+      });
+    } else if (error) {
+      alert('Upload failed. Check storage bucket permissions.');
+    }
+    setImageUploading(false);
+    if (imageInputRef.current) imageInputRef.current.value = '';
+  };
+
+  
   const saveProfile = async () => {
     if (!user || !profileName.trim()) return;
     setProfileSaving(true);
@@ -883,6 +914,12 @@ export default function BoardroomPage() {
                               <span style={{ color: '#00E87A', fontSize: 15, flexShrink: 0 }}>🎤</span>
                               <audio controls src={msg.audio_url} style={{ height: 28, maxWidth: 'calc(100vw - 180px)' }} />
                             </div>
+                          ) : msg.message_type === 'image' && msg.audio_url ? (
+                            <div style={{ display: 'inline-block', maxWidth: isMobile ? '85vw' : 360, background: 'rgba(12,18,32,0.9)', border: '1px solid #1A2E48', padding: 6, cursor: 'pointer' }}
+                              onClick={() => window.open(msg.audio_url!, '_blank')}>
+                              <img src={msg.audio_url} alt="shared image" style={{ width: '100%', display: 'block', maxHeight: 320, objectFit: 'contain' }} />
+                              <div style={{ color: '#445566', fontSize: 10, fontFamily: 'monospace', padding: '4px 2px 0' }}>🖼 Click to open full size</div>
+                            </div>
                           ) : (
                             <div style={{
                               display: 'inline-block', maxWidth: '85%',
@@ -993,12 +1030,39 @@ export default function BoardroomPage() {
             )}
 
             {/* Input bar */}
-            <div style={{ padding: '8px 10px 10px', borderTop: '1px solid #111D2E', background: BG2, flexShrink: 0 }}>
-              {uploading && <div style={{ fontFamily: 'monospace', color: '#00E87A', fontSize: 10, marginBottom: 6 }}>⬆ Uploading voice…</div>}
+            <div style={{ padding: '8px 10px 10px', borderTop: '1px solid #111D2E', background: BG2, flexShrink: 0, position: 'relative' }}>
+              {(uploading || imageUploading) && <div style={{ fontFamily: 'monospace', color: '#00E87A', fontSize: 10, marginBottom: 6 }}>⬆ {imageUploading ? 'Uploading image…' : 'Uploading voice…'}</div>}
+
+              {/* Emoji picker */}
+              {showEmojiPicker && (
+                <div style={{ position: 'absolute', bottom: '100%', left: 10, right: 10, background: BG2, border: '1px solid #1A2E48', padding: 10, zIndex: 50, boxShadow: '0 -8px 32px rgba(0,0,0,.6)', marginBottom: 4 }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                    {EMOJI_LIST.map(emoji => (
+                      <button key={emoji} onClick={() => { setInput(p => p + emoji); setShowEmojiPicker(false); inputRef.current?.focus(); }}
+                        style={{ background: 'none', border: '1px solid #111D2E', fontSize: 20, padding: '4px 6px', cursor: 'pointer', lineHeight: 1 }}>
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                {/* Emoji button */}
+                <button onClick={() => setShowEmojiPicker(p => !p)}
+                  style={{ width: 36, height: 36, background: showEmojiPicker ? 'rgba(0,232,122,.12)' : BG3, border: `1px solid ${showEmojiPicker ? '#00E87A' : '#1A2E48'}`, color: showEmojiPicker ? '#00E87A' : '#445566', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}>😊</button>
+
+                {/* Image upload */}
+                <input ref={imageInputRef} type="file" accept="image/*" onChange={uploadImage} style={{ display: 'none' }} />
+                <button onClick={() => imageInputRef.current?.click()} disabled={imageUploading}
+                  title="Send image"
+                  style={{ width: 36, height: 36, background: BG3, border: '1px solid #1A2E48', color: '#445566', fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}>🖼</button>
+
+                {/* Voice */}
                 <button onMouseDown={startRecording} onMouseUp={stopRecording} onTouchStart={startRecording} onTouchEnd={stopRecording}
                   disabled={uploading} title="Hold to record"
                   style={{ width: 36, height: 36, background: recording ? '#FF5757' : BG3, border: `1px solid ${recording ? '#FF5757' : '#1A2E48'}`, color: recording ? '#fff' : '#445566', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer', userSelect: 'none', touchAction: 'none' }}>🎤</button>
+
                 {recording ? (
                   <div style={{ flex: 1, background: BG3, border: '1px solid #FF5757', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                     <div style={{ width: 6, height: 6, background: '#FF5757', borderRadius: '50%', animation: 'pulse 1s ease-in-out infinite', flexShrink: 0 }} />
@@ -1007,7 +1071,7 @@ export default function BoardroomPage() {
                     <span style={{ color: '#445566', fontSize: 11 }}>Release to send</span>
                   </div>
                 ) : (
-                  <input ref={inputRef} value={input} onChange={e => handleInputChange(e.target.value)}
+                  <input ref={inputRef} value={input} onChange={e => { handleInputChange(e.target.value); setShowEmojiPicker(false); }}
                     onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
                     placeholder={`Message #${currentRoom?.name}…`}
                     style={{ flex: 1, background: BG3, border: '1px solid #1A2E48', color: '#E2EAF4', padding: '9px 12px', fontSize: 14, outline: 'none', fontFamily: 'Space Grotesk, sans-serif', minWidth: 0 }} />
@@ -1015,7 +1079,7 @@ export default function BoardroomPage() {
                 <button onClick={sendMessage} disabled={!input.trim() || sending || recording}
                   style={{ width: 36, height: 36, background: input.trim() && !recording ? '#00E87A' : BG3, border: `1px solid ${input.trim() && !recording ? '#00E87A' : '#111D2E'}`, color: input.trim() && !recording ? '#000' : '#445566', fontWeight: 700, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: input.trim() && !recording ? 'pointer' : 'default' }}>→</button>
               </div>
-              {!isMobile && <div style={{ fontFamily: 'monospace', color: '#2A4060', fontSize: 10, marginTop: 5 }}>ENTER to send · Hold 🎤 for voice · Hover message for actions</div>}
+              {!isMobile && <div style={{ fontFamily: 'monospace', color: '#2A4060', fontSize: 10, marginTop: 5 }}>ENTER to send · 😊 emoji · 🖼 image · Hold 🎤 for voice · Hover message for actions</div>}
             </div>
           </>
         )}
