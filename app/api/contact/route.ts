@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
             Hi ${name.split(' ')[0]}, thanks for reaching out to ProStack NG. We've received your message and one of our team will respond within <strong style="color:#00E87A">2 business hours</strong>.
           </p>
           <p style="color:#8899AA;line-height:1.8;margin:0 0 40px 0">
-            In the meantime, you can reach us directly on WhatsApp: <a href="https://wa.me/2348100000000" style="color:#00E87A">+234 810 000 0000</a>
+            In the meantime, you can reach us directly on WhatsApp: <a href="https://wa.me/2347059449360" style="color:#00E87A">+234 705 944 9360</a>
           </p>
           <div style="border-top:1px solid #111D2E;padding-top:24px">
             <p style="color:#445566;font-size:12px;margin:0">ProStack NG Technologies · Port Harcourt, Nigeria · prostackng.com</p>
@@ -81,3 +81,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Server error — please try again' }, { status: 500 });
   }
 }
+

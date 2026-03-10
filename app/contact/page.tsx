@@ -59,7 +59,7 @@ export default function ContactPage() {
               {[
                 { icon:'📍', label:'Location',          value:'Port Harcourt, Rivers State, Nigeria' },
                 { icon:'📧', label:'Email',              value:'hello@prostackng.com' },
-                { icon:'📱', label:'Phone / WhatsApp',   value:'+234 810 000 0000' },
+                { icon:'📱', label:'Phone / WhatsApp',   value:'+234 705 944 9360' },
                 { icon:'⚡', label:'Response Time',      value:'Within 2 business hours' },
               ].map((c,i) => (
                 <div key={i} className="flex gap-4 mb-7">
@@ -176,3 +176,4 @@ export default function ContactPage() {
     </>
   );
 }
+

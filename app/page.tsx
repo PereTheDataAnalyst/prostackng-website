@@ -248,7 +248,7 @@ export default function HomePage() {
                 style={{ padding:'16px 44px', fontSize:14, letterSpacing:'.05em', textTransform:'uppercase' }}>
                 Start a Project →
               </Link>
-              <a href="https://wa.me/2348100000000" target="_blank" rel="noreferrer"
+              <a href="https://wa.me/2347059449360" target="_blank" rel="noreferrer"
                 className="border border-borderhi text-sub hover:border-accent hover:text-accent transition-all font-display font-semibold no-underline"
                 style={{ padding:'16px 44px', fontSize:14, letterSpacing:'.05em', textTransform:'uppercase' }}>
                 💬 WhatsApp Us
@@ -261,7 +261,7 @@ export default function HomePage() {
       <Footer />
 
       {/* WhatsApp FAB */}
-      <a href="https://wa.me/2348100000000" target="_blank" rel="noreferrer"
+      <a href="https://wa.me/2347059449360" target="_blank" rel="noreferrer"
         className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center text-2xl z-50 no-underline"
         style={{ background:'#25D366', boxShadow:'0 4px 20px rgba(37,211,102,.45)' }}>
         💬
@@ -269,3 +269,4 @@ export default function HomePage() {
     </>
   );
 }
+
