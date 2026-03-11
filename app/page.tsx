@@ -249,6 +249,11 @@ export default function HomePage() {
                 Start a Project →
               </Link>
               <a href="https://wa.me/2347059449360" target="_blank" rel="noreferrer"
+                className="border border-borderhi text-sub hover:border-accent hover:text-accent transition-all font-display font-semibold no-underline"
+                style={{ padding:'16px 44px', fontSize:14, letterSpacing:'.05em', textTransform:'uppercase' }}>
+                💬 WhatsApp Us
+              </a>
+            </div>
             </div>
           </div>
         </section>
