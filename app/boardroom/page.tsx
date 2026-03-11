@@ -35,6 +35,8 @@ type Message = {
 };
 type Peer = { peerId: string; name: string; color: string; stream: MediaStream | null; audioOnly: boolean };
 
+const EMOJI_LIST = ['😀','😂','😍','🥰','😎','🤔','😅','🤣','❤️','🔥','👍','👎','🙌','🎉','💯','🚀','✅','⚡','💡','🎯','💪','🤝','👀','😮','😢','😡','🙏','💰','🌍','⭐','📊','📈','🏆','⚠️','🔒','📌','💬','📞','📧','🖥'];
+
 export default function BoardroomPage() {
   const [screen, setScreen]             = useState<'login'|'app'>('login');
   const [tokenInput, setTokenInput]     = useState('');
@@ -91,8 +93,9 @@ export default function BoardroomPage() {
   const [imageUploading, setImageUploading] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const EMOJI_LIST = ['😀','😂','😍','🥰','😎','🤔','😅','🤣','❤️','🔥','👍','👎','🙌','🎉','💯','🚀','✅','⚡','💡','🎯','💪','🤝','👀','😮','😢','😡','🙏','💰','🌍','⭐','📊','📈','🏆','⚠️','🔒','📌','💬','📞','📧','🖥'];
+
   const bottomRef                       = useRef<HTMLDivElement>(null);
+  const scrollContainerRef              = useRef<HTMLDivElement>(null);
   const inputRef                        = useRef<HTMLInputElement>(null);
 
   const BG  = theme === 'darker' ? '#020305' : '#050709';
@@ -112,6 +115,8 @@ export default function BoardroomPage() {
     setPanel('chat');
     setSearchOpen(false);
     setSidebarOpen(false);
+    // Always jump to bottom when entering a new room
+    setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'auto' }), 80);
   };
 
   // ── Audio ──────────────────────────────────────────────
@@ -201,12 +206,20 @@ export default function BoardroomPage() {
     typingTimerRef.current = setTimeout(() => setTyping([]), 3000);
   };
 
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
+  // Smart auto-scroll: only pull to bottom if user is already near the bottom
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+    if (distanceFromBottom < 120) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   useEffect(() => {
     const h = (e: MouseEvent) => {
       if (!(e.target as HTMLElement).closest('[data-menu]')) {
-        setMenuMsgId(null); setReactionMsgId(null);
+        setMenuMsgId(null); setReactionMsgId(null); setShowEmojiPicker(false);
       }
     };
     document.addEventListener('mousedown', h);
@@ -850,7 +863,7 @@ export default function BoardroomPage() {
             )}
 
             {/* ── MESSAGES with wallpaper directly on container ── */}
-            <div style={{
+            <div ref={scrollContainerRef} style={{
               flex: 1, overflowY: 'auto', overflowX: 'hidden',
               padding: '10px 12px', display: 'flex', flexDirection: 'column',
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Crect width='60' height='60' fill='%23050709'/%3E%3Ccircle cx='30' cy='30' r='1.2' fill='%2300E87A' opacity='0.13'/%3E%3Ccircle cx='0' cy='0' r='0.9' fill='%2300E87A' opacity='0.09'/%3E%3Ccircle cx='60' cy='0' r='0.9' fill='%2300E87A' opacity='0.09'/%3E%3Ccircle cx='0' cy='60' r='0.9' fill='%2300E87A' opacity='0.09'/%3E%3Ccircle cx='60' cy='60' r='0.9' fill='%2300E87A' opacity='0.09'/%3E%3Ccircle cx='30' cy='0' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='0' cy='30' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='60' cy='30' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='30' cy='60' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='60' height='60' fill='url(%23p)'/%3E%3C/svg%3E")`,

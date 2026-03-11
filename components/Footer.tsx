@@ -26,8 +26,8 @@ const COLS = [
     title: 'Connect',
     links: [
       { label: 'contact@prostackng.com', href: 'mailto:contact@prostackng.com' },
-      { label: '+234 810 000 0000',    href: 'tel:+2348100000000'          },
-      { label: 'WhatsApp Chat',        href: 'https://wa.me/2348100000000' },
+      { label: '+234 705 944 9360',     href: 'tel:+2347059449360'            },
+      { label: 'WhatsApp Chat',         href: 'https://wa.me/2347059449360'   },
       { label: 'Free Consultation',    href: '/contact'                    },
     ],
   },
@@ -87,7 +87,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-border pt-6 flex flex-wrap justify-between items-center gap-4">
           <p className="font-mono text-muted" style={{ fontSize: 11, letterSpacing: '.06em' }}>
-            © 2025 ProStack NG Technologies · Port Harcourt, Nigeria · CAC Registration Pending
+            © 2026 ProStack NG Technologies · Port Harcourt, Nigeria · CAC Registration Pending
           </p>
           <div className="flex gap-6">
             {['Privacy Policy', 'Terms of Service'].map(l => (

@@ -112,7 +112,7 @@ export default function HomePage() {
             <div>
               <p className="font-mono text-accent mb-3" style={{ fontSize:11, letterSpacing:'.18em' }}>PRODUCT ECOSYSTEM</p>
               <h2 className="font-display font-black text-text" style={{ fontSize:'clamp(30px,4vw,52px)', letterSpacing:'-.03em' }}>
-                Six platforms.<br />One infrastructure.
+                Our platforms.<br />One infrastructure.
               </h2>
             </div>
             <Link href="/products"
@@ -249,10 +249,6 @@ export default function HomePage() {
                 Start a Project →
               </Link>
               <a href="https://wa.me/2347059449360" target="_blank" rel="noreferrer"
-                className="border border-borderhi text-sub hover:border-accent hover:text-accent transition-all font-display font-semibold no-underline"
-                style={{ padding:'16px 44px', fontSize:14, letterSpacing:'.05em', textTransform:'uppercase' }}>
-                💬 WhatsApp Us
-              </a>
             </div>
           </div>
         </section>
@@ -269,4 +265,3 @@ export default function HomePage() {
     </>
   );
 }
-

@@ -4,8 +4,28 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Simple in-memory rate limiter: max 3 submissions per IP per 10 minutes
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + 10 * 60 * 1000 });
+    return false;
+  }
+  if (entry.count >= 3) return true;
+  entry.count++;
+  return false;
+}
+
 export async function POST(req: NextRequest) {
   try {
+    // Rate limiting
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    if (isRateLimited(ip)) {
+      return NextResponse.json({ error: 'Too many requests. Please wait a few minutes before trying again.' }, { status: 429 });
+    }
+
     const body = await req.json();
     const { name, email, phone, type, message } = body;
 
@@ -32,7 +52,7 @@ export async function POST(req: NextRequest) {
     await resend.emails.send({
       from:    'ProStack NG Website <noreply@prostackng.com>',
       to:      [contactEmail],
-      reply_to: email,
+      replyTo: email,
       subject: `New enquiry from ${name} — ${type || 'General'}`,
       html: `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0C1220;color:#E2EAF4;padding:40px;border-radius:8px">
@@ -81,4 +101,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Server error — please try again' }, { status: 500 });
   }
 }
-
