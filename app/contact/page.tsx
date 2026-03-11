@@ -2,133 +2,144 @@
 import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { PRODUCTS } from '@/lib/data';
 
 export default function ContactPage() {
-  const [form, setForm] = useState({ name:'', email:'', phone:'', type:'', message:'' });
-  const [status, setStatus] = useState<'idle'|'loading'|'success'|'error'>('idle');
+  const [form,   setForm]   = useState({ name: '', email: '', phone: '', type: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [error,  setError]  = useState('');
-  const set = (k:string, v:string) => setForm(f => ({...f, [k]:v}));
+  const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }));
 
   const submit = async () => {
     if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-      setError('Please fill in name, email, and message.');
-      return;
+      setError('Please fill in name, email, and message.'); return;
     }
-    setError('');
-    setStatus('loading');
+    setError(''); setStatus('loading');
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
+      const res  = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Server error');
       setStatus('success');
     } catch (err: any) {
-      setStatus('error');
-      setError(err.message || 'Something went wrong. Please try again.');
+      setStatus('error'); setError(err.message || 'Something went wrong. Please try again.');
     }
   };
 
-  const inputStyle = {
-    background:'#080C12', border:'1px solid #111D2E', color:'#E2EAF4',
-    padding:'13px 16px', fontFamily:'Space Grotesk, sans-serif', fontSize:14,
-    outline:'none', width:'100%', transition:'border-color 0.2s',
+  const inputBase: React.CSSProperties = {
+    background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)',
+    padding: '13px 16px', fontFamily: 'Instrument Sans, sans-serif', fontSize: 14,
+    outline: 'none', width: '100%', transition: 'border-color .2s',
   };
 
   return (
     <>
       <Navbar />
-      <main style={{ paddingTop: 80 }}>
-        <div className="max-w-[1280px] mx-auto px-4 md:px-12 py-12 md:py-20 pb-20 md:pb-36">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-start">
+      <main style={{ paddingTop: 68 }}>
+
+        {/* Header */}
+        <div
+          className="relative overflow-hidden bg-grid"
+          style={{ padding: 'clamp(60px,8vw,120px) clamp(16px,4vw,56px) clamp(40px,5vw,80px)', backgroundSize: '56px 56px' }}
+        >
+          <div className="absolute inset-0 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 40%, transparent 30%, var(--bg) 100%)' }} />
+          <div className="absolute pointer-events-none"
+            style={{ top: '-20%', left: '-5%', width: 600, height: 600, borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(139,92,246,.1) 0%, transparent 65%)' }} />
+          <div className="relative" style={{ maxWidth: 1200, margin: '0 auto' }}>
+            <div className="section-label">Contact</div>
+            <h1 className="font-display font-black text-text" style={{ fontSize: 'clamp(40px,6vw,84px)', letterSpacing: '-.04em', lineHeight: .95, marginBottom: 20 }}>
+              Let's talk about<br /><span style={{ color: 'var(--accent)' }}>your project.</span>
+            </h1>
+            <p className="text-sub" style={{ fontSize: 17, lineHeight: 1.9, maxWidth: 520 }}>
+              First consultation is always free. No sales scripts — just an honest conversation about what you want built and whether we're the right team to build it.
+            </p>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(40px,5vw,80px) clamp(16px,4vw,56px) clamp(60px,8vw,120px)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 'clamp(40px,6vw,80px)', alignItems: 'start' }}>
 
             {/* Left — info */}
             <div>
-              <p className="font-mono text-accent mb-3" style={{ fontSize:11, letterSpacing:'.18em' }}>CONTACT</p>
-              <h1 className="font-display font-black text-text mb-6"
-                style={{ fontSize:'clamp(38px,5vw,64px)', letterSpacing:'-.04em', lineHeight:1.0 }}>
-                Let's talk about<br /><span className="text-accent">your project.</span>
-              </h1>
-              <p className="text-sub mb-14" style={{ fontSize:16, lineHeight:1.9 }}>
-                First consultation is always free. No sales scripts — just an honest conversation about what you want built and whether we're the right team to build it.
-              </p>
-
               {[
-                { icon:'📍', label:'Location',          value:'Port Harcourt, Rivers State, Nigeria' },
-                { icon:'📧', label:'Email',              value:'contact@prostackng.com' },
-                { icon:'📱', label:'Phone / WhatsApp',   value:'+234 705 944 9360' },
-                { icon:'⚡', label:'Response Time',      value:'Within 2 business hours' },
-              ].map((c,i) => (
+                { icon: '📍', label: 'Location',        value: 'Port Harcourt, Rivers State, Nigeria' },
+                { icon: '📧', label: 'Email',            value: 'contact@prostackng.com' },
+                { icon: '💬', label: 'WhatsApp',         value: '+234 705 944 9360' },
+                { icon: '⚡', label: 'Response Time',    value: 'Within 2 business hours' },
+              ].map((c, i) => (
                 <div key={i} className="flex gap-4 mb-7">
-                  <div className="w-11 h-11 flex items-center justify-center text-lg shrink-0 border"
-                    style={{ background:'rgba(0,232,122,.06)', borderColor:'rgba(0,232,122,.16)' }}>
+                  <div
+                    className="flex items-center justify-center text-lg flex-shrink-0"
+                    style={{ width: 44, height: 44, background: 'rgba(139,92,246,.08)', border: '1px solid rgba(139,92,246,.2)' }}
+                  >
                     {c.icon}
                   </div>
                   <div>
-                    <div className="font-mono text-accent mb-1" style={{ fontSize:9.5, letterSpacing:'.12em' }}>{c.label}</div>
-                    <div className="text-text" style={{ fontSize:15 }}>{c.value}</div>
+                    <div className="font-mono" style={{ color: 'var(--accent)', fontSize: 9.5, letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 4 }}>{c.label}</div>
+                    <div className="text-text" style={{ fontSize: 15 }}>{c.value}</div>
                   </div>
                 </div>
               ))}
 
-              <div className="bg-card border border-border mt-8" style={{ padding:32 }}>
-                <div className="font-mono text-accent mb-4" style={{ fontSize:9.5, letterSpacing:'.12em' }}>FREE CONSULTATION INCLUDES</div>
+              {/* Free consultation card */}
+              <div style={{ background: 'var(--card)', border: '1px solid var(--borderhi)', padding: 32, marginTop: 8, position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg,var(--accent),var(--accent2),transparent)' }} />
+                <div className="font-mono" style={{ color: 'var(--accent)', fontSize: 9.5, letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 20 }}>
+                  Free Consultation Includes
+                </div>
                 {[
                   '45-minute strategy call',
                   'Technical audit of your current systems',
                   'Written architecture recommendations',
                   'Fixed-price project quote — no obligation',
-                ].map((item,i) => (
-                  <div key={i} className="flex gap-3 items-start mb-3">
-                    <span className="text-accent font-bold mt-0.5" style={{ fontSize:12 }}>✓</span>
-                    <span className="text-sub" style={{ fontSize:13.5 }}>{item}</span>
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-3 mb-3">
+                    <span style={{ color: 'var(--accent)', fontWeight: 700, fontSize: 12, marginTop: 2, flexShrink: 0 }}>✓</span>
+                    <span className="text-sub" style={{ fontSize: 13.5 }}>{item}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Right — form */}
-            <div className="bg-card border border-border relative" style={{ padding:52 }}>
-              <div className="absolute top-0 left-0 right-0 h-0.5"
-                style={{ background:'linear-gradient(90deg,#00E87A,#00C8FF,transparent)' }} />
+            <div style={{ background: 'var(--card)', border: '1px solid var(--borderhi)', padding: 'clamp(32px,4vw,52px)', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg,var(--accent),var(--accent2),transparent)' }} />
 
               {status === 'success' ? (
-                <div className="text-center" style={{ padding:'80px 0' }}>
-                  <div style={{ fontSize:56, marginBottom:24 }}>✅</div>
-                  <h3 className="font-display font-black text-accent mb-4" style={{ fontSize:28 }}>Message Received!</h3>
-                  <p className="text-sub leading-relaxed">
-                    Thanks, <strong className="text-text">{form.name.split(' ')[0]}</strong>.<br />
+                <div style={{ textAlign: 'center', padding: '80px 0' }}>
+                  <div style={{ fontSize: 52, marginBottom: 24 }}>✅</div>
+                  <h3 className="font-display font-black" style={{ color: 'var(--accent)', fontSize: 26, marginBottom: 16 }}>Message Received!</h3>
+                  <p className="text-sub" style={{ lineHeight: 1.8 }}>
+                    Thanks, <strong style={{ color: 'var(--text)' }}>{form.name.split(' ')[0]}</strong>.<br />
                     You'll hear from us within 2 business hours.<br />
                     Check your email for a confirmation.
                   </p>
                 </div>
               ) : (
                 <>
-                  <h3 className="font-display font-bold text-text mb-8" style={{ fontSize:22 }}>Start a Conversation</h3>
+                  <h3 className="font-display font-bold text-text mb-8" style={{ fontSize: 22 }}>Start a Conversation</h3>
 
-                  <div className="grid grid-cols-2 gap-3 mb-3">
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
                     {[
-                      { ph:'Full Name *',    type:'text',  key:'name'  },
-                      { ph:'Email Address *',type:'email', key:'email' },
+                      { ph: 'Full Name *',     type: 'text',  key: 'name'  },
+                      { ph: 'Email Address *', type: 'email', key: 'email' },
                     ].map(f => (
                       <input key={f.key} placeholder={f.ph} type={f.type} value={(form as any)[f.key]}
                         onChange={e => set(f.key, e.target.value)}
-                        style={inputStyle}
-                        onFocus={e => (e.target.style.borderColor='#00E87A')}
-                        onBlur={e  => (e.target.style.borderColor='#111D2E')} />
+                        style={inputBase}
+                        onFocus={e => { (e.target as HTMLInputElement).style.borderColor = 'var(--accent)'; }}
+                        onBlur={e  => { (e.target as HTMLInputElement).style.borderColor = 'var(--border)'; }} />
                     ))}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 mb-3">
-                    <input placeholder="WhatsApp Number" value={form.phone} onChange={e=>set('phone',e.target.value)}
-                      style={inputStyle}
-                      onFocus={e=>(e.target.style.borderColor='#00E87A')}
-                      onBlur={e=>(e.target.style.borderColor='#111D2E')} />
-                    <select value={form.type} onChange={e=>set('type',e.target.value)}
-                      style={{ ...inputStyle, color:form.type?'#E2EAF4':'#445566', appearance:'none' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                    <input placeholder="WhatsApp Number" value={form.phone} onChange={e => set('phone', e.target.value)}
+                      style={inputBase}
+                      onFocus={e => { (e.target as HTMLInputElement).style.borderColor = 'var(--accent)'; }}
+                      onBlur={e  => { (e.target as HTMLInputElement).style.borderColor = 'var(--border)'; }} />
+                    <select value={form.type} onChange={e => set('type', e.target.value)}
+                      style={{ ...inputBase, color: form.type ? 'var(--text)' : 'var(--muted)', appearance: 'none' }}>
                       <option value="">Enquiry Type</option>
                       <option>New Project / Build</option>
                       <option>IT Consulting</option>
@@ -142,28 +153,32 @@ export default function ContactPage() {
                   </div>
 
                   <textarea rows={5}
-                    placeholder="Describe your project — what problem are you solving? The more detail, the better. *"
-                    value={form.message} onChange={e=>set('message',e.target.value)}
-                    style={{ ...inputStyle, resize:'vertical', marginBottom:24 }}
-                    onFocus={e=>(e.target.style.borderColor='#00E87A')}
-                    onBlur={e=>(e.target.style.borderColor='#111D2E')} />
+                    placeholder="Describe your project — what problem are you solving? *"
+                    value={form.message}
+                    onChange={e => set('message', e.target.value)}
+                    style={{ ...inputBase, resize: 'vertical', marginBottom: 24 }}
+                    onFocus={e => { (e.target as HTMLTextAreaElement).style.borderColor = 'var(--accent)'; }}
+                    onBlur={e  => { (e.target as HTMLTextAreaElement).style.borderColor = 'var(--border)'; }} />
 
                   {error && (
-                    <p className="text-red-400 mb-4 font-mono" style={{ fontSize:12 }}>⚠ {error}</p>
+                    <p className="font-mono" style={{ color: '#FF5757', marginBottom: 16, fontSize: 12 }}>⚠ {error}</p>
                   )}
 
                   <button
                     onClick={submit}
-                    disabled={status==='loading'}
-                    className="w-full font-display font-bold transition-all duration-200"
+                    disabled={status === 'loading'}
+                    className="w-full font-display font-bold transition-all duration-300"
                     style={{
-                      background: status==='loading'?'#00b860':'#00E87A',
-                      color:'#000', padding:'16px 0', fontSize:14,
-                      letterSpacing:'.05em', textTransform:'uppercase', border:'none', cursor:'pointer',
-                    }}>
-                    {status==='loading' ? 'Sending…' : 'Send Message →'}
+                      background: status === 'loading' ? '#6D40C4' : 'var(--accent)',
+                      color: '#fff', padding: '16px 0', fontSize: 14,
+                      letterSpacing: '.06em', textTransform: 'uppercase',
+                      border: 'none', cursor: 'pointer',
+                    }}
+                    onMouseEnter={e => { if (status !== 'loading') (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 40px rgba(139,92,246,.4)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
+                    {status === 'loading' ? 'Sending…' : 'Send Message →'}
                   </button>
-                  <p className="font-mono text-muted text-center mt-3" style={{ fontSize:10.5 }}>
+                  <p className="font-mono text-muted text-center mt-3" style={{ fontSize: 10.5 }}>
                     🔒 Your information is confidential and never shared.
                   </p>
                 </>
@@ -171,10 +186,9 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
+
       </main>
       <Footer />
     </>
   );
 }
-
-

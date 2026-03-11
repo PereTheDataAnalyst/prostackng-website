@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { CASE_STUDIES } from '@/lib/data';
@@ -13,67 +12,81 @@ export default function CaseStudiesPage() {
   return (
     <>
       <Navbar />
-      <main style={{ paddingTop: 80 }}>
-        <div className="max-w-[1280px] mx-auto px-4 md:px-12 py-12 md:py-20 pb-20 md:pb-36">
-          <p className="font-mono text-accent mb-3" style={{ fontSize:11, letterSpacing:'.18em' }}>CASE STUDIES</p>
-          <h1 className="font-display font-black text-text mb-5"
-            style={{ fontSize:'clamp(36px,6vw,80px)', letterSpacing:'-.04em', lineHeight:1.0 }}>
-            Real problems.<br /><span className="text-accent">Real solutions.</span>
-          </h1>
-          <p className="text-sub mb-12 md:mb-24" style={{ fontSize:17, lineHeight:1.9, maxWidth:560 }}>
-            Every case study below is a real ProStack NG build — shipped, live, and in production.
-          </p>
+      <main style={{ paddingTop: 68 }}>
 
-          <div className="flex flex-col gap-0.5">
-            {CASE_STUDIES.map((c,i) => (
+        {/* Header */}
+        <div
+          className="relative overflow-hidden bg-grid"
+          style={{ padding: 'clamp(60px,8vw,120px) clamp(16px,4vw,56px) clamp(40px,5vw,80px)', backgroundSize: '56px 56px' }}
+        >
+          <div className="absolute inset-0 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 40%, transparent 30%, var(--bg) 100%)' }} />
+          <div className="absolute pointer-events-none"
+            style={{ bottom: '-20%', left: '-10%', width: 600, height: 600, borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(236,72,153,.08) 0%, transparent 65%)' }} />
+          <div className="relative" style={{ maxWidth: 1200, margin: '0 auto' }}>
+            <div className="section-label">Case Studies</div>
+            <h1 className="font-display font-black text-text" style={{ fontSize: 'clamp(40px,6vw,84px)', letterSpacing: '-.04em', lineHeight: .95, marginBottom: 20 }}>
+              Real problems.<br /><span style={{ color: 'var(--accent)' }}>Real solutions.</span>
+            </h1>
+            <p className="text-sub" style={{ fontSize: 17, lineHeight: 1.9, maxWidth: 520 }}>
+              Every case study below is a real ProStack NG build — shipped, live, and in production.
+            </p>
+          </div>
+        </div>
+
+        {/* Case studies */}
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(40px,5vw,80px) clamp(16px,4vw,56px) clamp(60px,8vw,120px)' }}>
+          <div className="flex flex-col" style={{ gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
+            {CASE_STUDIES.map((c, i) => (
               <div key={i}
-                className="bg-card border border-border relative overflow-hidden hover:border-borderhi transition-all duration-300 grid grid-cols-1 md:grid-cols-3"
-                style={{ gap:'clamp(24px,4vw,56px)', padding:'clamp(24px,4vw,56px)' }}>
-                <div className="absolute top-0 left-0 bottom-0 w-0.5" style={{ background:c.color }} />
+                className="relative overflow-hidden transition-all duration-300"
+                style={{
+                  background: 'var(--card)',
+                  padding: 'clamp(28px,4vw,56px)',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))',
+                  gap: 'clamp(24px,4vw,56px)',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--card)'; }}
+              >
+                <div className="absolute top-0 left-0 bottom-0" style={{ width: 3, background: c.color }} />
 
                 {/* Identity + metric */}
                 <div>
-                  <div className="font-mono mb-3" style={{ color:c.color, fontSize:10.5 }}>{c.product}</div>
-                  <h2 className="font-display font-black text-text mb-8" style={{ fontSize:'clamp(18px,2vw,24px)', lineHeight:1.2 }}>{c.title}</h2>
-                  <div className="border-l-2 pl-5" style={{ borderColor:c.color }}>
-                    <div className="font-display font-black" style={{ color:c.color, fontSize:'clamp(28px,3.5vw,44px)', lineHeight:1 }}>{c.metric}</div>
-                    <div className="font-mono text-muted mt-1" style={{ fontSize:10 }}>{c.metricLabel}</div>
+                  <div className="font-mono mb-3" style={{ color: c.color, fontSize: 10.5, letterSpacing: '.16em', textTransform: 'uppercase' }}>{c.product}</div>
+                  <h2 className="font-display font-black text-text mb-8" style={{ fontSize: 'clamp(18px,2vw,24px)', lineHeight: 1.2 }}>{c.title}</h2>
+                  <div style={{ paddingLeft: 16, borderLeft: `2px solid ${c.color}` }}>
+                    <div className="font-display font-black" style={{ color: c.color, fontSize: 'clamp(28px,3.5vw,44px)', lineHeight: 1 }}>{c.metric}</div>
+                    <div className="font-mono text-muted mt-1" style={{ fontSize: 9.5, letterSpacing: '.12em', textTransform: 'uppercase' }}>{c.metricLabel}</div>
                   </div>
-                  <div className="mt-6">
-                    <div className="font-mono text-muted mb-1.5" style={{ fontSize:9.5 }}>CLIENT</div>
-                    <div className="text-sub" style={{ fontSize:13.5 }}>{c.client}</div>
+                  <div style={{ marginTop: 24 }}>
+                    <div className="font-mono text-muted mb-1.5" style={{ fontSize: 9.5, letterSpacing: '.12em' }}>CLIENT</div>
+                    <div className="text-sub" style={{ fontSize: 13.5 }}>{c.client}</div>
                   </div>
                 </div>
 
                 {/* Problem */}
                 <div>
-                  <div className="font-mono text-muted mb-3" style={{ fontSize:9.5 }}>THE PROBLEM</div>
-                  <p className="text-sub leading-relaxed" style={{ fontSize:14.5 }}>{c.problem}</p>
+                  <div className="font-mono text-muted mb-3" style={{ fontSize: 9.5, letterSpacing: '.12em' }}>THE PROBLEM</div>
+                  <p className="text-sub leading-relaxed" style={{ fontSize: 14.5 }}>{c.problem}</p>
                 </div>
 
-                {/* Solution + result */}
+                {/* Solution + Result */}
                 <div>
-                  <div className="font-mono text-muted mb-3" style={{ fontSize:9.5 }}>THE SOLUTION</div>
-                  <p className="text-sub leading-relaxed mb-6" style={{ fontSize:14.5 }}>{c.solution}</p>
-                  <div className="border-l-2 pl-4 py-1" style={{ borderColor:c.color }}>
-                    <div className="font-mono text-muted mb-1.5" style={{ fontSize:9.5 }}>RESULT</div>
-                    <p className="text-text font-semibold leading-relaxed" style={{ fontSize:13.5 }}>{c.result}</p>
+                  <div className="font-mono text-muted mb-3" style={{ fontSize: 9.5, letterSpacing: '.12em' }}>THE SOLUTION</div>
+                  <p className="text-sub leading-relaxed mb-6" style={{ fontSize: 14.5 }}>{c.solution}</p>
+                  <div style={{ paddingLeft: 16, borderLeft: `2px solid ${c.color}`, paddingTop: 4, paddingBottom: 4 }}>
+                    <div className="font-mono text-muted mb-1.5" style={{ fontSize: 9.5, letterSpacing: '.12em' }}>RESULT</div>
+                    <p className="font-semibold text-text leading-relaxed" style={{ fontSize: 13.5 }}>{c.result}</p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-
-          <div className="text-center mt-24">
-            <h3 className="font-display font-black text-text mb-4" style={{ fontSize:32 }}>Want results like these?</h3>
-            <p className="text-sub mb-8" style={{ fontSize:15 }}>Tell us your problem. We'll tell you exactly how we'd solve it.</p>
-            <Link href="/contact"
-              className="bg-accent text-bg font-display font-bold hover:shadow-[0_12px_40px_rgba(0,232,122,.4)] transition-all no-underline"
-              style={{ padding:'16px 48px', fontSize:14, letterSpacing:'.05em', textTransform:'uppercase' }}>
-              Book Free Consultation →
-            </Link>
-          </div>
         </div>
+
       </main>
       <Footer />
     </>

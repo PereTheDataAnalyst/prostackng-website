@@ -11,100 +11,135 @@ export const metadata: Metadata = {
 };
 
 const VALUES = [
-  { icon:'◎', title:'Platform Thinking',     desc:'We don\'t build isolated products. Every system is designed as a composable piece of a larger ecosystem — shared auth, payments, analytics, and APIs from day one.' },
-  { icon:'⬡', title:'African-First Design',   desc:'We build for real conditions — low bandwidth, USSD fallbacks, Naira pricing, Paystack integration, and local compliance. Our products work everywhere in Africa.' },
-  { icon:'▦', title:'Technical Rigour',       desc:'Every line of code is production-grade, tested, and documented. We don\'t ship until we\'re proud of it. No shortcuts, no spaghetti, no "good enough."' },
-  { icon:'⟁', title:'Radical Transparency',  desc:'No black boxes. No surprise invoices. No excuses. You see everything — code, progress, blockers — at every stage of the project.' },
+  { icon: '◎', title: 'Platform Thinking',    desc: 'We don\'t build isolated products. Every system is designed as a composable piece of a larger ecosystem — shared auth, payments, analytics, and APIs from day one.' },
+  { icon: '⬡', title: 'African-First Design',  desc: 'We build for real conditions — low bandwidth, USSD fallbacks, Naira pricing, Paystack integration, and local compliance. Our products work everywhere in Africa.' },
+  { icon: '▦', title: 'Technical Rigour',      desc: 'Every line of code is production-grade, tested, and documented. We don\'t ship until we\'re proud of it. No shortcuts, no spaghetti, no "good enough."' },
+  { icon: '⟁', title: 'Radical Transparency', desc: 'No black boxes. No surprise invoices. No excuses. You see everything — code, progress, blockers — at every stage of the project.' },
 ];
 
 export default function CompanyPage() {
   return (
     <>
       <Navbar />
-      <main style={{ paddingTop: 80 }}>
-        <div className="max-w-[1280px] mx-auto px-4 md:px-12 py-12 md:py-20 pb-20 md:pb-36">
+      <main style={{ paddingTop: 68 }}>
 
-          {/* Hero */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-start mb-16 md:mb-28">
-            <div>
-              <p className="font-mono text-accent mb-3" style={{ fontSize:11, letterSpacing:'.18em' }}>THE COMPANY</p>
-              <h1 className="font-display font-black text-text mb-7"
-                style={{ fontSize:'clamp(38px,5vw,68px)', letterSpacing:'-.04em', lineHeight:1.0 }}>
-                Built in Nigeria.<br /><span className="text-accent">Scaling Africa.</span>
-              </h1>
-              <p className="text-sub mb-5" style={{ fontSize:16, lineHeight:1.9 }}>
-                ProStack NG Technologies is a Port Harcourt-based platform company building intelligent digital infrastructure for African businesses.
-                We are engineers, designers, and strategists who believe Nigerian companies deserve the same quality of software that global companies receive — not cheaper versions, not shortcuts. The real thing.
-              </p>
-              <p className="text-sub mb-10" style={{ fontSize:16, lineHeight:1.9 }}>
-                Our model: build platform infrastructure once, then deploy multiple products on top of it. Every product we ship makes the next one faster to build and easier to scale. That's the compound advantage.
-              </p>
-              <Link href="/contact"
-                className="bg-accent text-bg font-display font-bold hover:shadow-[0_12px_40px_rgba(0,232,122,.4)] transition-all no-underline"
-                style={{ padding:'14px 36px', fontSize:13, letterSpacing:'.05em', textTransform:'uppercase' }}>
-                Work With Us →
-              </Link>
-            </div>
-
-            {/* Info card */}
-            <div className="bg-card border border-border relative overflow-hidden" style={{ padding:48 }}>
-              <div className="absolute top-0 left-6 right-6 h-0.5"
-                style={{ background:'linear-gradient(90deg,#00E87A,#00C8FF,transparent)' }} />
-              {[
-                { label:'Founded In',    value:'Port Harcourt, Rivers State, Nigeria' },
-                { label:'Team Size',     value:'8 full-time + 20+ specialist network' },
-                { label:'Client Reach',  value:'Nigeria · UK · USA · Canada · Netherlands' },
-                { label:'Core Sectors',  value:'Fintech · EdTech · GovTech · Nightlife · Commerce · Mobility' },
-                { label:'Mission',       value:'Building intelligent platforms for Africa\'s digital economy' },
-                { label:'Languages',     value:'English · French' },
-                { label:'Status',        value:'Operating · CAC Registration Pending' },
-              ].map((item,i,arr) => (
-                <div key={i} className="py-3.5" style={{ borderBottom: i<arr.length-1?'1px solid #111D2E':'none' }}>
-                  <div className="font-mono text-accent mb-1" style={{ fontSize:9.5, letterSpacing:'.12em' }}>{item.label}</div>
-                  <div className="text-text font-medium" style={{ fontSize:14.5 }}>{item.value}</div>
-                </div>
-              ))}
-            </div>
+        {/* Header */}
+        <div
+          className="relative overflow-hidden bg-grid"
+          style={{ padding: 'clamp(60px,8vw,120px) clamp(16px,4vw,56px) clamp(40px,5vw,80px)', backgroundSize: '56px 56px' }}
+        >
+          <div className="absolute inset-0 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 40%, transparent 30%, var(--bg) 100%)' }} />
+          <div className="absolute pointer-events-none"
+            style={{ top: '-10%', right: '-5%', width: 700, height: 700, borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(139,92,246,.1) 0%, transparent 65%)' }} />
+          <div className="relative" style={{ maxWidth: 1200, margin: '0 auto' }}>
+            <div className="section-label">The Company</div>
+            <h1 className="font-display font-black text-text" style={{ fontSize: 'clamp(40px,6vw,84px)', letterSpacing: '-.04em', lineHeight: .95, marginBottom: 20 }}>
+              Built in Nigeria.<br /><span style={{ color: 'var(--accent)' }}>Scaling Africa.</span>
+            </h1>
+            <p className="text-sub" style={{ fontSize: 17, lineHeight: 1.9, maxWidth: 580 }}>
+              ProStack NG Technologies is a Port Harcourt-based platform company building intelligent digital infrastructure for African businesses. We are engineers, designers, and strategists who believe Nigerian companies deserve the same quality of software that global companies receive.
+            </p>
           </div>
+        </div>
 
-          {/* Stats */}
-          <div className="grid mb-28 bg-surface border border-border" style={{ gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))', padding:'52px 48px' }}>
+        {/* Stats */}
+        <div style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(40px,5vw,72px) clamp(16px,4vw,56px)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
             {COMPANY_STATS.map(s => (
-              <div key={s.label} className="text-center">
-                <div className="font-display font-black text-accent" style={{ fontSize:'clamp(42px,5vw,64px)', lineHeight:1 }}>
+              <div key={s.label} style={{ background: 'var(--surface)', padding: 'clamp(28px,3vw,44px) 28px', textAlign: 'center' }}>
+                <div className="font-display font-black" style={{ fontSize: 'clamp(36px,4vw,56px)', lineHeight: 1, color: 'var(--accent)', letterSpacing: '-.03em' }}>
                   <Counter target={s.value} suffix={s.suffix} />
                 </div>
-                <div className="font-mono text-muted mt-2" style={{ fontSize:10.5 }}>{s.label}</div>
+                <div className="font-mono text-muted mt-2" style={{ fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase' }}>{s.label}</div>
               </div>
             ))}
           </div>
+        </div>
 
-          {/* Values */}
-          <div className="mb-28">
-            <p className="font-mono text-accent mb-3" style={{ fontSize:11, letterSpacing:'.18em' }}>OUR VALUES</p>
-            <h2 className="font-display font-black text-text mb-16" style={{ fontSize:'clamp(28px,4vw,48px)', letterSpacing:'-.03em' }}>What we stand for.</h2>
-            <div className="grid gap-0.5" style={{ gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))' }}>
-              {VALUES.map((v,i) => (
-                <div key={i} className="bg-card border border-border hover:-translate-y-1 transition-all duration-300" style={{ padding:44 }}>
-                  <div className="text-accent mb-4 font-display" style={{ fontSize:26 }}>{v.icon}</div>
-                  <div className="font-display font-bold text-text mb-3" style={{ fontSize:17 }}>{v.title}</div>
-                  <p className="text-sub leading-relaxed" style={{ fontSize:13.5 }}>{v.desc}</p>
-                </div>
-              ))}
+        {/* Mission */}
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(60px,8vw,100px) clamp(16px,4vw,56px)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 64, alignItems: 'start', marginBottom: 80 }}>
+            <div>
+              <div className="section-label" style={{ marginBottom: 24 }}>Our Model</div>
+              <h2 className="font-display font-black text-text" style={{ fontSize: 'clamp(28px,3.5vw,44px)', letterSpacing: '-.03em', lineHeight: 1.05, marginBottom: 20 }}>
+                The compound<br /><span style={{ color: 'var(--accent)' }}>advantage.</span>
+              </h2>
+              <p className="text-sub" style={{ fontSize: 15, lineHeight: 1.85, marginBottom: 16 }}>
+                ProStack NG builds platform infrastructure once, then deploys multiple products on top of it. Every product we ship makes the next one faster to build and easier to scale.
+              </p>
+              <p className="text-sub" style={{ fontSize: 15, lineHeight: 1.85 }}>
+                Auth, payments, notifications, analytics — built once, inherited by every product forever. That's the compound advantage that lets us ship enterprise-quality software at startup speed.
+              </p>
+            </div>
+            <div>
+              <div className="section-label" style={{ marginBottom: 24 }}>Our Values</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
+                {VALUES.map((v, i) => (
+                  <div key={i}
+                    className="transition-all duration-200"
+                    style={{ background: 'var(--card)', padding: '24px 28px', display: 'flex', gap: 16 }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--card)'; }}
+                  >
+                    <div className="font-display font-bold flex-shrink-0" style={{ fontSize: 18, color: 'var(--accent)', width: 28 }}>{v.icon}</div>
+                    <div>
+                      <div className="font-display font-bold text-text mb-2" style={{ fontSize: 14 }}>{v.title}</div>
+                      <div className="text-sub" style={{ fontSize: 13, lineHeight: 1.7 }}>{v.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Mission statement */}
-          <div className="bg-card border border-border text-center relative overflow-hidden" style={{ padding:'72px 64px' }}>
-            <div className="absolute inset-0" style={{ background:'radial-gradient(ellipse at 50% 50%,rgba(0,232,122,.04) 0%,transparent 60%)' }} />
-            <div className="relative">
-              <div className="font-mono text-muted mb-5" style={{ fontSize:10 }}>OUR POSITIONING</div>
-              <blockquote className="font-display font-black text-text mx-auto" style={{ fontSize:'clamp(20px,3vw,34px)', lineHeight:1.3, maxWidth:780 }}>
-                "ProStack NG builds scalable digital infrastructure for Africa's commerce, mobility, and intelligence ecosystem."
-              </blockquote>
-            </div>
+          {/* Roadmap */}
+          <div className="section-label" style={{ marginBottom: 32 }}>Company Roadmap</div>
+          <h2 className="font-display font-black text-text" style={{ fontSize: 'clamp(28px,4vw,48px)', letterSpacing: '-.03em', marginBottom: 48 }}>
+            Where we're going.
+          </h2>
+          <div className="relative">
+            <div className="absolute hidden md:block" style={{ left: 0, top: 0, bottom: 0, width: 1, background: 'linear-gradient(180deg,var(--accent),var(--border),transparent)' }} />
+            {TIMELINE.map((t, i) => (
+              <div key={i} className="flex gap-10 mb-8 md:pl-8 relative">
+                <div className="absolute hidden md:block" style={{
+                  left: -5, top: 6, width: 11, height: 11, borderRadius: '50%',
+                  background: t.status === 'active' ? 'var(--accent)' : 'var(--card)',
+                  border: `2px solid ${t.status === 'active' ? 'var(--accent)' : 'var(--muted)'}`,
+                  boxShadow: t.status === 'active' ? '0 0 12px rgba(139,92,246,.6)' : 'none',
+                }} />
+                <div style={{ minWidth: 110, flexShrink: 0 }}>
+                  <div className="font-display font-bold" style={{ fontSize: 13, color: t.status === 'active' ? 'var(--accent)' : 'var(--muted)' }}>{t.phase}</div>
+                  <div className="font-mono text-muted" style={{ fontSize: 9.5 }}>{t.period}</div>
+                </div>
+                <div className="flex-1 border p-5 transition-all duration-200"
+                  style={{
+                    borderColor: t.status === 'active' ? 'rgba(139,92,246,.3)' : 'var(--border)',
+                    background: t.status === 'active' ? 'rgba(139,92,246,.04)' : 'var(--card)',
+                  }}>
+                  <p style={{ fontSize: 14.5, lineHeight: 1.75, color: t.status === 'active' ? 'var(--text)' : 'var(--sub)' }}>{t.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
+
+        {/* CTA */}
+        <div style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', padding: 'clamp(48px,6vw,80px) clamp(16px,4vw,56px)', textAlign: 'center' }}>
+          <h2 className="font-display font-black text-text" style={{ fontSize: 'clamp(28px,4vw,48px)', letterSpacing: '-.03em', marginBottom: 16 }}>
+            Want to work with us?
+          </h2>
+          <p className="text-sub" style={{ fontSize: 16, marginBottom: 36 }}>Free consultation. No pitch, no pressure — just a conversation.</p>
+          <Link href="/contact"
+            className="font-display font-bold no-underline inline-block transition-all duration-300"
+            style={{ padding: '14px 40px', fontSize: 13, letterSpacing: '.06em', textTransform: 'uppercase', background: 'var(--accent)', color: '#fff' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 40px rgba(139,92,246,.4)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
+            Start a Conversation →
+          </Link>
+        </div>
+
       </main>
       <Footer />
     </>

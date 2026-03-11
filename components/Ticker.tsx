@@ -1,19 +1,40 @@
-const ITEMS = [
-  'Web Development', 'Mobile Apps', 'ERP Systems', 'CRM & POS', 'Python Automation',
-  'Data Pipelines', 'UI/UX Design', 'Cloud & DevOps', 'IT Consulting', 'Digital Transformation',
-  'Tender Tracking', 'Nightlife OS', 'Marketplace Platforms', 'Ride-Hailing Tech', 'Executive Reporting',
-];
-
 export default function Ticker() {
-  const doubled = [...ITEMS, ...ITEMS];
+  const items = [
+    'ProTrackNG', 'NightOps', 'AutoReport', 'MyHarriet', 'SwiftRide', 'StakeX',
+    'Port Harcourt', 'Nigeria', 'Africa Tech', 'Platform Infrastructure',
+    'ProTrackNG', 'NightOps', 'AutoReport', 'MyHarriet', 'SwiftRide', 'StakeX',
+    'Port Harcourt', 'Nigeria', 'Africa Tech', 'Platform Infrastructure',
+  ];
+
   return (
-    <div className="ticker-wrap border-t border-b"
-      style={{ background: 'rgba(0,232,122,.06)', borderColor: 'rgba(0,232,122,.14)', padding: '11px 0' }}>
+    <div
+      className="ticker-wrap"
+      style={{
+        borderTop: '1px solid var(--border)',
+        borderBottom: '1px solid var(--border)',
+        background: 'var(--surface)',
+        padding: '14px 0',
+        overflow: 'hidden',
+      }}
+    >
       <div className="ticker-inner">
-        {doubled.map((item, i) => (
-          <span key={i} className="flex items-center gap-10 whitespace-nowrap">
-            <span className="font-mono text-accent" style={{ fontSize: 11, letterSpacing: '.12em' }}>{item}</span>
-            <span className="text-muted" style={{ fontSize: 8 }}>✦</span>
+        {items.map((item, i) => (
+          <span
+            key={i}
+            className="font-mono text-muted"
+            style={{
+              padding: '0 28px',
+              fontSize: 11,
+              letterSpacing: '.14em',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 12,
+            }}
+          >
+            {item}
+            <span style={{ color: 'var(--accent)', fontSize: 7 }}>◆</span>
           </span>
         ))}
       </div>
