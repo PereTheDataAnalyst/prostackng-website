@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 
 const COLS = [
   {
@@ -26,9 +26,9 @@ const COLS = [
     title: 'Connect',
     links: [
       { label: 'contact@prostackng.com', href: 'mailto:contact@prostackng.com' },
-      { label: '+234 705 944 9360',     href: 'tel:+2347059449360'            },
-      { label: 'WhatsApp Chat',         href: 'https://wa.me/2347059449360'   },
-      { label: 'Free Consultation',    href: '/contact'                    },
+      { label: '+234 705 944 9360',      href: 'tel:+2347059449360'            },
+      { label: 'WhatsApp Chat',          href: 'https://wa.me/2347059449360'   },
+      { label: 'Free Consultation',      href: '/contact'                      },
     ],
   },
 ];
@@ -58,7 +58,6 @@ export default function Footer() {
             <p className="text-sub leading-relaxed mb-6" style={{ fontSize: 13.5 }}>
               Building intelligent platforms that power Africa's commerce, mobility, and digital infrastructure ecosystem.
             </p>
-            {/* Socials */}
             <div className="flex gap-2">
               {['𝕏', 'in', 'ig', 'gh'].map(s => (
                 <div key={s}
