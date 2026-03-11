@@ -26,7 +26,7 @@ const COLS = [
     title: 'Connect',
     links: [
       { label: 'contact@prostackng.com', href: 'mailto:contact@prostackng.com' },
-      { label: '+234 705 944 9360',     href: 'tel:+234 705 944 9360'            },
+      { label: '+234 705 944 9360',     href: 'tel:+2347059449360'            },
       { label: 'WhatsApp Chat',         href: 'https://wa.me/2347059449360'   },
       { label: 'Free Consultation',    href: '/contact'                    },
     ],
@@ -36,7 +36,7 @@ const COLS = [
 export default function Footer() {
   return (
     <footer className="bg-surface border-t border-border">
-      <div className="max-w-[1280px] mx-auto px-12 pt-20 pb-8" style={{ padding: '80px 48px 32px' }}>
+      <div className="max-w-[1280px] mx-auto" style={{ padding: 'clamp(40px, 6vw, 80px) clamp(16px, 4vw, 48px) 32px' }}>
 
         {/* Main grid */}
         <div className="grid gap-12 mb-16"
@@ -100,4 +100,3 @@ export default function Footer() {
     </footer>
   );
 }
-

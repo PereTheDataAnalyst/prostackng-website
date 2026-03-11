@@ -48,9 +48,10 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Send notification email via Resend
+    // NOTE: Using onboarding@resend.dev sender until prostackng.com domain is verified in Resend
     const contactEmail = process.env.CONTACT_EMAIL || 'contact@prostackng.com';
     await resend.emails.send({
-      from:    'ProStack NG Website <noreply@prostackng.com>',
+      from:    'ProStack NG <onboarding@resend.dev>',
       to:      [contactEmail],
       replyTo: email,
       subject: `New enquiry from ${name} — ${type || 'General'}`,
@@ -75,7 +76,7 @@ export async function POST(req: NextRequest) {
 
     // 3. Send confirmation email to the person
     await resend.emails.send({
-      from:    'ProStack NG <contact@prostackng.com>',
+      from:    'ProStack NG <onboarding@resend.dev>',
       to:      [email],
       subject: `We got your message, ${name.split(' ')[0]}`,
       html: `

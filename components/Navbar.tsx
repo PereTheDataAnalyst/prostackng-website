@@ -32,7 +32,7 @@ export default function Navbar() {
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between transition-all duration-300"
         style={{
           height: 64,
-          padding: '0 48px',
+          padding: '0 clamp(16px, 4vw, 48px)',
           background:     scrolled ? 'rgba(5,7,9,.94)' : 'transparent',
           backdropFilter: scrolled ? 'blur(20px)'       : 'none',
           borderBottom:   scrolled ? '1px solid #111D2E' : 'none',
