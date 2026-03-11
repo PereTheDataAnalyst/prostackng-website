@@ -26,7 +26,6 @@ const COLS = [
     title: 'Connect',
     links: [
       { label: 'contact@prostackng.com', href: 'mailto:contact@prostackng.com' },
-      { label: '+234 705 944 9360',      href: 'tel:+2347059449360'            },
       { label: 'WhatsApp Chat',          href: 'https://wa.me/2347059449360'   },
       { label: 'Free Consultation',      href: '/contact'                      },
     ],
@@ -99,3 +98,4 @@ export default function Footer() {
     </footer>
   );
 }
+
