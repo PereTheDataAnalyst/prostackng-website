@@ -24,84 +24,93 @@ export default function Navbar() {
 
   useEffect(() => setMobileOpen(false), [pathname]);
 
-  // Don't render on boardroom
   if (pathname?.startsWith('/boardroom')) return null;
 
   return (
     <>
       <nav
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between transition-all duration-300"
+        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between"
         style={{
           height: 68,
           padding: '0 clamp(16px, 4vw, 56px)',
           background:     scrolled ? 'rgba(5,5,7,.92)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(24px)' : 'none',
+          backdropFilter: scrolled ? 'blur(24px)'       : 'none',
           borderBottom:   scrolled ? '1px solid var(--border)' : 'none',
+          transition: 'background .3s, border-color .3s',
         }}
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 no-underline group">
-          <div
-            className="flex items-center justify-center font-display font-black text-bg transition-all duration-300"
-            style={{ width: 34, height: 34, background: 'var(--accent)', fontSize: 12, letterSpacing: '.05em' }}
-          >
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
+          <div style={{
+            width: 34, height: 34, background: 'var(--accent)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 12,
+            color: '#fff', letterSpacing: '.05em', flexShrink: 0,
+          }}>
             PS
           </div>
           <div>
-            <div className="font-display font-black text-text leading-none" style={{ fontSize: 15, letterSpacing: '-.02em' }}>
+            <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 15, letterSpacing: '-.02em', color: 'var(--text)', lineHeight: 1 }}>
               ProStack<span style={{ color: 'var(--accent)' }}>NG</span>
             </div>
-            <div className="font-mono text-muted leading-none mt-0.5" style={{ fontSize: 8, letterSpacing: '.2em' }}>
+            <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 8, letterSpacing: '.2em', color: 'var(--muted)', lineHeight: 1, marginTop: 2 }}>
               TECHNOLOGIES
             </div>
           </div>
         </Link>
 
         {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex" style={{ gap: 32 }}>
           {LINKS.map(l => {
             const active = pathname === l.href;
             return (
-              <Link key={l.href} href={l.href}
-                className="relative font-body transition-colors duration-200 no-underline"
-                style={{ fontSize: 14, fontWeight: 500, color: active ? 'var(--text)' : 'var(--sub)' }}>
+              <Link key={l.href} href={l.href} style={{
+                fontFamily: 'Instrument Sans, sans-serif',
+                fontSize: 14, fontWeight: 500,
+                color: active ? 'var(--text)' : 'var(--sub)',
+                textDecoration: 'none',
+                position: 'relative',
+                paddingBottom: 2,
+              }}>
                 {l.label}
-                <span
-                  className="absolute -bottom-0.5 left-0 right-0 h-px transition-transform duration-300 origin-left"
-                  style={{ background: 'var(--accent)', transform: active ? 'scaleX(1)' : 'scaleX(0)' }}>
-                />
+                <span style={{
+                  position: 'absolute', bottom: -2, left: 0, right: 0, height: 1,
+                  background: 'var(--accent)',
+                  transform: active ? 'scaleX(1)' : 'scaleX(0)',
+                  transformOrigin: 'left',
+                  transition: 'transform .25s',
+                }} />
               </Link>
             );
           })}
         </div>
 
-        {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-3">
-          <Link href="/products"
-            className="font-display font-semibold no-underline transition-all duration-200"
-            style={{
-              padding: '8px 18px', fontSize: 11,
-              letterSpacing: '.06em', textTransform: 'uppercase',
-              border: '1px solid var(--borderhi)', color: 'var(--sub)',
-            }}>
+        {/* Desktop CTAs */}
+        <div className="hidden md:flex" style={{ gap: 10 }}>
+          <Link href="/products" className="nav-ghost-btn" style={{
+            padding: '8px 18px', fontSize: 11,
+            letterSpacing: '.06em', textTransform: 'uppercase',
+            fontFamily: 'Syne, sans-serif', fontWeight: 600,
+            textDecoration: 'none', display: 'inline-block',
+          }}>
             Our Products
           </Link>
-          <Link href="/contact"
-            className="font-display font-bold no-underline transition-all duration-200"
-            style={{
-              padding: '8px 22px', fontSize: 11,
-              letterSpacing: '.06em', textTransform: 'uppercase',
-              background: 'var(--accent)', color: '#fff',
-            }}>
+          <Link href="/contact" style={{
+            padding: '8px 22px', fontSize: 11,
+            letterSpacing: '.06em', textTransform: 'uppercase',
+            fontFamily: 'Syne, sans-serif', fontWeight: 700,
+            background: 'var(--accent)', color: '#fff',
+            textDecoration: 'none', display: 'inline-block',
+          }}>
             Work With Us
           </Link>
         </div>
 
         {/* Hamburger */}
         <button
-          className="md:hidden text-text bg-transparent border-none cursor-pointer"
-          style={{ fontSize: 20 }}
-          onClick={() => setMobileOpen(!mobileOpen)}
+          className="md:hidden"
+          style={{ background: 'none', border: 'none', color: 'var(--text)', fontSize: 20, cursor: 'pointer' }}
+          onClick={() => setMobileOpen(o => !o)}
           aria-label="Toggle menu"
         >
           {mobileOpen ? '✕' : '☰'}
@@ -110,25 +119,26 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div
-          className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-7 md:hidden"
-          style={{ background: 'rgba(5,5,7,.98)', backdropFilter: 'blur(20px)', paddingTop: 68 }}
-        >
+        <div className="md:hidden" style={{
+          position: 'fixed', inset: 0, zIndex: 40,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28,
+          background: 'rgba(5,5,7,.98)', backdropFilter: 'blur(20px)', paddingTop: 68,
+        }}>
           {LINKS.map(l => (
-            <Link key={l.href} href={l.href}
-              className="font-display font-bold text-text no-underline transition-colors duration-200"
-              style={{ fontSize: 28, letterSpacing: '-.02em' }}>
+            <Link key={l.href} href={l.href} style={{
+              fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 28,
+              letterSpacing: '-.02em', color: 'var(--text)', textDecoration: 'none',
+            }}>
               {l.label}
             </Link>
           ))}
-          <Link href="/contact"
-            className="font-display font-bold no-underline mt-4"
-            style={{
-              padding: '14px 48px', fontSize: 13,
-              letterSpacing: '.06em', textTransform: 'uppercase',
-              background: 'var(--accent)', color: '#fff',
-            }}>
-            Work With Us →
+          <Link href="/contact" style={{
+            marginTop: 16, padding: '14px 48px', fontSize: 13,
+            letterSpacing: '.06em', textTransform: 'uppercase',
+            fontFamily: 'Syne, sans-serif', fontWeight: 700,
+            background: 'var(--accent)', color: '#fff', textDecoration: 'none',
+          }}>
+            Work With Us
           </Link>
         </div>
       )}
@@ -138,12 +148,12 @@ export default function Navbar() {
         href="https://wa.me/2347059449360"
         target="_blank"
         rel="noreferrer"
-        className="fixed bottom-6 right-6 z-50 no-underline flex items-center justify-center text-2xl"
         style={{
-          width: 54, height: 54,
-          borderRadius: '50%',
-          background: '#25D366',
-          boxShadow: '0 4px 24px rgba(37,211,102,.4)',
+          position: 'fixed', bottom: 24, right: 24, zIndex: 50,
+          width: 54, height: 54, borderRadius: '50%',
+          background: '#25D366', boxShadow: '0 4px 24px rgba(37,211,102,.4)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 24, textDecoration: 'none',
         }}
       >
         💬
