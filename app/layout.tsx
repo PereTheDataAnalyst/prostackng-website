@@ -40,6 +40,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        {/* viewport-fit=cover required for iPhone safe-area-inset env() variables */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         {/* Umami Analytics — self-hosted, privacy-first, GDPR-clean */}
         {umamiId && umamiUrl && (
           <Script
