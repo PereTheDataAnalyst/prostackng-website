@@ -41,10 +41,8 @@ export default function TechnologyPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(320px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)', marginBottom: 80 }}>
             {STACK.map((layer, i) => (
               <div key={i}
-                className="transition-all duration-200"
+                className="hover-surface"
                 style={{ background: 'var(--card)', padding: 40 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--card)'; }}
               >
                 <div className="flex items-center gap-3 mb-6">
                   <div style={{ width: 3, height: 28, background: layer.color, flexShrink: 0 }} />
@@ -53,10 +51,8 @@ export default function TechnologyPage() {
                 <div className="flex flex-col gap-2">
                   {layer.items.map(t => (
                     <div key={t}
-                      className="flex items-center gap-3 transition-all duration-200"
+                      className="flex items-center gap-3"
                       style={{ padding: '10px 14px', border: '1px solid var(--border)', background: 'var(--surface)' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = `${layer.color}40`; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}
                     >
                       <span style={{ width: 5, height: 5, borderRadius: '50%', background: layer.color, flexShrink: 0 }} />
                       <span className="text-sub font-medium" style={{ fontSize: 14 }}>{t}</span>
@@ -75,10 +71,8 @@ export default function TechnologyPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
             {SHARED_SERVICES.map((s, i) => (
               <div key={i}
-                className="transition-all duration-200"
+                className="hover-surface"
                 style={{ background: 'var(--card)', padding: 32 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--card)'; }}
               >
                 <div className="font-mono mb-2" style={{ color: s.color, fontSize: 10, letterSpacing: '.12em' }}>{s.subdomain}</div>
                 <div className="text-sub" style={{ fontSize: 13.5, lineHeight: 1.65 }}>{s.desc}</div>

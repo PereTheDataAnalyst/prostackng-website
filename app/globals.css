@@ -174,3 +174,58 @@ body {
 .delay-2 { animation-delay: .2s; opacity: 0; }
 .delay-3 { animation-delay: .3s; opacity: 0; }
 .delay-4 { animation-delay: .4s; opacity: 0; }
+
+/* ── HOVER UTILITIES (replaces inline onMouseEnter/Leave handlers) ── */
+
+/* Card hover: bg-card → bg-surface */
+.hover-surface { transition: background .2s; }
+.hover-surface:hover { background: var(--surface) !important; }
+
+/* Card hover: bg-surface → bg-card+slight accent */
+.hover-lift {
+  transition: transform .2s, box-shadow .3s;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(139,92,246,.35);
+}
+
+/* Link / text hover → accent */
+.hover-accent { transition: color .2s, border-color .2s; }
+.hover-accent:hover { color: var(--accent) !important; border-color: var(--accent) !important; }
+
+/* Ghost button hover */
+.hover-ghost { transition: color .2s, border-color .2s; }
+.hover-ghost:hover { color: var(--accent) !important; border-color: var(--accent) !important; }
+
+/* Primary button glow on hover */
+.hover-glow { transition: box-shadow .3s, transform .2s, opacity .2s; }
+.hover-glow:hover { box-shadow: 0 16px 48px rgba(139,92,246,.4); transform: translateY(-2px); }
+
+/* Nav ghost button */
+.nav-ghost-btn {
+  transition: color .2s, border-color .2s;
+  border: 1px solid var(--borderhi);
+  color: var(--sub);
+}
+.nav-ghost-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Footer link hover */
+.footer-link-item { transition: color .2s; color: var(--sub); }
+.footer-link-item:hover { color: var(--accent); }
+
+/* Social icon hover */
+.social-icon {
+  transition: color .2s, border-color .2s;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.social-icon:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Roadmap link hover */
+.link-underline {
+  border-bottom: 1px solid var(--border);
+  transition: color .2s, border-color .2s;
+  color: var(--sub);
+}
+.link-underline:hover { color: var(--accent); border-color: var(--accent); }

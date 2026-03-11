@@ -78,10 +78,8 @@ export default function CompanyPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
                 {VALUES.map((v, i) => (
                   <div key={i}
-                    className="transition-all duration-200"
+                    className="hover-surface"
                     style={{ background: 'var(--card)', padding: '24px 28px', display: 'flex', gap: 16 }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--card)'; }}
                   >
                     <div className="font-display font-bold flex-shrink-0" style={{ fontSize: 18, color: 'var(--accent)', width: 28 }}>{v.icon}</div>
                     <div>
@@ -113,7 +111,7 @@ export default function CompanyPage() {
                   <div className="font-display font-bold" style={{ fontSize: 13, color: t.status === 'active' ? 'var(--accent)' : 'var(--muted)' }}>{t.phase}</div>
                   <div className="font-mono text-muted" style={{ fontSize: 9.5 }}>{t.period}</div>
                 </div>
-                <div className="flex-1 border p-5 transition-all duration-200"
+                <div className="flex-1 border p-5"
                   style={{
                     borderColor: t.status === 'active' ? 'rgba(139,92,246,.3)' : 'var(--border)',
                     background: t.status === 'active' ? 'rgba(139,92,246,.04)' : 'var(--card)',
@@ -132,10 +130,8 @@ export default function CompanyPage() {
           </h2>
           <p className="text-sub" style={{ fontSize: 16, marginBottom: 36 }}>Free consultation. No pitch, no pressure — just a conversation.</p>
           <Link href="/contact"
-            className="font-display font-bold no-underline inline-block transition-all duration-300"
+            className="font-display font-bold no-underline hover-glow inline-block"
             style={{ padding: '14px 40px', fontSize: 13, letterSpacing: '.06em', textTransform: 'uppercase', background: 'var(--accent)', color: '#fff' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 40px rgba(139,92,246,.4)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
             Start a Conversation →
           </Link>
         </div>

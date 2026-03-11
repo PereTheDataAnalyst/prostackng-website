@@ -40,7 +40,7 @@ export default function CaseStudiesPage() {
           <div className="flex flex-col" style={{ gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
             {CASE_STUDIES.map((c, i) => (
               <div key={i}
-                className="relative overflow-hidden transition-all duration-300"
+                className="relative overflow-hidden hover-surface"
                 style={{
                   background: 'var(--card)',
                   padding: 'clamp(28px,4vw,56px)',
@@ -48,8 +48,6 @@ export default function CaseStudiesPage() {
                   gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))',
                   gap: 'clamp(24px,4vw,56px)',
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--card)'; }}
               >
                 <div className="absolute top-0 left-0 bottom-0" style={{ width: 3, background: c.color }} />
 

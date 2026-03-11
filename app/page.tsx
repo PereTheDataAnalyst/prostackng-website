@@ -78,17 +78,13 @@ export default function HomePage() {
             {/* CTAs */}
             <div className="flex flex-wrap gap-3 animate-fadeUp delay-3" style={{ marginBottom: 72 }}>
               <Link href="/products"
-                className="font-display font-bold no-underline inline-flex items-center gap-2 transition-all duration-300"
+                className="font-display font-bold no-underline hover-glow inline-flex items-center gap-2"
                 style={{ padding: '14px 36px', fontSize: 13, letterSpacing: '.06em', textTransform: 'uppercase', background: 'var(--accent)', color: '#fff' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 16px 48px rgba(139,92,246,.4)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'none'; (e.currentTarget as HTMLElement).style.transform = 'none'; }}>
                 Explore Products →
               </Link>
               <Link href="/case-studies"
-                className="font-display font-semibold no-underline inline-flex items-center transition-all duration-200"
+                className="font-display font-semibold no-underline inline-flex items-center"
                 style={{ padding: '14px 36px', fontSize: 13, letterSpacing: '.06em', textTransform: 'uppercase', border: '1px solid var(--borderhi)', color: 'var(--sub)' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--borderhi)'; (e.currentTarget as HTMLElement).style.color = 'var(--sub)'; }}>
                 View Case Studies
               </Link>
             </div>
@@ -162,8 +158,6 @@ export default function HomePage() {
               <Link href="/products"
                 className="font-mono text-sub no-underline transition-colors duration-200 flex items-center gap-2"
                 style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', borderBottom: '1px solid var(--border)', paddingBottom: 4 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--sub)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}>
                 All Products →
               </Link>
             </div>
@@ -173,10 +167,8 @@ export default function HomePage() {
                 const isLive = p.status === 'LIVE';
                 return (
                   <div key={p.id}
-                    className="relative overflow-hidden transition-all duration-300"
+                    className="relative overflow-hidden hover-surface"
                     style={{ background: 'var(--card)', padding: 36, opacity: isLive ? 1 : .55 }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--card)'; }}
                   >
                     <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: p.color, opacity: .7 }} />
                     <div className="flex justify-between items-start mb-6">
@@ -223,10 +215,8 @@ export default function HomePage() {
                   { num: '04', icon: '🔒', title: 'Security by Default', desc: 'RLS policies, encrypted storage, audit logs everywhere.' },
                 ].map(f => (
                   <div key={f.num}
-                    className="transition-all duration-200"
+                    className="hover-surface"
                     style={{ background: 'var(--card)', padding: 28 }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--card)'; }}
                   >
                     <div className="font-mono text-muted mb-3" style={{ fontSize: 10, letterSpacing: '.1em' }}>{f.num}</div>
                     <div style={{ fontSize: 22, marginBottom: 10 }}>{f.icon}</div>
@@ -281,8 +271,6 @@ export default function HomePage() {
               <Link href="/case-studies"
                 className="font-mono text-sub no-underline transition-colors duration-200"
                 style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', borderBottom: '1px solid var(--border)', paddingBottom: 4 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--sub)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; }}>
                 All Case Studies →
               </Link>
             </div>
@@ -290,10 +278,8 @@ export default function HomePage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(360px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
               {CASE_STUDIES.map((c, i) => (
                 <div key={i}
-                  className="relative overflow-hidden transition-all duration-200"
+                  className="relative overflow-hidden hover-surface"
                   style={{ background: 'var(--card)', padding: 40 }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--card)'; }}
                 >
                   <div className="absolute top-0 left-0 bottom-0" style={{ width: 3, background: c.color }} />
                   <div className="font-mono mb-4" style={{ color: c.color, fontSize: 10, letterSpacing: '.16em', textTransform: 'uppercase' }}>{c.product}</div>
@@ -329,7 +315,7 @@ export default function HomePage() {
                     <div className="font-display font-bold" style={{ fontSize: 13, color: t.status === 'active' ? 'var(--accent)' : 'var(--muted)' }}>{t.phase}</div>
                     <div className="font-mono text-muted" style={{ fontSize: 9.5 }}>{t.period}</div>
                   </div>
-                  <div className="flex-1 border p-5 transition-all duration-200"
+                  <div className="flex-1 border p-5"
                     style={{
                       borderColor: t.status === 'active' ? 'rgba(139,92,246,.3)' : 'var(--border)',
                       background: t.status === 'active' ? 'rgba(139,92,246,.04)' : 'var(--card)',
@@ -361,17 +347,13 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/contact"
-                className="font-display font-bold no-underline transition-all duration-300"
+                className="font-display font-bold no-underline hover-glow"
                 style={{ padding: '16px 44px', fontSize: 14, letterSpacing: '.06em', textTransform: 'uppercase', background: 'var(--accent)', color: '#fff' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 16px 48px rgba(139,92,246,.4)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'none'; (e.currentTarget as HTMLElement).style.transform = 'none'; }}>
                 Start a Project →
               </Link>
               <a href="https://wa.me/2347059449360" target="_blank" rel="noreferrer"
-                className="font-display font-semibold no-underline transition-all duration-200"
+                className="font-display font-semibold no-underline"
                 style={{ padding: '16px 44px', fontSize: 14, letterSpacing: '.06em', textTransform: 'uppercase', border: '1px solid var(--borderhi)', color: 'var(--sub)' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--borderhi)'; (e.currentTarget as HTMLElement).style.color = 'var(--sub)'; }}>
                 💬 WhatsApp Us
               </a>
             </div>

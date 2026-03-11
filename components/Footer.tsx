@@ -62,14 +62,12 @@ export default function Footer() {
             <div className="flex gap-2">
               {['𝕏', 'in', 'ig', 'gh'].map(s => (
                 <div key={s}
-                  className="flex items-center justify-center text-muted cursor-pointer transition-all duration-200"
+                  className="social-icon flex items-center justify-center cursor-pointer"
                   style={{
                     width: 30, height: 30,
                     border: '1px solid var(--border)',
                     fontSize: 11,
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; (e.currentTarget as HTMLElement).style.color = 'var(--muted)'; }}
                 >
                   {s}
                 </div>
@@ -84,10 +82,8 @@ export default function Footer() {
               </div>
               {col.links.map(l => (
                 <Link key={l.label} href={l.href}
-                  className="block text-sub no-underline mb-2.5 transition-colors duration-200"
+                  className="footer-link-item block no-underline mb-2.5"
                   style={{ fontSize: 13 }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--sub)'; }}>
                   {l.label}
                 </Link>
               ))}
@@ -105,10 +101,8 @@ export default function Footer() {
           </p>
           <div className="flex gap-6">
             {['Privacy Policy', 'Terms of Service'].map(l => (
-              <span key={l} className="font-mono text-muted cursor-pointer transition-colors duration-200"
+              <span key={l} className="font-mono text-muted cursor-pointer hover-accent"
                 style={{ fontSize: 11 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--muted)'; }}>
                 {l}
               </span>
             ))}

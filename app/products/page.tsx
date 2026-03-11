@@ -48,7 +48,7 @@ export default function ProductsPage() {
                 <div
                   key={p.id}
                   id={p.id}
-                  className="relative overflow-hidden transition-all duration-300"
+                  className="relative overflow-hidden hover-surface"
                   style={{
                     background: 'var(--card)',
                     padding: 'clamp(28px,4vw,52px)',
@@ -57,8 +57,6 @@ export default function ProductsPage() {
                     gap: 'clamp(24px,4vw,56px)',
                     opacity: isLive ? 1 : .6,
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--card)'; }}
                 >
                   {/* Top accent */}
                   <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: p.color }} />
@@ -122,10 +120,8 @@ export default function ProductsPage() {
           </h2>
           <p className="text-sub" style={{ fontSize: 16, marginBottom: 36 }}>We'll walk you through any product or scope something custom for your business.</p>
           <Link href="/contact"
-            className="font-display font-bold no-underline inline-block transition-all duration-300"
+            className="font-display font-bold no-underline hover-glow inline-block"
             style={{ padding: '14px 40px', fontSize: 13, letterSpacing: '.06em', textTransform: 'uppercase', background: 'var(--accent)', color: '#fff' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 40px rgba(139,92,246,.4)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
             Get In Touch →
           </Link>
         </div>

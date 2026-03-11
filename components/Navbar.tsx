@@ -84,8 +84,6 @@ export default function Navbar() {
               letterSpacing: '.06em', textTransform: 'uppercase',
               border: '1px solid var(--borderhi)', color: 'var(--sub)',
             }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--borderhi)'; (e.currentTarget as HTMLElement).style.color = 'var(--sub)'; }}>
             Our Products
           </Link>
           <Link href="/contact"
@@ -95,8 +93,6 @@ export default function Navbar() {
               letterSpacing: '.06em', textTransform: 'uppercase',
               background: 'var(--accent)', color: '#fff',
             }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '.85'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}>
             Work With Us
           </Link>
         </div>
@@ -122,8 +118,6 @@ export default function Navbar() {
             <Link key={l.href} href={l.href}
               className="font-display font-bold text-text no-underline transition-colors duration-200"
               style={{ fontSize: 28, letterSpacing: '-.02em' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text)'; }}>
               {l.label}
             </Link>
           ))}
