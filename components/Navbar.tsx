@@ -83,7 +83,7 @@ export default function Navbar() {
               padding: '8px 18px', fontSize: 11,
               letterSpacing: '.06em', textTransform: 'uppercase',
               border: '1px solid var(--borderhi)', color: 'var(--sub)',
-            }}
+            }}>
             Our Products
           </Link>
           <Link href="/contact"
@@ -92,7 +92,7 @@ export default function Navbar() {
               padding: '8px 22px', fontSize: 11,
               letterSpacing: '.06em', textTransform: 'uppercase',
               background: 'var(--accent)', color: '#fff',
-            }}
+            }}>
             Work With Us
           </Link>
         </div>
@@ -117,7 +117,7 @@ export default function Navbar() {
           {LINKS.map(l => (
             <Link key={l.href} href={l.href}
               className="font-display font-bold text-text no-underline transition-colors duration-200"
-              style={{ fontSize: 28, letterSpacing: '-.02em' }}
+              style={{ fontSize: 28, letterSpacing: '-.02em' }}>
               {l.label}
             </Link>
           ))}

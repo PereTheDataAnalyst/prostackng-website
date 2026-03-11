@@ -83,7 +83,7 @@ export default function Footer() {
               {col.links.map(l => (
                 <Link key={l.label} href={l.href}
                   className="footer-link-item block no-underline mb-2.5"
-                  style={{ fontSize: 13 }}
+                  style={{ fontSize: 13 }}>
                   {l.label}
                 </Link>
               ))}
