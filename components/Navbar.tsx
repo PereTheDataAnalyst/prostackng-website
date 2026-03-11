@@ -68,7 +68,7 @@ export default function Navbar() {
                 {l.label}
                 <span
                   className="absolute -bottom-0.5 left-0 right-0 h-px transition-transform duration-300 origin-left"
-                  style={{ background: 'var(--accent)', transform: active ? 'scaleX(1)' : 'scaleX(0)' }}
+                  style={{ background: 'var(--accent)', transform: active ? 'scaleX(1)' : 'scaleX(0)' }}>
                 />
               </Link>
             );

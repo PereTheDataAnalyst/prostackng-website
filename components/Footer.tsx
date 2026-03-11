@@ -102,7 +102,7 @@ export default function Footer() {
           <div className="flex gap-6">
             {['Privacy Policy', 'Terms of Service'].map(l => (
               <span key={l} className="font-mono text-muted cursor-pointer hover-accent"
-                style={{ fontSize: 11 }}
+                style={{ fontSize: 11 }}>
                 {l}
               </span>
             ))}
