@@ -1,12 +1,6 @@
-import type { Metadata, Viewport } from 'next';
+﻿import type { Metadata } from 'next';
 import Script from 'next/script';
 import './globals.css';
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  viewportFit: 'cover',
-};
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://prostackng.com'),
@@ -37,6 +31,9 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   themeColor: '#050709',
+  other: {
+    'viewport': 'width=device-width, initial-scale=1, viewport-fit=cover',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -46,7 +43,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        {/* Umami Analytics — self-hosted, privacy-first, GDPR-clean */}
         {umamiId && umamiUrl && (
           <Script
             src={`${umamiUrl}/script.js`}
