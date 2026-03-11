@@ -23,19 +23,19 @@ export default function HomePage() {
         >
           {/* Grid fade mask */}
           <div className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 40%, transparent 30%, var(--bg) 100%)' }} />
+            style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 30%, transparent 40%, var(--bg) 100%)' }} />
 
           {/* Glow orbs */}
           <div className="absolute pointer-events-none"
             style={{ top: '-10%', left: '-5%', width: 700, height: 700, borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(139,92,246,.12) 0%, transparent 65%)' }} />
+              background: 'radial-gradient(circle, rgba(124,58,237,.05) 0%, transparent 60%)' }} />
           <div className="absolute pointer-events-none"
             style={{ bottom: '-10%', right: '-5%', width: 600, height: 600, borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(236,72,153,.07) 0%, transparent 65%)' }} />
+              background: 'radial-gradient(circle, rgba(219,39,119,.03) 0%, transparent 60%)' }} />
 
           {/* Scan line */}
           <div className="absolute left-0 right-0 h-px pointer-events-none animate-scan"
-            style={{ background: 'linear-gradient(90deg,transparent 0%,rgba(139,92,246,.5) 50%,transparent 100%)' }} />
+            style={{ background: 'linear-gradient(90deg,transparent 0%,rgba(124,58,237,.35) 50%,transparent 100%)' }} />
 
           <div
             className="relative w-full"
@@ -49,7 +49,7 @@ export default function HomePage() {
                   padding: '6px 14px', fontSize: 10.5, letterSpacing: '.18em',
                   color: 'var(--accent-hi)',
                   border: '1px solid rgba(139,92,246,.3)',
-                  background: 'rgba(139,92,246,.07)',
+                  background: 'rgba(124,58,237,.05)',
                 }}
               >
                 <span className="animate-blink" style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />
@@ -230,7 +230,7 @@ export default function HomePage() {
             {/* Terminal */}
             <div style={{ background: '#070710', border: '1px solid var(--borderhi)', overflow: 'hidden' }}>
               <div style={{ background: 'var(--card)', padding: '10px 16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                {['#FF5757','#F5B530','#00E87A'].map(c => (
+                {['#FF605C','#FFBC2E','#28C840'].map(c => (
                   <div key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c }} />
                 ))}
                 <span className="font-mono text-muted" style={{ marginLeft: 8, fontSize: 10, letterSpacing: '.1em' }}>
@@ -248,7 +248,7 @@ export default function HomePage() {
                 <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#F5B530' }}>Generating</span> <span style={{ color: 'var(--text)' }}>7-sheet Excel workbook</span></div>
                 <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#00C8FF' }}>Sending</span> <span style={{ color: 'var(--text)' }}>to 12 recipients...</span></div>
                 <div>&nbsp;</div>
-                <div><span style={{ color: '#00E87A' }}>✓</span> <span style={{ color: 'var(--text)' }}>Pipeline complete in</span> <span style={{ color: 'var(--accent)' }}>8.2s</span></div>
+                <div><span style={{ color: '#34D399' }}>✓</span> <span style={{ color: 'var(--text)' }}>Pipeline complete in</span> <span style={{ color: 'var(--accent)' }}>8.2s</span></div>
                 <div>
                   <span style={{ color: 'var(--muted)' }}>$</span>{' '}
                   <span style={{ display: 'inline-block', width: 7, height: 14, background: 'var(--accent)', verticalAlign: 'middle', animation: 'blink 1s step-end infinite' }} />
@@ -309,7 +309,7 @@ export default function HomePage() {
                     left: -5, top: 6, width: 11, height: 11, borderRadius: '50%',
                     background: t.status === 'active' ? 'var(--accent)' : 'var(--card)',
                     border: `2px solid ${t.status === 'active' ? 'var(--accent)' : 'var(--muted)'}`,
-                    boxShadow: t.status === 'active' ? '0 0 12px rgba(139,92,246,.6)' : 'none',
+                    boxShadow: t.status === 'active' ? '0 0 12px rgba(124,58,237,.5)' : 'none',
                   }} />
                   <div style={{ minWidth: 110, flexShrink: 0 }}>
                     <div className="font-display font-bold" style={{ fontSize: 13, color: t.status === 'active' ? 'var(--accent)' : 'var(--muted)' }}>{t.phase}</div>
@@ -318,7 +318,7 @@ export default function HomePage() {
                   <div className="flex-1 border p-5"
                     style={{
                       borderColor: t.status === 'active' ? 'rgba(139,92,246,.3)' : 'var(--border)',
-                      background: t.status === 'active' ? 'rgba(139,92,246,.04)' : 'var(--card)',
+                      background: t.status === 'active' ? 'rgba(124,58,237,.03)' : 'var(--card)',
                     }}>
                     <p style={{ fontSize: 14.5, lineHeight: 1.75, color: t.status === 'active' ? 'var(--text)' : 'var(--sub)' }}>{t.desc}</p>
                   </div>
@@ -336,7 +336,7 @@ export default function HomePage() {
           <div className="absolute inset-0 pointer-events-none"
             style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 50%, transparent 30%, var(--bg) 100%)' }} />
           <div className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(139,92,246,.07) 0%, transparent 70%)' }} />
+            style={{ background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(124,58,237,.03) 0%, transparent 70%)' }} />
           <div className="relative" style={{ maxWidth: 700, margin: '0 auto' }}>
             <div className="section-label" style={{ justifyContent: 'center', marginBottom: 20 }}>Let's Build Together</div>
             <h2 className="font-display font-black text-text" style={{ fontSize: 'clamp(40px,6vw,80px)', letterSpacing: '-.04em', lineHeight: 1.0, marginBottom: 20 }}>

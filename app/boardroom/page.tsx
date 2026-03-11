@@ -781,7 +781,7 @@ export default function BoardroomPage() {
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <div style={{ color: '#E2EAF4', fontWeight: 700, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
-                    <div style={{ color: user!.color, fontFamily: 'monospace', fontSize: 11, marginTop: 2 }}>{user!.role}</div>
+                    <div style={{ color: '#9D6EF8', fontFamily: 'monospace', fontSize: 11, marginTop: 2 }}>{user!.role}</div>
                     <div style={{ color: '#2A2040', fontFamily: 'monospace', fontSize: 10, marginTop: 3 }}>{user!.token}</div>
                     {avatarUploading && <div style={{ color: '#8B5CF6', fontSize: 11, marginTop: 3, fontFamily: 'monospace' }}>Uploading…</div>}
                   </div>
@@ -907,7 +907,7 @@ export default function BoardroomPage() {
                         <div style={{ flex: 1, minWidth: 0 }}>
                           {showHeader && (
                             <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
-                              <span style={{ color: msg.author_color, fontWeight: 700, fontSize: 13 }}>{msg.author_name}</span>
+                              <span style={{ color: 'var(--text)', fontWeight: 600, fontSize: 13 }}>{msg.author_name}</span>
                               <span style={{ fontFamily: 'monospace', color: '#3A5070', fontSize: 9 }}>{msg.author_role}</span>
                               {showTs && <span style={{ fontFamily: 'monospace', color: '#3A5070', fontSize: 9 }}>{fmt(msg.created_at)}</span>}
                               {msg.pinned && <span>📌</span>}

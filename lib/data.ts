@@ -5,7 +5,7 @@ export const PRODUCTS = [
     tagline: 'Tender Intelligence Platform',
     desc: 'AI-powered tender discovery and tracking for Nigerian businesses. Never miss a government or private contract opportunity again. Automated matching, deadline alerts, and document management built for procurement teams.',
     status: 'LIVE' as const,
-    color: '#00E87A',
+    color: '#06B6D4',
     icon: '◎',
     domain: 'protrackng.com',
     metrics: ['Oil & Gas sector live', 'Multi-tender pipeline', 'Real-time deadline alerts'],
@@ -57,7 +57,7 @@ export const PRODUCTS = [
     tagline: 'Mobility & Ride-Hailing Platform',
     desc: 'Modern ride-hailing built for Rivers State and beyond. Real-time GPS tracking, driver earnings dashboards, live ride sharing, SOS safety features, and Mapbox-powered navigation optimised for Nigerian roads.',
     status: 'ROADMAP' as const,
-    color: '#00C8FF',
+    color: '#38BDF8',
     icon: '⟁',
     domain: 'swiftride.com',
     metrics: ['Rivers & Bayelsa launch', 'Live GPS tracking', 'Driver earnings dashboard'],
@@ -68,9 +68,9 @@ export const PRODUCTS = [
     id: 'stakex',
     name: 'StakeX',
     tagline: 'Digital Staking Platform',
-    desc: 'A next-generation digital staking and prediction platform designed for Africa\'s growing digital economy. Built on secure, auditable infrastructure with real-time settlement and responsible gaming controls.',
+    desc: "A next-generation digital staking and prediction platform designed for Africa's growing digital economy. Built on secure, auditable infrastructure with real-time settlement and responsible gaming controls.",
     status: 'ROADMAP' as const,
-    color: '#FF9500',
+    color: '#FB923C',
     icon: '◑',
     domain: 'stakex.com',
     metrics: ['Phase 4 launch', 'Crypto-ready settlement', 'Responsible gaming built-in'],
@@ -104,7 +104,7 @@ export const CASE_STUDIES = [
   },
   {
     product: 'ProTrackNG',
-    color: '#00E87A',
+    color: '#06B6D4',
     title: 'Tender deadlines never missed again',
     client: 'Oil & Gas Procurement Team, Port Harcourt',
     problem: 'An oil and gas procurement team tracked tenders across government portals, email chains, and spreadsheets simultaneously — missing deadlines and losing bids due to disorganisation.',
@@ -116,36 +116,36 @@ export const CASE_STUDIES = [
 ];
 
 export const STACK = [
-  { label: 'Frontend',       color: '#00E87A', items: ['Next.js', 'React', 'React Native', 'TypeScript', 'Tailwind CSS', 'Framer Motion'] },
-  { label: 'Backend',        color: '#00C8FF', items: ['Node.js', 'Python', 'FastAPI', 'REST APIs', 'GraphQL', 'WebSockets'] },
+  { label: 'Frontend',       color: '#06B6D4', items: ['Next.js', 'React', 'React Native', 'TypeScript', 'Tailwind CSS', 'Framer Motion'] },
+  { label: 'Backend',        color: '#38BDF8', items: ['Node.js', 'Python', 'FastAPI', 'REST APIs', 'GraphQL', 'WebSockets'] },
   { label: 'Database',       color: '#A78BFA', items: ['PostgreSQL', 'Supabase', 'Redis', 'SQLite', 'MongoDB'] },
   { label: 'Infrastructure', color: '#F5B530', items: ['Vercel', 'Cloudflare', 'Docker', 'CI/CD', 'GitHub Actions'] },
   { label: 'Payments',       color: '#FF5757', items: ['Paystack', 'Flutterwave', 'Remita', 'Stripe', 'Escrow Wallets'] },
-  { label: 'Data & AI',      color: '#FF9500', items: ['Pandas', 'ReportLab', 'OpenPyXL', 'OpenAI APIs', 'Umami Analytics'] },
+  { label: 'Data & AI',      color: '#FB923C', items: ['Pandas', 'ReportLab', 'OpenPyXL', 'OpenAI APIs', 'Umami Analytics'] },
 ];
 
 export const SHARED_SERVICES = [
-  { subdomain: 'auth.prostackng.com',     desc: 'SSO across all products — one account, every platform', color: '#00E87A' },
-  { subdomain: 'api.prostackng.com',      desc: 'Central API gateway for all product backends',           color: '#00C8FF' },
-  { subdomain: 'payments.prostackng.com', desc: 'Paystack & Flutterwave unified payment hub',             color: '#F5B530' },
-  { subdomain: 'notify.prostackng.com',   desc: 'Email, SMS & push notifications for all products',       color: '#A78BFA' },
-  { subdomain: 'analytics.prostackng.com',desc: 'Umami — self-hosted, GDPR-clean, no data limits',       color: '#FF5757' },
-  { subdomain: 'cdn.prostackng.com',      desc: 'Cloudflare-powered static asset & media delivery',       color: '#FF9500' },
+  { subdomain: 'auth.prostackng.com',      desc: 'SSO across all products — one account, every platform', color: '#06B6D4' },
+  { subdomain: 'api.prostackng.com',       desc: 'Central API gateway for all product backends',           color: '#38BDF8' },
+  { subdomain: 'payments.prostackng.com',  desc: 'Paystack & Flutterwave unified payment hub',             color: '#F5B530' },
+  { subdomain: 'notify.prostackng.com',    desc: 'Email, SMS & push notifications for all products',       color: '#A78BFA' },
+  { subdomain: 'analytics.prostackng.com', desc: 'Umami — self-hosted, GDPR-clean, no data limits',        color: '#FF5757' },
+  { subdomain: 'cdn.prostackng.com',       desc: 'Cloudflare-powered static asset & media delivery',       color: '#FB923C' },
 ];
 
 export const TIMELINE = [
-  { phase: 'Phase 1', period: 'Now — 2025',   status: 'active',   desc: 'ProTrackNG, NightOps & AutoReport live. Consulting revenue. Building client base and brand credibility.' },
-  { phase: 'Phase 2', period: 'Q3 2025',       status: 'next',     desc: 'MyHarriet beta — campus marketplace launch in Port Harcourt and Abuja. Escrow payments, vendor onboarding.' },
-  { phase: 'Phase 3', period: 'Q1 2026',       status: 'planned',  desc: 'SwiftRide — Rivers State and Bayelsa launch. Shared auth & payment infrastructure fully operational.' },
-  { phase: 'Phase 4', period: 'Q3 2026',       status: 'planned',  desc: 'StakeX launch. Full platform ecosystem complete. Series A fundraise targeting $500K–$2M.' },
+  { phase: 'Phase 1', period: 'Now — 2025', status: 'active',  desc: 'ProTrackNG, NightOps & AutoReport live. Consulting revenue. Building client base and brand credibility.' },
+  { phase: 'Phase 2', period: 'Q3 2025',    status: 'next',    desc: 'MyHarriet beta — campus marketplace launch in Port Harcourt and Abuja. Escrow payments, vendor onboarding.' },
+  { phase: 'Phase 3', period: 'Q1 2026',    status: 'planned', desc: 'SwiftRide — Rivers State and Bayelsa launch. Shared auth & payment infrastructure fully operational.' },
+  { phase: 'Phase 4', period: 'Q3 2026',    status: 'planned', desc: 'StakeX launch. Full platform ecosystem complete. Series A fundraise targeting $500K–$2M.' },
 ];
 
 export const COMPANY_STATS = [
-  { value: 5,  suffix: '+', label: 'Products Built' },
-  { value: 20, suffix: '+', label: 'Clients Served' },
-  { value: 8,  suffix: '',  label: 'Team Members' },
-  { value: 3,  suffix: '',  label: 'Live Platforms' },
+  { value: 5,  suffix: '+', label: 'Products Built'  },
+  { value: 20, suffix: '+', label: 'Clients Served'  },
+  { value: 8,  suffix: '',  label: 'Team Members'    },
+  { value: 3,  suffix: '',  label: 'Live Platforms'  },
 ];
 
-export type Product    = typeof PRODUCTS[number];
-export type CaseStudy  = typeof CASE_STUDIES[number];
+export type Product   = typeof PRODUCTS[number];
+export type CaseStudy = typeof CASE_STUDIES[number];
