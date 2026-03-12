@@ -16,12 +16,13 @@ const COLS = [
   {
     title: 'Company',
     links: [
-      { label: 'About Us',     href: '/company'      },
-      { label: 'Technology',   href: '/technology'   },
-      { label: 'Case Studies', href: '/case-studies' },
-      { label: 'Media',        href: '/media'        },
-      { label: 'Blog',         href: '#'             },
-      { label: 'Careers',      href: '#'             },
+      { label: 'About Us',        href: '/company'       },
+      { label: 'Technology',      href: '/technology'    },
+      { label: 'Case Studies',    href: '/case-studies'  },
+      { label: 'Testimonials',    href: '/testimonials'  },
+      { label: 'Blog & Insights', href: '/blog'          },
+      { label: 'Press & Media',   href: '/press'         },
+      { label: 'Careers',         href: '#'              },
     ],
   },
   {

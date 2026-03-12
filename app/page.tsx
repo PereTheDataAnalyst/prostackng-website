@@ -10,15 +10,58 @@ import type { VideoEntry } from '@/lib/videos';
 // Compact video card — placeholder-aware, no broken thumbnails
 function VideoCard({ v, size = 'md' }: { v: VideoEntry; size?: 'sm' | 'md' }) {
   const ready = v.hasVideo && v.id;
-  const pad   = size === 'sm' ? '12px 14px' : '14px 18px';
+  const pad   = size === 'sm' ? '10px 14px' : '14px 18px';
   const fSize = size === 'sm' ? 12 : 13;
-  const btnSz = size === 'sm' ? 36 : 42;
-  const tri   = size === 'sm' ? 6 : 8;
+  const btnSz = size === 'sm' ? 32 : 42;
+  const tri   = size === 'sm' ? 5 : 8;
+  // sm = compact stacked list → fixed 120px thumb; md = grid → 16:9 ratio
+  const thumbStyle: React.CSSProperties = size === 'sm'
+    ? { position: 'relative', height: 120, background: 'var(--s2)', overflow: 'hidden', flexShrink: 0 }
+    : { position: 'relative', paddingBottom: '56.25%', background: 'var(--s2)', overflow: 'hidden', flexShrink: 0 };
 
   const inner = (
     <>
       {/* Thumbnail / placeholder */}
-      <div style={{ position: 'relative', paddingBottom: '56.25%', background: 'var(--s2)', overflow: 'hidden', flexShrink: 0 }}>
+      <div style={thumbStyle}>
+        {ready ? (
+          <img src={ytThumb(v.id, 'hq')} alt={v.title}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+        ) : (
+          /* Clean placeholder — no random YouTube thumbnails */
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, var(--card) 0%, var(--s2) 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <svg width="36" height="30" viewBox="0 0 52 44" fill="none" opacity=".1">
+              <path d="M6 30 L36 30 L46 38 L16 38 Z" fill="#2563EB" opacity=".5"/>
+              <path d="M2 20 L32 20 L42 28 L12 28 Z" fill="#2563EB" opacity=".75"/>
+              <path d="M0 10 L30 10 L40 18 L10 18 Z" fill="#2563EB"/>
+            </svg>
+            <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 7.5, letterSpacing: '.14em', color: 'var(--muted)', textTransform: 'uppercase' }}>
+              Coming Soon
+            </span>
+          </div>
+        )}
+
+        {/* Overlay with play button */}
+        <div style={{ position: 'absolute', inset: 0, background: ready ? 'rgba(4,5,10,.25)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {ready && (
+            <div style={{ width: btnSz, height: btnSz, borderRadius: '50%', background: 'rgba(37,99,235,.88)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 24px rgba(37,99,235,.4)' }}>
+              <div style={{ width: 0, height: 0, borderTop: `${tri}px solid transparent`, borderBottom: `${tri}px solid transparent`, borderLeft: `${tri * 1.5}px solid #fff`, marginLeft: 3 }} />
+            </div>
+          )}
+        </div>
+
+        {/* Tag */}
+        <div style={{ position: 'absolute', top: 8, left: 8, fontFamily: 'JetBrains Mono, monospace', fontSize: 7.5, letterSpacing: '.14em', textTransform: 'uppercase', background: 'rgba(8,11,20,.88)', border: `1px solid ${v.tagColor}40`, color: v.tagColor, padding: '2px 7px' }}>
+          {v.tag}
+        </div>
+      </div>
+
+      {/* Title */}
+      <div style={{ padding: pad }}>
+        <div className="f-display" style={{ fontWeight: 700, fontSize: fSize, color: ready ? 'var(--text)' : 'var(--sub)', lineHeight: 1.3 }}>{v.title}</div>
+        {!ready && <div className="f-mono" style={{ fontSize: 8, color: 'var(--muted)', letterSpacing: '.1em', marginTop: 4 }}>UPLOADING SOON</div>}
+      </div>
+    </>
+  );
         {ready ? (
           <img src={ytThumb(v.id, 'hq')} alt={v.title}
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />

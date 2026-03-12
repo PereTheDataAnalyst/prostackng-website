@@ -289,3 +289,54 @@ body {
 .d4 { animation-delay: .42s; opacity: 0; }
 .d5 { animation-delay: .56s; opacity: 0; }
 .d6 { animation-delay: .70s; opacity: 0; }
+
+/* ─── BLOG PROSE ──────────────────────────────────────────────────────────── */
+.prose-content h2 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(20px, 2.5vw, 28px);
+  letter-spacing: -.03em;
+  color: var(--text);
+  margin: 44px 0 16px;
+  line-height: 1.1;
+}
+.prose-content h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--text);
+  margin: 32px 0 12px;
+}
+.prose-content p {
+  margin-bottom: 20px;
+  color: var(--sub);
+  line-height: 1.9;
+}
+.prose-content ul {
+  margin: 0 0 20px 0;
+  padding-left: 0;
+  list-style: none;
+}
+.prose-content ul li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  color: var(--sub);
+  line-height: 1.75;
+}
+.prose-content ul li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  color: var(--blue);
+  font-size: 7px;
+  top: 7px;
+}
+.prose-content strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.prose-content a {
+  color: var(--blue-hi);
+  text-decoration: underline;
+}
