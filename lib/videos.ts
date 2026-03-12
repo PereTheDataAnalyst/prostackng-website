@@ -1,8 +1,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// ProStack NG — Video Feed
-// To update: replace the `id` values with real YouTube video IDs.
-// YouTube video ID = the part after ?v= in any YouTube URL
-// e.g. https://youtube.com/watch?v=dQw4w9WgXcQ → id: 'dQw4w9WgXcQ'
+// ProStack NG — Video Library
+// HOW TO UPDATE:
+//   1. Go to your YouTube video → copy the ID after ?v= in the URL
+//      e.g. youtube.com/watch?v=ABC123xyz  →  id: 'ABC123xyz'
+//   2. Replace the id value below
+//   3. Save and redeploy — thumbnails and embeds update automatically
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type VideoEntry = {
@@ -13,68 +15,91 @@ export type VideoEntry = {
   tagColor: string;
   date: string;
   featured?: boolean;
+  hasVideo?: boolean; // set false to show placeholder card instead of YouTube thumb
 };
 
-// Replace these placeholder IDs with your real YouTube video IDs
-export const VIDEOS: VideoEntry[] = [
+// ── CHANNEL VIDEOS (demos, walkthroughs, case studies) ──────────────────────
+// Set hasVideo: false and leave id as '' until you upload to YouTube
+export const CHANNEL_VIDEOS: VideoEntry[] = [
   {
-    id: 'LXb3EKWsInQ',  // ← REPLACE with real YouTube ID
+    id: '',
+    hasVideo: false,
     title: 'AutoReport: From Raw Data to Board-Ready PDF in 8 Seconds',
-    desc: 'Watch a live demo of AutoReport processing 15,000 rows of sales data, generating 24 KPIs, building charts, and emailing a 6-page executive PDF — all in under 9 seconds.',
+    desc: 'Live demo — 15,000 rows of sales data processed into a 6-page executive PDF and 7-sheet Excel in under 9 seconds.',
     tag: 'Product Demo',
     tagColor: '#FF5757',
-    date: 'Mar 2026',
+    date: 'Coming soon',
     featured: true,
   },
   {
-    id: 'JTxsNm9IdYU',  // ← REPLACE
+    id: '',
+    hasVideo: false,
     title: 'ProTrackNG: Never Miss a Tender Deadline Again',
-    desc: 'How ProTrackNG monitors 400+ government and corporate tender portals in real time, scoring and alerting your team to every relevant opportunity.',
+    desc: 'How ProTrackNG monitors 400+ portals in real time, scoring every opportunity against your business profile.',
     tag: 'Product Demo',
     tagColor: '#06B6D4',
-    date: 'Mar 2026',
+    date: 'Coming soon',
   },
   {
-    id: 'hY7m5jjJ9mM',  // ← REPLACE
+    id: '',
+    hasVideo: false,
     title: 'NightOps: Running a Nightclub with Zero Manual Counting',
-    desc: 'A Port Harcourt venue went from 2-hour nightly reconciliation to 5 minutes. Full walkthrough of NightOps in a live venue environment.',
+    desc: 'A Port Harcourt venue went from 2-hour nightly reconciliation to 5 minutes. Full walkthrough.',
     tag: 'Case Study',
     tagColor: '#A78BFA',
-    date: 'Feb 2026',
+    date: 'Coming soon',
   },
   {
-    id: 'KgpclqP-LBA',  // ← REPLACE
+    id: '',
+    hasVideo: false,
     title: 'ProStack NG: Building Africa\'s Digital Infrastructure',
-    desc: 'Our vision, our stack, our six-platform ecosystem, and why we\'re building in Port Harcourt. A 5-minute company overview for prospective clients and investors.',
+    desc: 'Company overview — our vision, our stack, our six-platform ecosystem, and why we\'re building in Port Harcourt.',
     tag: 'Company',
     tagColor: '#2563EB',
-    date: 'Jan 2026',
-  },
-  {
-    id: 'GtL1huin9EE',  // ← REPLACE
-    title: 'MyHarriet: The Marketplace Nigeria Has Been Waiting For',
-    desc: 'Early product preview — how MyHarriet combines escrow payments, vendor ratings, and campus commerce into one platform.',
-    tag: 'Coming Soon',
-    tagColor: '#F5B530',
-    date: 'Jan 2026',
-  },
-  {
-    id: 'JHm679tyTiA',  // ← REPLACE
-    title: 'SwiftRide: Reimagining Mobility in Rivers State',
-    desc: 'Why Bolt and Uber aren\'t enough for the Niger Delta market, and how SwiftRide is being designed specifically for our roads, our riders, and our drivers.',
-    tag: 'Roadmap',
-    tagColor: '#38BDF8',
-    date: 'Dec 2025',
+    date: 'Coming soon',
   },
 ];
 
-export const FEATURED = VIDEOS.find(v => v.featured) ?? VIDEOS[0];
-export const SECONDARY = VIDEOS.filter(v => !v.featured).slice(0, 5);
+// ── ADS (produced by ad team — short promotional clips) ──────────────────────
+export const AD_VIDEOS: VideoEntry[] = [
+  {
+    id: '',
+    hasVideo: false,
+    title: 'AutoReport — 30s Brand Spot',
+    desc: 'Your reports. Every morning. Zero effort.',
+    tag: 'Ad',
+    tagColor: '#FF5757',
+    date: 'Coming soon',
+  },
+  {
+    id: '',
+    hasVideo: false,
+    title: 'ProTrackNG — 30s Brand Spot',
+    desc: 'Every tender. Every deadline. Never missed.',
+    tag: 'Ad',
+    tagColor: '#06B6D4',
+    date: 'Coming soon',
+  },
+  {
+    id: '',
+    hasVideo: false,
+    title: 'NightOps — 30s Brand Spot',
+    desc: 'Your nightclub. Fully digital. Fully yours.',
+    tag: 'Ad',
+    tagColor: '#A78BFA',
+    date: 'Coming soon',
+  },
+];
 
-// YouTube thumbnail URL helper
-export const ytThumb = (id: string, quality: 'max' | 'hq' | 'mq' = 'hq') =>
-  `https://img.youtube.com/vi/${id}/${quality === 'max' ? 'maxresdefault' : quality === 'hq' ? 'hqdefault' : 'mqdefault'}.jpg`;
+// YouTube helpers
+export const ytThumb  = (id: string, q: 'max' | 'hq' | 'mq' = 'hq') =>
+  `https://img.youtube.com/vi/${id}/${q === 'max' ? 'maxresdefault' : q === 'hq' ? 'hqdefault' : 'mqdefault'}.jpg`;
 
-// YouTube embed URL helper
-export const ytEmbed = (id: string) =>
+export const ytEmbed  = (id: string) =>
   `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
+
+export const ytWatch  = (id: string) =>
+  `https://youtube.com/watch?v=${id}`;
+
+// Combined for /media page
+export const ALL_VIDEOS = [...CHANNEL_VIDEOS, ...AD_VIDEOS];

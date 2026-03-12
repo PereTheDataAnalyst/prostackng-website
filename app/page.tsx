@@ -4,35 +4,72 @@ import Footer from '@/components/Footer';
 import Ticker from '@/components/Ticker';
 import StatusBadge from '@/components/ui/StatusBadge';
 import StackLogo from '@/components/StackLogo';
-import { ytThumb, ytEmbed } from '@/lib/videos';
+import { CHANNEL_VIDEOS, AD_VIDEOS, ytThumb, ytWatch } from '@/lib/videos';
+import type { VideoEntry } from '@/lib/videos';
 
-// Lightweight inline video card for homepage (opens YouTube in new tab — no state needed in server component)
-function HomeVideoCard({ id, title, tag, tagColor, large }: { id: string; title: string; tag: string; tagColor: string; large?: boolean }) {
-  return (
-    <a href={`https://youtube.com/watch?v=${id}`} target="_blank" rel="noreferrer"
-      style={{ display: 'block', textDecoration: 'none', position: 'relative', overflow: 'hidden', background: 'var(--card)', cursor: 'pointer' }}
-    >
-      {/* Thumbnail */}
-      <div style={{ position: 'relative', paddingBottom: '56.25%', background: 'var(--s2)', overflow: 'hidden' }}>
-        <img
-          src={ytThumb(id, large ? 'max' : 'hq')}
-          alt={title}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-        />
-        {/* Overlay */}
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(4,5,10,.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: large ? 68 : 50, height: large ? 68 : 50, borderRadius: '50%', background: 'rgba(37,99,235,.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 32px rgba(37,99,235,.45)' }}>
-            <div style={{ width: 0, height: 0, borderTop: `${large ? 13 : 9}px solid transparent`, borderBottom: `${large ? 13 : 9}px solid transparent`, borderLeft: `${large ? 20 : 14}px solid #fff`, marginLeft: large ? 4 : 3 }} />
+// Compact video card — placeholder-aware, no broken thumbnails
+function VideoCard({ v, size = 'md' }: { v: VideoEntry; size?: 'sm' | 'md' }) {
+  const ready = v.hasVideo && v.id;
+  const pad   = size === 'sm' ? '12px 14px' : '14px 18px';
+  const fSize = size === 'sm' ? 12 : 13;
+  const btnSz = size === 'sm' ? 36 : 42;
+  const tri   = size === 'sm' ? 6 : 8;
+
+  const inner = (
+    <>
+      {/* Thumbnail / placeholder */}
+      <div style={{ position: 'relative', paddingBottom: '56.25%', background: 'var(--s2)', overflow: 'hidden', flexShrink: 0 }}>
+        {ready ? (
+          <img src={ytThumb(v.id, 'hq')} alt={v.title}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+        ) : (
+          /* Clean placeholder — no random YouTube thumbnails */
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, var(--card) 0%, var(--s2) 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+            <svg width="44" height="37" viewBox="0 0 52 44" fill="none" opacity=".12">
+              <path d="M6 30 L36 30 L46 38 L16 38 Z" fill="#2563EB" opacity=".5"/>
+              <path d="M2 20 L32 20 L42 28 L12 28 Z" fill="#2563EB" opacity=".75"/>
+              <path d="M0 10 L30 10 L40 18 L10 18 Z" fill="#2563EB"/>
+            </svg>
+            <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 8.5, letterSpacing: '.14em', color: 'var(--muted)', textTransform: 'uppercase' }}>
+              Coming Soon
+            </span>
           </div>
+        )}
+
+        {/* Overlay with play button */}
+        <div style={{ position: 'absolute', inset: 0, background: ready ? 'rgba(4,5,10,.25)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {ready && (
+            <div style={{ width: btnSz, height: btnSz, borderRadius: '50%', background: 'rgba(37,99,235,.88)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 24px rgba(37,99,235,.4)' }}>
+              <div style={{ width: 0, height: 0, borderTop: `${tri}px solid transparent`, borderBottom: `${tri}px solid transparent`, borderLeft: `${tri * 1.5}px solid #fff`, marginLeft: 3 }} />
+            </div>
+          )}
         </div>
-        <div style={{ position: 'absolute', top: 12, left: 12, fontFamily: 'JetBrains Mono, monospace', fontSize: 8.5, letterSpacing: '.14em', textTransform: 'uppercase', background: 'rgba(4,5,10,.8)', border: `1px solid ${tagColor}44`, color: tagColor, padding: '3px 9px' }}>{tag}</div>
+
+        {/* Tag */}
+        <div style={{ position: 'absolute', top: 10, left: 10, fontFamily: 'JetBrains Mono, monospace', fontSize: 8, letterSpacing: '.14em', textTransform: 'uppercase', background: 'rgba(8,11,20,.88)', border: `1px solid ${v.tagColor}40`, color: v.tagColor, padding: '2px 8px' }}>
+          {v.tag}
+        </div>
       </div>
+
       {/* Title */}
-      <div style={{ padding: large ? '18px 24px' : '14px 18px' }}>
-        <div className="f-display" style={{ fontWeight: 700, fontSize: large ? 16 : 13, color: 'var(--text)', lineHeight: 1.3 }}>{title}</div>
+      <div style={{ padding: pad }}>
+        <div className="f-display" style={{ fontWeight: 700, fontSize: fSize, color: ready ? 'var(--text)' : 'var(--sub)', lineHeight: 1.3 }}>{v.title}</div>
+        {!ready && <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.1em', marginTop: 5 }}>VIDEO UPLOADING SOON</div>}
       </div>
-    </a>
+    </>
   );
+
+  const sharedStyle: React.CSSProperties = {
+    display: 'block', textDecoration: 'none',
+    background: 'var(--card)', overflow: 'hidden',
+    cursor: ready ? 'pointer' : 'default',
+    opacity: ready ? 1 : .65,
+    transition: 'opacity .2s',
+  };
+
+  return ready
+    ? <a href={ytWatch(v.id)} target="_blank" rel="noreferrer" style={sharedStyle}>{inner}</a>
+    : <div style={sharedStyle}>{inner}</div>;
 }
 
 export const metadata = {
@@ -410,54 +447,91 @@ export default function HomePage() {
         </section>
 
         {/* ═══════════════════════════ VIDEO ═════════════════════════════════ */}
-        <section style={{ padding: 'clamp(64px,8vw,120px) clamp(16px,4vw,56px)', background: 'var(--bg)' }}>
+        <section style={{ padding: 'clamp(56px,7vw,100px) clamp(16px,4vw,56px)', background: 'var(--bg)' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 44 }}>
+
+            {/* Section header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16, marginBottom: 40 }}>
               <div>
-                <div className="eyebrow" style={{ marginBottom: 14 }}>From Our Studio</div>
-                <h2 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(32px,4.5vw,60px)', letterSpacing: '-.04em', lineHeight: .95, color: 'var(--text)' }}>
-                  Watch us<br />build Africa.
+                <div className="eyebrow" style={{ marginBottom: 12 }}>From Our Studio</div>
+                <h2 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(28px,3.5vw,50px)', letterSpacing: '-.04em', lineHeight: .95, color: 'var(--text)' }}>
+                  Watch us build Africa.
                 </h2>
               </div>
-              <Link href="/media" className="f-mono" style={{ fontSize: 10.5, letterSpacing: '.14em', color: 'var(--sub)', textDecoration: 'none', borderBottom: '1px solid var(--border)', paddingBottom: 3, textTransform: 'uppercase' }}>
-                All Videos →
+              <Link href="/media" className="f-mono" style={{ fontSize: 10, letterSpacing: '.14em', color: 'var(--sub)', textDecoration: 'none', borderBottom: '1px solid var(--border)', paddingBottom: 2, textTransform: 'uppercase', marginBottom: 4, flexShrink: 0 }}>
+                Full Library →
               </Link>
             </div>
 
-            {/* Featured + 3 secondary */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 1, background: 'var(--border)' }}>
+            {/* Two columns — Channel | Ads */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 1, background: 'var(--border)' }}>
 
-              {/* Featured — spans 2 cols on wide screens */}
-              <div style={{ gridColumn: 'span 2', minWidth: 0 }}>
-                <HomeVideoCard
-                  id="LXb3EKWsInQ"
-                  title="AutoReport: From Raw Data to Board-Ready PDF in 8 Seconds"
-                  tag="Product Demo" tagColor="#FF5757"
-                  large
-                />
+              {/* ── LEFT: Channel Videos ── */}
+              <div style={{ background: 'var(--card)', display: 'flex', flexDirection: 'column' }}>
+                {/* Column header */}
+                <div style={{ padding: '18px 22px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#FF0000', flexShrink: 0 }} />
+                    <span className="f-mono" style={{ fontSize: 9.5, letterSpacing: '.16em', color: 'var(--text)', textTransform: 'uppercase' }}>YouTube Channel</span>
+                  </div>
+                  <a href="https://youtube.com/@prostackng" target="_blank" rel="noreferrer"
+                    style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 8.5, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted)', textDecoration: 'none', background: 'rgba(255,0,0,.08)', border: '1px solid rgba(255,0,0,.2)', padding: '3px 10px', transition: 'color .2s' }}>
+                    Subscribe ↗
+                  </a>
+                </div>
+                {/* Video list — compact stacked */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 1, background: 'var(--border)', flex: 1 }}>
+                  {CHANNEL_VIDEOS.slice(0, 3).map((v, i) => (
+                    <VideoCard key={i} v={v} size="sm" />
+                  ))}
+                </div>
+                {/* Footer link */}
+                <div style={{ padding: '12px 18px', borderTop: '1px solid var(--border)', textAlign: 'right' }}>
+                  <Link href="/media" className="f-mono" style={{ fontSize: 9, letterSpacing: '.1em', color: 'var(--muted)', textDecoration: 'none', textTransform: 'uppercase' }}>
+                    {CHANNEL_VIDEOS.length} videos total →
+                  </Link>
+                </div>
               </div>
 
-              <HomeVideoCard id="JTxsNm9IdYU" title="ProTrackNG: Never Miss a Tender Deadline Again" tag="Product Demo" tagColor="#06B6D4" />
-              <HomeVideoCard id="hY7m5jjJ9mM" title="NightOps: Running a Nightclub with Zero Manual Counting" tag="Case Study" tagColor="#A78BFA" />
-              <HomeVideoCard id="KgpclqP-LBA" title="ProStack NG: Building Africa's Digital Infrastructure" tag="Company" tagColor="#2563EB" />
+              {/* ── RIGHT: Latest Ads ── */}
+              <div style={{ background: 'var(--card)', display: 'flex', flexDirection: 'column' }}>
+                {/* Column header */}
+                <div style={{ padding: '18px 22px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--blue)', flexShrink: 0 }} />
+                    <span className="f-mono" style={{ fontSize: 9.5, letterSpacing: '.16em', color: 'var(--text)', textTransform: 'uppercase' }}>Latest Ads</span>
+                  </div>
+                  <span className="f-mono" style={{ fontSize: 8.5, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted)', background: 'var(--s2)', border: '1px solid var(--border)', padding: '3px 10px' }}>
+                    Ad Team
+                  </span>
+                </div>
+                {/* Ads list */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 1, background: 'var(--border)', flex: 1 }}>
+                  {AD_VIDEOS.slice(0, 3).map((v, i) => (
+                    <VideoCard key={i} v={v} size="sm" />
+                  ))}
+                </div>
+                {/* Footer link */}
+                <div style={{ padding: '12px 18px', borderTop: '1px solid var(--border)', textAlign: 'right' }}>
+                  <Link href="/media" className="f-mono" style={{ fontSize: 9, letterSpacing: '.1em', color: 'var(--muted)', textDecoration: 'none', textTransform: 'uppercase' }}>
+                    View all ads →
+                  </Link>
+                </div>
+              </div>
+
             </div>
 
-            {/* YouTube subscribe strip */}
-            <div style={{ marginTop: 1, background: 'var(--card)', border: '1px solid var(--border)', borderTop: 'none', padding: '20px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
-              <p className="f-mono" style={{ fontSize: 10, letterSpacing: '.12em', color: 'var(--muted)', textTransform: 'uppercase' }}>
-                More demos, walkthroughs & case studies on our YouTube channel
+            {/* Subscribe strip */}
+            <div style={{ marginTop: 1, background: 'var(--s1)', border: '1px solid var(--border)', borderTop: 'none', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+              <p className="f-mono" style={{ fontSize: 9.5, letterSpacing: '.1em', color: 'var(--muted)', textTransform: 'uppercase' }}>
+                Subscribe for product demos, case studies, and company updates
               </p>
-              <a href="https://youtube.com/@prostackng" target="_blank" rel="noreferrer" style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                fontFamily: 'JetBrains Mono, monospace', fontWeight: 500, fontSize: 10,
-                letterSpacing: '.1em', textTransform: 'uppercase',
-                color: '#fff', background: '#FF0000',
-                padding: '8px 20px', textDecoration: 'none',
-                transition: 'opacity .2s', flexShrink: 0,
-              }}>
-                ▶ Subscribe
+              <a href="https://youtube.com/@prostackng" target="_blank" rel="noreferrer"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'JetBrains Mono, monospace', fontSize: 9.5, letterSpacing: '.1em', textTransform: 'uppercase', color: '#fff', background: '#FF0000', padding: '7px 18px', textDecoration: 'none', flexShrink: 0 }}>
+                ▶ Subscribe on YouTube
               </a>
             </div>
+
           </div>
         </section>
 

@@ -9,6 +9,7 @@ const LINKS = [
   { href: '/technology',   label: 'Technology'   },
   { href: '/case-studies', label: 'Case Studies' },
   { href: '/media',        label: 'Media'        },
+  { href: '/pricing',      label: 'Pricing'      },
   { href: '/company',      label: 'Company'      },
   { href: '/contact',      label: 'Contact'      },
 ];
@@ -72,8 +73,8 @@ export default function Navbar() {
 
         {/* Desktop CTAs */}
         <div className="hidden md:flex" style={{ gap: 10, marginLeft: 'auto' }}>
-          <Link href="/products" className="nav-cta-ghost">Our Products</Link>
-          <Link href="/contact" className="nav-cta-solid">Work With Us</Link>
+          <Link href="/pricing" className="nav-cta-ghost">Pricing</Link>
+          <Link href="/demo" className="nav-cta-solid">Book a Demo →</Link>
         </div>
 
         {/* Hamburger */}
@@ -109,13 +110,13 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
-          <Link href="/contact" style={{
+          <Link href="/demo" style={{
             marginTop: 28, fontFamily: 'Syne, sans-serif', fontWeight: 700,
             fontSize: 12, letterSpacing: '.08em', textTransform: 'uppercase',
             background: 'var(--blue)', color: '#fff',
             padding: '14px 48px', textDecoration: 'none',
           }}>
-            Start a Project →
+            Book a Demo →
           </Link>
         </div>
       )}

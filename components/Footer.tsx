@@ -27,10 +27,11 @@ const COLS = [
   {
     title: 'Connect',
     links: [
-      { label: 'contact@prostackng.com',  href: 'mailto:contact@prostackng.com' },
-      { label: 'WhatsApp: +234 705 944 9360', href: 'https://wa.me/2347059449360' },
-      { label: 'Free Consultation',       href: '/contact'                      },
-      { label: 'Boardroom (Staff)',        href: '/boardroom'                    },
+      { label: 'contact@prostackng.com',      href: 'mailto:contact@prostackng.com'    },
+      { label: 'WhatsApp: +234 705 944 9360', href: 'https://wa.me/2347059449360'      },
+      { label: 'Book a Free Demo',             href: '/demo'                            },
+      { label: 'Pricing',                      href: '/pricing'                         },
+      { label: 'Boardroom (Staff)',             href: '/boardroom'                       },
     ],
   },
 ];
