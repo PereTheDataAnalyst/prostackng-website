@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import StackLogo from './StackLogo';
 
 const LINKS = [
   { href: '/products',     label: 'Products'     },
@@ -12,106 +13,74 @@ const LINKS = [
 ];
 
 export default function Navbar() {
-  const pathname                    = usePathname();
+  const pathname = usePathname();
   const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20);
+    const fn = () => setScrolled(window.scrollY > 24);
     window.addEventListener('scroll', fn, { passive: true });
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
-  useEffect(() => setMobileOpen(false), [pathname]);
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   if (pathname?.startsWith('/boardroom')) return null;
 
+  const navBg = scrolled
+    ? 'rgba(4,5,10,.92)'
+    : 'transparent';
+  const navBorder = scrolled
+    ? '1px solid var(--border)'
+    : '1px solid transparent';
+
   return (
     <>
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between"
-        style={{
-          height: 68,
-          padding: '0 clamp(16px, 4vw, 56px)',
-          background:     scrolled ? 'rgba(5,5,7,.92)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(24px)'       : 'none',
-          borderBottom:   scrolled ? '1px solid var(--border)' : 'none',
-          transition: 'background .3s, border-color .3s',
-        }}
-      >
+      <nav style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
+        height: 68,
+        display: 'flex', alignItems: 'center',
+        padding: '0 clamp(16px,4vw,56px)',
+        background: navBg,
+        borderBottom: navBorder,
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        transition: 'background .3s, border-color .3s, backdrop-filter .3s',
+      }}>
+
         {/* Logo */}
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
-          <div style={{
-            width: 34, height: 34, background: 'var(--accent)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 12,
-            color: '#fff', letterSpacing: '.05em', flexShrink: 0,
-          }}>
-            PS
-          </div>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none', flexShrink: 0 }}>
+          <StackLogo size={28} />
           <div>
-            <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 15, letterSpacing: '-.02em', color: 'var(--text)', lineHeight: 1 }}>
-              ProStack<span style={{ color: 'var(--accent)' }}>NG</span>
+            <div className="f-display" style={{ fontWeight: 800, fontSize: 15, letterSpacing: '-.02em', color: 'var(--text)', lineHeight: 1 }}>
+              ProStack<span style={{ color: 'var(--blue-hi)' }}>NG</span>
             </div>
-            <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 8, letterSpacing: '.2em', color: 'var(--muted)', lineHeight: 1, marginTop: 2 }}>
+            <div className="f-mono" style={{ fontSize: 7.5, letterSpacing: '.22em', color: 'var(--muted)', marginTop: 2 }}>
               TECHNOLOGIES
             </div>
           </div>
         </Link>
 
-        {/* Desktop links */}
-        <div className="hidden md:flex" style={{ gap: 32 }}>
-          {LINKS.map(l => {
-            const active = pathname === l.href;
-            return (
-              <Link key={l.href} href={l.href} style={{
-                fontFamily: 'Instrument Sans, sans-serif',
-                fontSize: 14, fontWeight: 500,
-                color: active ? 'var(--text)' : 'var(--sub)',
-                textDecoration: 'none',
-                position: 'relative',
-                paddingBottom: 2,
-              }}>
-                {l.label}
-                <span style={{
-                  position: 'absolute', bottom: -2, left: 0, right: 0, height: 1,
-                  background: 'var(--accent)',
-                  transform: active ? 'scaleX(1)' : 'scaleX(0)',
-                  transformOrigin: 'left',
-                  transition: 'transform .25s',
-                }} />
-              </Link>
-            );
-          })}
+        {/* Desktop nav links */}
+        <div className="hidden md:flex" style={{ gap: 32, marginLeft: 48 }}>
+          {LINKS.map(l => (
+            <Link key={l.href} href={l.href} className={`nav-link${pathname === l.href ? ' active' : ''}`}>
+              {l.label}
+            </Link>
+          ))}
         </div>
 
         {/* Desktop CTAs */}
-        <div className="hidden md:flex" style={{ gap: 10 }}>
-          <Link href="/products" className="nav-ghost-btn" style={{
-            padding: '8px 18px', fontSize: 11,
-            letterSpacing: '.06em', textTransform: 'uppercase',
-            fontFamily: 'Syne, sans-serif', fontWeight: 600,
-            textDecoration: 'none', display: 'inline-block',
-          }}>
-            Our Products
-          </Link>
-          <Link href="/contact" style={{
-            padding: '8px 22px', fontSize: 11,
-            letterSpacing: '.06em', textTransform: 'uppercase',
-            fontFamily: 'Syne, sans-serif', fontWeight: 700,
-            background: 'var(--accent)', color: '#fff',
-            textDecoration: 'none', display: 'inline-block',
-          }}>
-            Work With Us
-          </Link>
+        <div className="hidden md:flex" style={{ gap: 10, marginLeft: 'auto' }}>
+          <Link href="/products" className="nav-cta-ghost">Our Products</Link>
+          <Link href="/contact" className="nav-cta-solid">Work With Us</Link>
         </div>
 
         {/* Hamburger */}
         <button
           className="md:hidden"
-          style={{ background: 'none', border: 'none', color: 'var(--text)', fontSize: 20, cursor: 'pointer' }}
+          style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'var(--text)', fontSize: 22, cursor: 'pointer', lineHeight: 1 }}
           onClick={() => setMobileOpen(o => !o)}
-          aria-label="Toggle menu"
+          aria-label="Menu"
         >
           {mobileOpen ? '✕' : '☰'}
         </button>
@@ -121,40 +90,48 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="md:hidden" style={{
           position: 'fixed', inset: 0, zIndex: 40,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28,
-          background: 'rgba(5,5,7,.98)', backdropFilter: 'blur(20px)', paddingTop: 68,
+          background: 'rgba(4,5,10,.97)', backdropFilter: 'blur(24px)',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6,
         }}>
+          <div style={{ marginBottom: 40, opacity: .4 }}>
+            <StackLogo size={48} />
+          </div>
           {LINKS.map(l => (
             <Link key={l.href} href={l.href} style={{
-              fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 28,
-              letterSpacing: '-.02em', color: 'var(--text)', textDecoration: 'none',
+              fontFamily: 'Syne, sans-serif', fontWeight: 700,
+              fontSize: 'clamp(28px,7vw,44px)',
+              letterSpacing: '-.03em',
+              color: pathname === l.href ? 'var(--blue-hi)' : 'var(--text)',
+              textDecoration: 'none',
+              padding: '10px 0',
             }}>
               {l.label}
             </Link>
           ))}
           <Link href="/contact" style={{
-            marginTop: 16, padding: '14px 48px', fontSize: 13,
-            letterSpacing: '.06em', textTransform: 'uppercase',
-            fontFamily: 'Syne, sans-serif', fontWeight: 700,
-            background: 'var(--accent)', color: '#fff', textDecoration: 'none',
+            marginTop: 28, fontFamily: 'Syne, sans-serif', fontWeight: 700,
+            fontSize: 12, letterSpacing: '.08em', textTransform: 'uppercase',
+            background: 'var(--blue)', color: '#fff',
+            padding: '14px 48px', textDecoration: 'none',
           }}>
-            Work With Us
+            Start a Project →
           </Link>
         </div>
       )}
 
       {/* WhatsApp FAB */}
-      <a
-        href="https://wa.me/2347059449360"
-        target="_blank"
-        rel="noreferrer"
+      <a href="https://wa.me/2347059449360" target="_blank" rel="noreferrer"
         style={{
           position: 'fixed', bottom: 24, right: 24, zIndex: 50,
-          width: 54, height: 54, borderRadius: '50%',
-          background: '#25D366', boxShadow: '0 4px 24px rgba(37,211,102,.4)',
+          width: 52, height: 52, borderRadius: '50%',
+          background: '#25D366', color: '#fff',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 24, textDecoration: 'none',
+          fontSize: 22, textDecoration: 'none',
+          boxShadow: '0 4px 20px rgba(37,211,102,.35)',
+          transition: 'transform .2s, box-shadow .2s',
         }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.08)'; }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; }}
       >
         💬
       </a>

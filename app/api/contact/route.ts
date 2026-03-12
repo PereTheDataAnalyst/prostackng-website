@@ -1,104 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Simple in-memory rate limiter: max 3 submissions per IP per 10 minutes
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + 10 * 60 * 1000 });
-    return false;
-  }
-  if (entry.count >= 3) return true;
-  entry.count++;
-  return false;
-}
-
 export async function POST(req: NextRequest) {
   try {
-    // Rate limiting
-    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-    if (isRateLimited(ip)) {
-      return NextResponse.json({ error: 'Too many requests. Please wait a few minutes before trying again.' }, { status: 429 });
-    }
-
     const body = await req.json();
-    const { name, email, phone, type, message } = body;
-
-    // Basic validation
-    if (!name?.trim() || !email?.trim() || !message?.trim()) {
-      return NextResponse.json({ error: 'Name, email and message are required' }, { status: 400 });
+    const { name, email, company, service, message } = body;
+    if (!name || !email || !message) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
-    }
-
-    // 1. Save to Supabase (never deleted, queryable forever)
-    const { error: dbError } = await supabaseAdmin()
-      .from('contact_submissions')
-      .insert({ name, email, phone: phone || null, inquiry_type: type || null, message, created_at: new Date().toISOString() });
-
-    if (dbError) {
-      console.error('Supabase error:', dbError);
-      // Don't fail the request — still try to send email
-    }
-
-    // 2. Send notification email via Resend
-    // NOTE: Using onboarding@resend.dev sender until prostackng.com domain is verified in Resend
-    const contactEmail = process.env.CONTACT_EMAIL || 'contact@prostackng.com';
     await resend.emails.send({
-      from:    'ProStack NG <onboarding@resend.dev>',
-      to:      [contactEmail],
+      from: 'ProStack NG <onboarding@resend.dev>',
+      to: [process.env.CONTACT_EMAIL ?? 'contact@prostackng.com'],
+      subject: `New enquiry from ${name}${company ? ` (${company})` : ''}`,
       reply_to: email,
-      subject: `New enquiry from ${name} — ${type || 'General'}`,
       html: `
-        <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0C1220;color:#E2EAF4;padding:40px;border-radius:8px">
-          <div style="border-bottom:2px solid #8B5CF6;padding-bottom:16px;margin-bottom:24px">
-            <h2 style="color:#8B5CF6;margin:0;font-size:20px">New ProStack NG Enquiry</h2>
-          </div>
-          <table style="width:100%;border-collapse:collapse">
-            ${[['Name',name],['Email',email],['Phone',phone||'—'],['Type',type||'General'],].map(([k,v])=>`
-            <tr><td style="padding:10px 0;color:#8899AA;font-size:13px;width:100px;vertical-align:top">${k}</td>
-                <td style="padding:10px 0;color:#E2EAF4;font-size:14px">${v}</td></tr>`).join('')}
-          </table>
-          <div style="margin-top:20px;background:#080C12;padding:20px;border-left:3px solid #8B5CF6">
-            <p style="color:#8899AA;font-size:12px;margin:0 0 8px 0">MESSAGE</p>
-            <p style="color:#E2EAF4;font-size:14px;line-height:1.7;margin:0">${message.replace(/\n/g,'<br>')}</p>
-          </div>
-          <p style="margin-top:24px;color:#445566;font-size:12px">Submitted via prostackng.com</p>
+        <div style="font-family:sans-serif;max-width:600px">
+          <h2 style="color:#2563EB">New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          ${company ? `<p><strong>Company:</strong> ${company}</p>` : ''}
+          ${service ? `<p><strong>Service:</strong> ${service}</p>` : ''}
+          <hr/>
+          <p><strong>Message:</strong></p>
+          <p style="white-space:pre-wrap">${message}</p>
         </div>
       `,
     });
-
-    // 3. Send confirmation email to the person
-    await resend.emails.send({
-      from:    'ProStack NG <onboarding@resend.dev>',
-      to:      [email],
-      subject: `We got your message, ${name.split(' ')[0]}`,
-      html: `
-        <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#050709;color:#E2EAF4;padding:48px">
-          <div style="width:36px;height:36px;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#000;margin-bottom:28px">PS</div>
-          <h1 style="font-size:26px;font-weight:800;margin:0 0 16px 0">We'll be in touch shortly.</h1>
-          <p style="color:#8899AA;line-height:1.8;margin:0 0 24px 0">
-            Hi ${name.split(' ')[0]}, thanks for reaching out to ProStack NG. We've received your message and one of our team will respond within <strong style="color:#8B5CF6">2 business hours</strong>.
-          </p>
-          <p style="color:#8899AA;line-height:1.8;margin:0 0 40px 0">
-            In the meantime, you can reach us directly on WhatsApp: <a href="https://wa.me/2347059449360" style="color:#8B5CF6">+234 705 944 9360</a>
-          </p>
-          <div style="border-top:1px solid #111D2E;padding-top:24px">
-            <p style="color:#445566;font-size:12px;margin:0">ProStack NG Technologies · Port Harcourt, Nigeria · prostackng.com</p>
-          </div>
-        </div>
-      `,
-    });
-
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('Contact API error:', err);
-    return NextResponse.json({ error: 'Server error — please try again' }, { status: 500 });
+    console.error('Contact error:', err);
+    return NextResponse.json({ error: 'Failed to send message' }, { status: 500 });
   }
 }

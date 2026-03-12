@@ -3,104 +3,130 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Ticker from '@/components/Ticker';
 import StatusBadge from '@/components/ui/StatusBadge';
-import Counter from '@/components/ui/Counter';
-import { PRODUCTS, CASE_STUDIES, TIMELINE, COMPANY_STATS } from '@/lib/data';
+import StackLogo from '@/components/StackLogo';
 
-const LIVE = PRODUCTS.filter(p => p.status === 'LIVE');
+export const metadata = {
+  title: 'ProStack NG — Platform-first technology for Africa',
+  description: 'ProStack NG builds intelligent digital platforms for African businesses. Tender intelligence, nightlife OS, automated reporting, marketplace, ride-hailing.',
+};
+
+const STATS = [
+  { n: '3',    unit: '',   label: 'Live Platforms'    },
+  { n: '20+',  unit: '',   label: 'Clients Served'    },
+  { n: '8s',   unit: '',   label: 'Report Pipeline'   },
+  { n: '₦0',   unit: '',   label: 'Outside Capital'   },
+];
+
+const PRODUCTS = [
+  { id: 'protrackng', name: 'ProTrackNG',  color: '#06B6D4', icon: '◎', tag: 'Tender Intelligence',     status: 'LIVE'        as const, desc: 'AI-powered tender discovery and tracking for Nigerian businesses.' },
+  { id: 'nightops',   name: 'NightOps',    color: '#A78BFA', icon: '◈', tag: 'Nightlife Operating System', status: 'LIVE'      as const, desc: 'Full operational intelligence for nightclubs and entertainment venues.' },
+  { id: 'autoreport', name: 'AutoReport',  color: '#FF5757', icon: '▦', tag: 'Executive Reporting',      status: 'LIVE'        as const, desc: '8-second pipeline from raw data to board-ready PDF and Excel.' },
+  { id: 'myharriet',  name: 'MyHarriet',   color: '#F5B530', icon: '⬡', tag: 'Commerce & Marketplace',   status: 'BUILDING'    as const, desc: 'Full-featured marketplace for Nigerian commerce with escrow.' },
+  { id: 'swiftride',  name: 'SwiftRide',   color: '#38BDF8', icon: '⟁', tag: 'Mobility Platform',        status: 'ROADMAP'     as const, desc: 'Modern ride-hailing built for Rivers State and beyond.' },
+  { id: 'stakex',     name: 'StakeX',      color: '#FB923C', icon: '◑', tag: 'Digital Staking',          status: 'ROADMAP'     as const, desc: 'Next-generation digital staking for Africa\'s growing economy.' },
+];
+
+const LIVE = ['protrackng', 'nightops', 'autoreport'];
+
+const SERVICES = [
+  { name: 'auth.prostackng.com',      label: 'Unified Auth',    color: '#06B6D4' },
+  { name: 'api.prostackng.com',       label: 'API Gateway',     color: '#2563EB' },
+  { name: 'payments.prostackng.com',  label: 'Payment Rails',   color: '#F5B530' },
+  { name: 'notify.prostackng.com',    label: 'Notifications',   color: '#A78BFA' },
+  { name: 'analytics.prostackng.com', label: 'Analytics',       color: '#FF5757' },
+  { name: 'cdn.prostackng.com',       label: 'CDN & Storage',   color: '#FB923C' },
+];
+
+const CASES = [
+  { color: '#FF5757', product: 'AutoReport', metric: '8s', metricLabel: 'Pipeline Runtime', title: 'From 3-hour grind to 8-second intelligence', result: 'Zero human effort. Board-ready reports in every inbox, every morning.' },
+  { color: '#A78BFA', product: 'NightOps',   metric: '5min', metricLabel: 'Nightly Reconciliation', title: 'A nightclub that knows its numbers in real time', result: '100% ops digitised. Reconciliation down from 2 hours to 5 minutes.' },
+  { color: '#06B6D4', product: 'ProTrackNG', metric: '100%', metricLabel: 'Pipeline Visibility', title: 'Tender deadlines never missed again', result: 'Full pipeline visibility from day one. Bid success measurably improved.' },
+];
+
+const TIMELINE = [
+  { phase: 'Phase 1', period: 'Now', status: 'active',  desc: 'ProTrackNG, NightOps & AutoReport live. Consulting revenue. Brand credibility established in Oil & Gas and hospitality.' },
+  { phase: 'Phase 2', period: 'Q3 2025', status: 'next', desc: 'MyHarriet beta — campus marketplace launch in Port Harcourt and Abuja. Escrow payments, vendor onboarding, trust system.' },
+  { phase: 'Phase 3', period: 'Q1 2026', status: 'plan', desc: 'SwiftRide — Rivers State and Bayelsa launch. Shared auth and payment infrastructure fully operational across all products.' },
+  { phase: 'Phase 4', period: 'Q3 2026', status: 'plan', desc: 'StakeX. Full ecosystem complete. Series A fundraise targeting $500K–$2M. Pan-Africa expansion begins.' },
+];
 
 export default function HomePage() {
-  const hero = LIVE[0];
-
   return (
     <>
       <Navbar />
       <main>
 
-        {/* ── HERO ─────────────────────────────────────────────── */}
-        <section
-          className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-grid"
-          style={{ paddingTop: 68, backgroundSize: '56px 56px' }}
-        >
-          {/* Grid fade mask */}
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 30%, transparent 40%, var(--bg) 100%)' }} />
-
-          {/* Glow orbs */}
-          <div className="absolute pointer-events-none"
-            style={{ top: '-10%', left: '-5%', width: 700, height: 700, borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(124,58,237,.05) 0%, transparent 60%)' }} />
-          <div className="absolute pointer-events-none"
-            style={{ bottom: '-10%', right: '-5%', width: 600, height: 600, borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(219,39,119,.03) 0%, transparent 60%)' }} />
-
+        {/* ═══════════════════════════════ HERO ══════════════════════════════ */}
+        <section className="bg-grid" style={{
+          minHeight: '100vh',
+          display: 'flex', flexDirection: 'column', justifyContent: 'center',
+          position: 'relative', overflow: 'hidden',
+          paddingTop: 68,
+          backgroundSize: '52px 52px',
+        }}>
+          {/* Radial vignette */}
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 90% 80% at 50% 50%, transparent 40%, var(--bg) 100%)', pointerEvents: 'none' }} />
+          {/* Blue glow left */}
+          <div style={{ position: 'absolute', top: '15%', left: '-5%', width: 640, height: 640, borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,.07) 0%, transparent 65%)', pointerEvents: 'none' }} />
           {/* Scan line */}
-          <div className="absolute left-0 right-0 h-px pointer-events-none animate-scan"
-            style={{ background: 'linear-gradient(90deg,transparent 0%,rgba(124,58,237,.35) 50%,transparent 100%)' }} />
+          <div className="anim-scan" style={{ position: 'absolute', left: 0, right: 0, height: 1, background: 'linear-gradient(90deg,transparent,rgba(37,99,235,.5),transparent)', pointerEvents: 'none' }} />
 
-          <div
-            className="relative w-full"
-            style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(60px,8vh,120px) clamp(16px,4vw,56px)' }}
-          >
-            {/* Eyebrow pill */}
-            <div className="animate-fadeUp flex items-center gap-2 mb-8" style={{ width: 'fit-content' }}>
-              <div
-                className="font-mono flex items-center gap-2"
-                style={{
-                  padding: '6px 14px', fontSize: 10.5, letterSpacing: '.18em',
-                  color: 'var(--accent-hi)',
-                  border: '1px solid rgba(139,92,246,.3)',
-                  background: 'rgba(124,58,237,.05)',
-                }}
-              >
-                <span className="animate-blink" style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />
-                BUILDING AFRICA'S DIGITAL INFRASTRUCTURE
-              </div>
+          {/* Giant watermark logo */}
+          <div style={{ position: 'absolute', right: '-2%', top: '50%', transform: 'translateY(-52%)', pointerEvents: 'none', opacity: .03 }}>
+            <StackLogo size={640} />
+          </div>
+
+          <div style={{ position: 'relative', maxWidth: 1200, margin: '0 auto', width: '100%', padding: 'clamp(64px,10vh,120px) clamp(16px,4vw,56px)' }}>
+
+            {/* Eyebrow */}
+            <div className="eyebrow anim-fadeup d1" style={{ marginBottom: 32 }}>
+              Building Africa&apos;s Digital Infrastructure
             </div>
 
             {/* Headline */}
-            <h1
-              className="font-display font-black animate-fadeUp delay-1"
-              style={{ fontSize: 'clamp(52px,7.5vw,108px)', lineHeight: .95, letterSpacing: '-.04em', maxWidth: 960, marginBottom: 32 }}
-            >
-              Platform-first<br />
+            <h1 className="f-display anim-fadeup d2" style={{
+              fontSize: 'clamp(56px,8.5vw,120px)',
+              fontWeight: 800,
+              lineHeight: .92,
+              letterSpacing: '-.04em',
+              marginBottom: 32,
+              maxWidth: 900,
+            }}>
+              Platform&#8209;first<br />
               <span className="text-ghost">technology</span><br />
-              <span style={{ color: 'var(--accent)' }}>for Africa.</span>
+              <span style={{ color: 'var(--blue-hi)' }}>for Africa.</span>
             </h1>
 
-            <p
-              className="text-sub animate-fadeUp delay-2"
-              style={{ fontSize: 'clamp(15px,1.5vw,18px)', lineHeight: 1.85, maxWidth: 520, marginBottom: 44 }}
-            >
-              ProStack NG builds intelligent digital platforms — from tender intelligence and nightlife operating systems
-              to marketplace commerce and ride-hailing. One ecosystem. Serious infrastructure.
+            <p className="anim-fadeup d3" style={{
+              fontSize: 'clamp(15px,1.5vw,18px)',
+              color: 'var(--sub)',
+              lineHeight: 1.85,
+              maxWidth: 520,
+              marginBottom: 44,
+            }}>
+              ProStack NG builds intelligent digital platforms — from tender intelligence
+              and nightlife operating systems to marketplace commerce and ride-hailing.
+              One ecosystem. Serious infrastructure.
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-wrap gap-3 animate-fadeUp delay-3" style={{ marginBottom: 72 }}>
-              <Link href="/products"
-                className="font-display font-bold no-underline hover-glow inline-flex items-center gap-2"
-                style={{ padding: '14px 36px', fontSize: 13, letterSpacing: '.06em', textTransform: 'uppercase', background: 'var(--accent)', color: '#fff' }}>
-                Explore Products →
-              </Link>
-              <Link href="/case-studies"
-                className="font-display font-semibold no-underline inline-flex items-center"
-                style={{ padding: '14px 36px', fontSize: 13, letterSpacing: '.06em', textTransform: 'uppercase', border: '1px solid var(--borderhi)', color: 'var(--sub)' }}>
-                View Case Studies
-              </Link>
+            <div className="anim-fadeup d4" style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 72 }}>
+              <Link href="/products" className="btn btn-primary">Explore Products →</Link>
+              <Link href="/case-studies" className="btn btn-ghost">View Case Studies</Link>
             </div>
 
-            {/* Stats */}
-            <div
-              className="flex flex-wrap gap-0 animate-fadeUp delay-4"
-              style={{ borderTop: '1px solid var(--border)', paddingTop: 40 }}
-            >
-              {COMPANY_STATS.map((s, i) => (
-                <div key={s.label}
-                  style={{ paddingRight: 48, marginRight: 48, borderRight: i < COMPANY_STATS.length - 1 ? '1px solid var(--border)' : 'none' }}>
-                  <div className="font-display font-black" style={{ fontSize: 'clamp(32px,3.5vw,48px)', lineHeight: 1, color: 'var(--accent)', letterSpacing: '-.03em' }}>
-                    <Counter target={s.value} suffix={s.suffix} />
+            {/* Stats strip */}
+            <div className="anim-fadeup d5" style={{ display: 'flex', flexWrap: 'wrap', gap: 0, borderTop: '1px solid var(--border)', paddingTop: 40 }}>
+              {STATS.map((s, i) => (
+                <div key={s.label} style={{
+                  paddingRight: 40, marginRight: 40,
+                  borderRight: i < STATS.length - 1 ? '1px solid var(--border)' : 'none',
+                  marginBottom: 16,
+                }}>
+                  <div className="f-display" style={{ fontSize: 'clamp(34px,4vw,52px)', fontWeight: 800, lineHeight: 1, letterSpacing: '-.03em', color: 'var(--text)' }}>
+                    {s.n}<span style={{ color: 'var(--blue-hi)' }}>{s.unit}</span>
                   </div>
-                  <div className="font-mono text-muted mt-1" style={{ fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase' }}>
+                  <div className="f-mono" style={{ fontSize: 9.5, letterSpacing: '.14em', color: 'var(--muted)', marginTop: 5, textTransform: 'uppercase' }}>
                     {s.label}
                   </div>
                 </div>
@@ -109,32 +135,39 @@ export default function HomePage() {
           </div>
 
           {/* Floating product card — desktop only */}
-          <div
-            className="absolute hidden lg:block animate-float"
-            style={{ right: 'clamp(20px,5vw,80px)', top: '50%', transform: 'translateY(-50%)', width: 276 }}
-          >
-            <div
-              className="relative overflow-hidden"
-              style={{ background: 'var(--card)', border: '1px solid var(--borderhi)', padding: 28 }}
-            >
-              <div className="absolute top-0 left-0 right-0 h-0.5"
-                style={{ background: `linear-gradient(90deg,${hero.color},transparent)` }} />
-              <div className="flex justify-between items-start mb-5">
+          <div className="anim-float hidden lg:block" style={{
+            position: 'absolute',
+            right: 'clamp(24px,5vw,80px)',
+            top: '50%', transform: 'translateY(-44%)',
+            width: 268,
+          }}>
+            <div style={{
+              background: 'var(--card)',
+              border: '1px solid var(--hi)',
+              padding: 28,
+              position: 'relative',
+              overflow: 'hidden',
+            }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, #2563EB, #06B6D4)' }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
                 <StatusBadge status="LIVE" />
-                <span className="font-mono text-muted" style={{ fontSize: 9 }}>ACTIVE</span>
+                <div className="f-mono" style={{ fontSize: 8.5, color: 'var(--muted)', letterSpacing: '.1em' }}>PROTRACKNG</div>
               </div>
-              <div className="font-display font-bold text-text mb-1" style={{ fontSize: 17 }}>{hero.name}</div>
-              <div className="font-mono mb-5" style={{ color: hero.color, fontSize: 10 }}>{hero.tagline}</div>
-              {hero.metrics.map((m, i) => (
-                <div key={i} className="flex items-center gap-2 mb-2">
-                  <span style={{ color: 'var(--accent)', fontSize: 9, fontWeight: 700 }}>✓</span>
-                  <span className="text-sub" style={{ fontSize: 11.5 }}>{m}</span>
+              <div className="f-display" style={{ fontWeight: 800, fontSize: 20, letterSpacing: '-.02em', color: 'var(--text)', marginBottom: 4 }}>
+                ProTrackNG
+              </div>
+              <div className="f-mono" style={{ fontSize: 9.5, color: '#06B6D4', letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 20 }}>
+                Tender Intelligence
+              </div>
+              {['Oil & Gas sector live', 'Multi-tender pipeline', 'Real-time alerts'].map(m => (
+                <div key={m} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <span style={{ color: '#2563EB', fontSize: 8, fontWeight: 700 }}>◆</span>
+                  <span style={{ fontSize: 12, color: 'var(--sub)' }}>{m}</span>
                 </div>
               ))}
-              <div className="flex flex-wrap gap-1.5 mt-4">
-                {hero.stack.slice(0, 3).map(t => (
-                  <span key={t} className="font-mono"
-                    style={{ padding: '2px 7px', fontSize: 9, border: '1px solid rgba(139,92,246,.2)', color: 'var(--accent-hi)', background: 'rgba(139,92,246,.06)' }}>
+              <div style={{ display: 'flex', gap: 6, marginTop: 18 }}>
+                {['React', 'Node.js', 'PostgreSQL'].map(t => (
+                  <span key={t} className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', border: '1px solid var(--border)', padding: '2px 7px' }}>
                     {t}
                   </span>
                 ))}
@@ -145,182 +178,245 @@ export default function HomePage() {
 
         <Ticker />
 
-        {/* ── PRODUCTS GRID ────────────────────────────────────── */}
-        <section style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: 'clamp(60px,8vw,120px) clamp(16px,4vw,56px)' }}>
+        {/* ═══════════════════════════ PRODUCTS ══════════════════════════════ */}
+        <section style={{ background: 'var(--s1)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: 'clamp(64px,8vw,120px) clamp(16px,4vw,56px)' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-            <div className="flex justify-between items-end flex-wrap gap-5" style={{ marginBottom: 48 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 52 }}>
               <div>
-                <div className="section-label">Product Ecosystem</div>
-                <h2 className="font-display font-black text-text" style={{ fontSize: 'clamp(30px,4vw,54px)', letterSpacing: '-.03em', lineHeight: 1.0 }}>
-                  Our platforms.<br />One infrastructure.
+                <div className="eyebrow" style={{ marginBottom: 14 }}>Product Ecosystem</div>
+                <h2 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(32px,4.5vw,60px)', letterSpacing: '-.04em', lineHeight: .95, color: 'var(--text)' }}>
+                  Six platforms.<br />One infrastructure.
                 </h2>
               </div>
-              <Link href="/products"
-                className="font-mono text-sub no-underline transition-colors duration-200 flex items-center gap-2"
-                style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', borderBottom: '1px solid var(--border)', paddingBottom: 4 }}>
+              <Link href="/products" className="f-mono" style={{ fontSize: 10.5, letterSpacing: '.14em', color: 'var(--sub)', textDecoration: 'none', borderBottom: '1px solid var(--border)', paddingBottom: 3, textTransform: 'uppercase', transition: 'color .2s, border-color .2s' }}>
                 All Products →
               </Link>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(340px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
-              {PRODUCTS.map(p => {
-                const isLive = p.status === 'LIVE';
-                return (
-                  <div key={p.id}
-                    className="relative overflow-hidden hover-surface"
-                    style={{ background: 'var(--card)', padding: 36, opacity: isLive ? 1 : .55 }}
-                  >
-                    <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: p.color, opacity: .7 }} />
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="flex items-center justify-center font-display font-bold border text-xl"
-                        style={{ width: 48, height: 48, background: `${p.color}10`, borderColor: `${p.color}25`, color: p.color }}>
-                        {p.icon}
-                      </div>
-                      <StatusBadge status={isLive ? p.status : 'COMING_SOON'} />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 1, background: 'var(--border)' }}>
+              {PRODUCTS.map(p => (
+                <div key={p.id} className="card-hover" style={{
+                  background: 'var(--card)',
+                  padding: 36,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  opacity: LIVE.includes(p.id) ? 1 : .55,
+                }}>
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: p.color, opacity: .7 }} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
+                    <div style={{
+                      width: 44, height: 44, flexShrink: 0,
+                      background: `${p.color}12`,
+                      border: `1px solid ${p.color}25`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 20, color: p.color,
+                    }}>
+                      {p.icon}
                     </div>
-                    <div className="font-display font-bold text-text mb-1" style={{ fontSize: 19 }}>{p.name}</div>
-                    <div className="font-mono mb-4" style={{ color: p.color, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase' }}>{p.tagline}</div>
-                    <p className="text-sub leading-relaxed mb-5" style={{ fontSize: 13.5 }}>{p.desc.slice(0, 110)}...</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {p.stack.slice(0, 3).map(t => (
-                        <span key={t} className="font-mono text-muted"
-                          style={{ padding: '2px 8px', fontSize: 10.5, border: '1px solid var(--border)', background: 'rgba(255,255,255,.02)' }}>
-                          {t}
-                        </span>
-                      ))}
-                    </div>
+                    <StatusBadge status={LIVE.includes(p.id) ? p.status : 'COMING_SOON'} />
                   </div>
-                );
-              })}
+                  <div className="f-display" style={{ fontWeight: 800, fontSize: 20, letterSpacing: '-.02em', color: 'var(--text)', marginBottom: 4 }}>
+                    {p.name}
+                  </div>
+                  <div className="f-mono" style={{ fontSize: 9.5, color: p.color, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 14 }}>
+                    {p.tag}
+                  </div>
+                  <p style={{ fontSize: 13.5, color: 'var(--sub)', lineHeight: 1.75 }}>{p.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* ── TERMINAL / HOW WE BUILD ───────────────────────────── */}
-        <section style={{ padding: 'clamp(60px,8vw,120px) clamp(16px,4vw,56px)' }}>
-          <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 64, alignItems: 'center' }}>
-            <div>
-              <div className="section-label">How We Build</div>
-              <h2 className="font-display font-black text-text" style={{ fontSize: 'clamp(28px,3.5vw,48px)', letterSpacing: '-.03em', lineHeight: 1.05, marginBottom: 16 }}>
-                Infrastructure you can<br /><span style={{ color: 'var(--accent)' }}>depend on.</span>
-              </h2>
-              <p className="text-sub" style={{ fontSize: 15, lineHeight: 1.85, marginBottom: 40, maxWidth: 440 }}>
-                Every platform we build shares a common backbone — shared auth, payment rails, real-time infrastructure, and cloud-native deployment. Build once, scale infinitely.
-              </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
-                {[
-                  { num: '01', icon: '⚡', title: 'Shared Auth',     desc: 'One identity system. Sign in once, access all products.' },
-                  { num: '02', icon: '💳', title: 'Payment Rails',   desc: 'Paystack, Flutterwave, and crypto-ready from the core.' },
-                  { num: '03', icon: '📡', title: 'Real-time First', desc: 'WebSockets, live dashboards, instant notifications.' },
-                  { num: '04', icon: '🔒', title: 'Security by Default', desc: 'RLS policies, encrypted storage, audit logs everywhere.' },
-                ].map(f => (
-                  <div key={f.num}
-                    className="hover-surface"
-                    style={{ background: 'var(--card)', padding: 28 }}
-                  >
-                    <div className="font-mono text-muted mb-3" style={{ fontSize: 10, letterSpacing: '.1em' }}>{f.num}</div>
-                    <div style={{ fontSize: 22, marginBottom: 10 }}>{f.icon}</div>
-                    <div className="font-display font-bold text-text mb-2" style={{ fontSize: 14 }}>{f.title}</div>
-                    <div className="text-sub" style={{ fontSize: 12.5, lineHeight: 1.65 }}>{f.desc}</div>
+        {/* ═══════════════════════════ ARCHITECTURE ══════════════════════════ */}
+        <section style={{ padding: 'clamp(64px,8vw,120px) clamp(16px,4vw,56px)' }}>
+          <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px,1fr))', gap: 72, alignItems: 'center' }}>
+              <div>
+                <div className="eyebrow" style={{ marginBottom: 14 }}>Shared Infrastructure</div>
+                <h2 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(28px,3.5vw,48px)', letterSpacing: '-.04em', lineHeight: .95, color: 'var(--text)', marginBottom: 20 }}>
+                  Build once.<br /><span style={{ color: 'var(--blue-hi)' }}>Scale everywhere.</span>
+                </h2>
+                <p style={{ fontSize: 15, color: 'var(--sub)', lineHeight: 1.85, marginBottom: 36, maxWidth: 440 }}>
+                  Every ProStack NG product shares a common backbone — unified auth, payment rails, real-time notifications, and analytics. We build the infrastructure once. Every new platform inherits it instantly.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  {[
+                    { icon: '⚡', label: 'Shared Auth',      desc: 'One identity. Sign in once, access everything.' },
+                    { icon: '💳', label: 'Payment Rails',    desc: 'Paystack, Flutterwave, and crypto-ready.' },
+                    { icon: '📡', label: 'Real-time First',  desc: 'WebSockets, live dashboards, instant alerts.' },
+                    { icon: '🔒', label: 'Security',         desc: 'RLS policies, encrypted storage, audit logs.' },
+                  ].map(f => (
+                    <div key={f.label} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                      <div style={{ fontSize: 16, marginTop: 2, flexShrink: 0 }}>{f.icon}</div>
+                      <div>
+                        <div className="f-display" style={{ fontWeight: 700, fontSize: 13.5, color: 'var(--text)', marginBottom: 2 }}>{f.label}</div>
+                        <div style={{ fontSize: 12.5, color: 'var(--sub)' }}>{f.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Services grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
+                {SERVICES.map(s => (
+                  <div key={s.name} style={{ background: 'var(--card)', padding: '24px 20px', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,${s.color},transparent)` }} />
+                    <div className="f-mono" style={{ fontSize: 8.5, color: s.color, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+                      {s.label}
+                    </div>
+                    <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.04em', wordBreak: 'break-all', lineHeight: 1.5 }}>
+                      {s.name}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
+          </div>
+        </section>
 
+        {/* ═══════════════════════════ TERMINAL ══════════════════════════════ */}
+        <section style={{ background: 'var(--s1)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: 'clamp(64px,8vw,120px) clamp(16px,4vw,56px)' }}>
+          <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 72, alignItems: 'center' }}>
             {/* Terminal */}
-            <div style={{ background: '#070710', border: '1px solid var(--borderhi)', overflow: 'hidden' }}>
-              <div style={{ background: 'var(--card)', padding: '10px 16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                {['#FF605C','#FFBC2E','#28C840'].map(c => (
+            <div style={{ background: '#050608', border: '1px solid var(--hi)', overflow: 'hidden' }}>
+              <div style={{ background: 'var(--card)', padding: '10px 16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 7 }}>
+                {['#FF605C','#FFBD2E','#27C840'].map(c => (
                   <div key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c }} />
                 ))}
-                <span className="font-mono text-muted" style={{ marginLeft: 8, fontSize: 10, letterSpacing: '.1em' }}>
-                  prostackng — autoreport — zsh
+                <span className="f-mono" style={{ marginLeft: 10, fontSize: 10, color: 'var(--muted)', letterSpacing: '.08em' }}>
+                  prostackng — autoreport.py — zsh
                 </span>
               </div>
-              <div className="font-mono" style={{ padding: 28, fontSize: 12, lineHeight: 2.1 }}>
-                <div><span style={{ color: 'var(--muted)' }}>$</span> <span style={{ color: 'var(--accent)' }}>python</span> <span style={{ color: 'var(--text)' }}>run_pipeline.py</span></div>
-                <div>&nbsp;</div>
-                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#F5B530' }}>Loading</span> <span style={{ color: 'var(--text)' }}>raw_sales_data.xlsx...</span></div>
-                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#F5B530' }}>Cleaning</span> <span style={{ color: 'var(--text)' }}>14,823 rows</span></div>
-                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#F5B530' }}>Calculating</span> <span style={{ color: 'var(--text)' }}>KPIs & metrics</span></div>
-                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#F5B530' }}>Building</span> <span style={{ color: 'var(--text)' }}>4 performance charts</span></div>
-                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#F5B530' }}>Generating</span> <span style={{ color: 'var(--text)' }}>6-page branded PDF</span></div>
-                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#F5B530' }}>Generating</span> <span style={{ color: 'var(--text)' }}>7-sheet Excel workbook</span></div>
-                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#00C8FF' }}>Sending</span> <span style={{ color: 'var(--text)' }}>to 12 recipients...</span></div>
-                <div>&nbsp;</div>
-                <div><span style={{ color: '#34D399' }}>✓</span> <span style={{ color: 'var(--text)' }}>Pipeline complete in</span> <span style={{ color: 'var(--accent)' }}>8.2s</span></div>
+              <div className="f-mono" style={{ padding: '28px 28px 32px', fontSize: 12, lineHeight: 2.1 }}>
+                <div><span style={{ color: 'var(--muted)' }}>$</span> <span style={{ color: '#3B82F6' }}>python</span> <span style={{ color: 'var(--text)' }}>run_pipeline.py --daily</span></div>
+                <div style={{ color: 'var(--muted)', fontSize: 11 }}>&nbsp;</div>
+                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#FBBF24' }}>Loading</span><span style={{ color: 'var(--sub)' }}>  raw_sales_data.xlsx      </span><span style={{ color: 'var(--muted)' }}>14,823 rows</span></div>
+                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#FBBF24' }}>Cleaning</span><span style={{ color: 'var(--sub)' }}>  nulls, duplicates, types </span><span style={{ color: '#34D399' }}>✓</span></div>
+                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#FBBF24' }}>Calculating</span><span style={{ color: 'var(--sub)' }}> 24 KPIs &amp; metrics      </span><span style={{ color: '#34D399' }}>✓</span></div>
+                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#FBBF24' }}>Rendering</span><span style={{ color: 'var(--sub)' }}>  4 charts, 6-page PDF     </span><span style={{ color: '#34D399' }}>✓</span></div>
+                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#FBBF24' }}>Exporting</span><span style={{ color: 'var(--sub)' }}>  7-sheet Excel workbook   </span><span style={{ color: '#34D399' }}>✓</span></div>
+                <div><span style={{ color: 'var(--muted)' }}>▶</span> <span style={{ color: '#60A5FA' }}>Emailing</span><span style={{ color: 'var(--sub)' }}>   12 recipients @ 08:00    </span><span style={{ color: '#34D399' }}>✓</span></div>
+                <div style={{ color: 'var(--muted)', fontSize: 11 }}>&nbsp;</div>
                 <div>
-                  <span style={{ color: 'var(--muted)' }}>$</span>{' '}
-                  <span style={{ display: 'inline-block', width: 7, height: 14, background: 'var(--accent)', verticalAlign: 'middle', animation: 'blink 1s step-end infinite' }} />
+                  <span style={{ color: '#34D399', fontWeight: 700 }}>✓ Done</span>
+                  <span style={{ color: 'var(--sub)' }}> Pipeline complete in </span>
+                  <span style={{ color: '#3B82F6', fontWeight: 700 }}>8.2s</span>
+                </div>
+                <div style={{ marginTop: 4 }}>
+                  <span style={{ color: 'var(--muted)' }}>$</span>
+                  <span className="anim-blink" style={{ display: 'inline-block', width: 7, height: 14, background: 'var(--blue)', marginLeft: 4, verticalAlign: 'middle' }} />
                 </div>
               </div>
             </div>
+
+            {/* Copy */}
+            <div>
+              <div className="eyebrow" style={{ marginBottom: 14 }}>AutoReport · Live Product</div>
+              <h2 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(28px,3.5vw,48px)', letterSpacing: '-.04em', lineHeight: .95, color: 'var(--text)', marginBottom: 20 }}>
+                8 seconds.<br /><span style={{ color: '#FF5757' }}>Board-ready.</span>
+              </h2>
+              <p style={{ fontSize: 15, color: 'var(--sub)', lineHeight: 1.85, marginBottom: 32 }}>
+                AutoReport loads raw sales data, cleans it, calculates all KPIs, builds professional charts, generates a 6-page PDF and 7-sheet Excel workbook, then emails everything automatically every morning. Zero human effort.
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, background: 'var(--border)', border: '1px solid var(--border)', marginBottom: 32 }}>
+                {[
+                  { n: '~8s',  l: 'Full Pipeline' },
+                  { n: '6pg',  l: 'PDF Report'    },
+                  { n: '7sh',  l: 'Excel Sheets'  },
+                  { n: '24',   l: 'KPIs Tracked'  },
+                ].map(m => (
+                  <div key={m.l} style={{ background: 'var(--card)', padding: '20px 18px' }}>
+                    <div className="f-display" style={{ fontWeight: 800, fontSize: 28, letterSpacing: '-.03em', color: '#FF5757', lineHeight: 1, marginBottom: 4 }}>
+                      {m.n}
+                    </div>
+                    <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', color: 'var(--muted)', textTransform: 'uppercase' }}>
+                      {m.l}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Link href="/products#autoreport" className="btn btn-ghost btn-sm">View AutoReport →</Link>
+            </div>
           </div>
         </section>
 
-        {/* ── CASE STUDIES ─────────────────────────────────────── */}
-        <section style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: 'clamp(60px,8vw,120px) clamp(16px,4vw,56px)' }}>
+        {/* ═══════════════════════════ CASE STUDIES ══════════════════════════ */}
+        <section style={{ padding: 'clamp(64px,8vw,120px) clamp(16px,4vw,56px)' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-            <div className="flex justify-between items-end flex-wrap gap-5" style={{ marginBottom: 48 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 52 }}>
               <div>
-                <div className="section-label">Case Studies</div>
-                <h2 className="font-display font-black text-text" style={{ fontSize: 'clamp(30px,4vw,54px)', letterSpacing: '-.03em', lineHeight: 1.0 }}>
-                  Results that speak.
+                <div className="eyebrow" style={{ marginBottom: 14 }}>Case Studies</div>
+                <h2 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(32px,4.5vw,60px)', letterSpacing: '-.04em', lineHeight: .95, color: 'var(--text)' }}>
+                  Results that<br />speak for themselves.
                 </h2>
               </div>
-              <Link href="/case-studies"
-                className="font-mono text-sub no-underline transition-colors duration-200"
-                style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', borderBottom: '1px solid var(--border)', paddingBottom: 4 }}>
+              <Link href="/case-studies" className="f-mono" style={{ fontSize: 10.5, letterSpacing: '.14em', color: 'var(--sub)', textDecoration: 'none', borderBottom: '1px solid var(--border)', paddingBottom: 3, textTransform: 'uppercase' }}>
                 All Case Studies →
               </Link>
             </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(360px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
-              {CASE_STUDIES.map((c, i) => (
-                <div key={i}
-                  className="relative overflow-hidden hover-surface"
-                  style={{ background: 'var(--card)', padding: 40 }}
-                >
-                  <div className="absolute top-0 left-0 bottom-0" style={{ width: 3, background: c.color }} />
-                  <div className="font-mono mb-4" style={{ color: c.color, fontSize: 10, letterSpacing: '.16em', textTransform: 'uppercase' }}>{c.product}</div>
-                  <h3 className="font-display font-bold text-text mb-5" style={{ fontSize: 'clamp(16px,1.8vw,20px)', lineHeight: 1.25 }}>{c.title}</h3>
-                  <div className="font-mono text-muted mb-2" style={{ fontSize: 9.5, letterSpacing: '.14em' }}>PROBLEM</div>
-                  <p className="text-sub leading-relaxed mb-5" style={{ fontSize: 13.5 }}>{c.problem}</p>
-                  <div className="font-mono text-muted mb-2" style={{ fontSize: 9.5, letterSpacing: '.14em' }}>RESULT</div>
-                  <p className="font-semibold text-text leading-relaxed" style={{ fontSize: 13.5, paddingLeft: 14, borderLeft: `2px solid ${c.color}` }}>{c.result}</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px,1fr))', gap: 1, background: 'var(--border)' }}>
+              {CASES.map((c, i) => (
+                <div key={i} style={{ background: 'var(--card)', padding: 40, position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 2, background: c.color }} />
+                  <div className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(48px,5vw,72px)', letterSpacing: '-.04em', color: c.color, lineHeight: .9, marginBottom: 4 }}>
+                    {c.metric}
+                  </div>
+                  <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.14em', color: 'var(--muted)', textTransform: 'uppercase', marginBottom: 20 }}>
+                    {c.metricLabel}
+                  </div>
+                  <div className="f-mono" style={{ fontSize: 9.5, color: c.color, letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+                    {c.product}
+                  </div>
+                  <h3 className="f-display" style={{ fontWeight: 700, fontSize: 16, color: 'var(--text)', lineHeight: 1.3, marginBottom: 14 }}>
+                    {c.title}
+                  </h3>
+                  <p style={{ fontSize: 13.5, color: 'var(--sub)', lineHeight: 1.75 }}>{c.result}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── ROADMAP ───────────────────────────────────────────── */}
-        <section style={{ padding: 'clamp(60px,8vw,120px) clamp(16px,4vw,56px)' }}>
+        {/* ═══════════════════════════ ROADMAP ════════════════════════════════ */}
+        <section style={{ background: 'var(--s1)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: 'clamp(64px,8vw,120px) clamp(16px,4vw,56px)' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-            <div className="section-label">Company Roadmap</div>
-            <h2 className="font-display font-black text-text" style={{ fontSize: 'clamp(28px,4vw,52px)', letterSpacing: '-.03em', marginBottom: 56 }}>
-              Where we're going.
+            <div className="eyebrow" style={{ marginBottom: 14 }}>Company Roadmap</div>
+            <h2 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(32px,4.5vw,56px)', letterSpacing: '-.04em', lineHeight: .95, color: 'var(--text)', marginBottom: 56 }}>
+              Where we&apos;re going.
             </h2>
-            <div className="relative">
-              <div className="absolute hidden md:block" style={{ left: 0, top: 0, bottom: 0, width: 1, background: 'linear-gradient(180deg,var(--accent),var(--border),transparent)' }} />
+            <div style={{ position: 'relative' }}>
+              <div className="hidden md:block" style={{ position: 'absolute', left: 0, top: 8, bottom: 8, width: 1, background: 'linear-gradient(180deg, var(--blue), var(--border) 70%, transparent)' }} />
               {TIMELINE.map((t, i) => (
-                <div key={i} className="flex gap-10 mb-10 md:pl-8 relative">
-                  <div className="absolute hidden md:block" style={{
-                    left: -5, top: 6, width: 11, height: 11, borderRadius: '50%',
-                    background: t.status === 'active' ? 'var(--accent)' : 'var(--card)',
-                    border: `2px solid ${t.status === 'active' ? 'var(--accent)' : 'var(--muted)'}`,
-                    boxShadow: t.status === 'active' ? '0 0 12px rgba(124,58,237,.5)' : 'none',
+                <div key={i} style={{ display: 'flex', gap: 48, marginBottom: 36, paddingLeft: 0 }} className="md:pl-10">
+                  {/* Node */}
+                  <div className="hidden md:block" style={{
+                    position: 'absolute',
+                    left: -5, marginTop: 7,
+                    width: 11, height: 11, borderRadius: '50%',
+                    background: t.status === 'active' ? 'var(--blue)' : 'var(--card)',
+                    border: `2px solid ${t.status === 'active' ? 'var(--blue-hi)' : 'var(--muted)'}`,
+                    boxShadow: t.status === 'active' ? '0 0 16px rgba(37,99,235,.6)' : 'none',
+                    flexShrink: 0,
                   }} />
-                  <div style={{ minWidth: 110, flexShrink: 0 }}>
-                    <div className="font-display font-bold" style={{ fontSize: 13, color: t.status === 'active' ? 'var(--accent)' : 'var(--muted)' }}>{t.phase}</div>
-                    <div className="font-mono text-muted" style={{ fontSize: 9.5 }}>{t.period}</div>
+                  <div style={{ minWidth: 96, flexShrink: 0 }}>
+                    <div className="f-display" style={{ fontWeight: 700, fontSize: 13, color: t.status === 'active' ? 'var(--blue-hi)' : 'var(--muted)' }}>
+                      {t.phase}
+                    </div>
+                    <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.08em', marginTop: 2 }}>
+                      {t.period}
+                    </div>
                   </div>
-                  <div className="flex-1 border p-5"
-                    style={{
-                      borderColor: t.status === 'active' ? 'rgba(139,92,246,.3)' : 'var(--border)',
-                      background: t.status === 'active' ? 'rgba(124,58,237,.03)' : 'var(--card)',
-                    }}>
-                    <p style={{ fontSize: 14.5, lineHeight: 1.75, color: t.status === 'active' ? 'var(--text)' : 'var(--sub)' }}>{t.desc}</p>
+                  <div style={{
+                    flex: 1,
+                    padding: '18px 24px',
+                    border: `1px solid ${t.status === 'active' ? 'rgba(37,99,235,.25)' : 'var(--border)'}`,
+                    background: t.status === 'active' ? 'rgba(37,99,235,.04)' : 'var(--card)',
+                  }}>
+                    <p style={{ fontSize: 14, lineHeight: 1.8, color: t.status === 'active' ? 'var(--text)' : 'var(--sub)' }}>
+                      {t.desc}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -328,32 +424,30 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── CTA ───────────────────────────────────────────────── */}
-        <section
-          className="relative overflow-hidden bg-grid text-center"
-          style={{ padding: 'clamp(80px,10vw,160px) clamp(16px,4vw,56px)', backgroundSize: '56px 56px' }}
-        >
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 50%, transparent 30%, var(--bg) 100%)' }} />
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(124,58,237,.03) 0%, transparent 70%)' }} />
-          <div className="relative" style={{ maxWidth: 700, margin: '0 auto' }}>
-            <div className="section-label" style={{ justifyContent: 'center', marginBottom: 20 }}>Let's Build Together</div>
-            <h2 className="font-display font-black text-text" style={{ fontSize: 'clamp(40px,6vw,80px)', letterSpacing: '-.04em', lineHeight: 1.0, marginBottom: 20 }}>
-              Ready to build<br /><span style={{ color: 'var(--accent)' }}>something real?</span>
+        {/* ═══════════════════════════ CTA ════════════════════════════════════ */}
+        <section className="bg-grid" style={{
+          position: 'relative', overflow: 'hidden',
+          padding: 'clamp(80px,12vw,160px) clamp(16px,4vw,56px)',
+          textAlign: 'center',
+          backgroundSize: '52px 52px',
+        }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 70% at 50% 50%, transparent 40%, var(--bg) 100%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', opacity: .02, pointerEvents: 'none' }}>
+            <StackLogo size={400} />
+          </div>
+          <div style={{ position: 'relative', maxWidth: 680, margin: '0 auto' }}>
+            <div className="eyebrow" style={{ justifyContent: 'center', marginBottom: 20 }}>Let&apos;s Build Together</div>
+            <h2 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(44px,7vw,88px)', letterSpacing: '-.05em', lineHeight: .9, color: 'var(--text)', marginBottom: 24 }}>
+              Ready to build<br /><span style={{ color: 'var(--blue-hi)' }}>something real?</span>
             </h2>
-            <p className="text-sub" style={{ fontSize: 17, lineHeight: 1.9, marginBottom: 44 }}>
+            <p style={{ fontSize: 17, color: 'var(--sub)', lineHeight: 1.9, marginBottom: 44 }}>
               Free 45-minute strategy session. No commitment — just honest answers and a clear plan for whatever you need built.
             </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link href="/contact"
-                className="font-display font-bold no-underline hover-glow"
-                style={{ padding: '16px 44px', fontSize: 14, letterSpacing: '.06em', textTransform: 'uppercase', background: 'var(--accent)', color: '#fff' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
+              <Link href="/contact" className="btn btn-primary" style={{ fontSize: 13, padding: '16px 44px' }}>
                 Start a Project →
               </Link>
-              <a href="https://wa.me/2347059449360" target="_blank" rel="noreferrer"
-                className="font-display font-semibold no-underline"
-                style={{ padding: '16px 44px', fontSize: 14, letterSpacing: '.06em', textTransform: 'uppercase', border: '1px solid var(--borderhi)', color: 'var(--sub)' }}>
+              <a href="https://wa.me/2347059449360" target="_blank" rel="noreferrer" className="btn btn-ghost" style={{ fontSize: 13, padding: '16px 44px' }}>
                 💬 WhatsApp Us
               </a>
             </div>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import StackLogo from './StackLogo';
 
 const COLS = [
   {
@@ -15,60 +16,57 @@ const COLS = [
   {
     title: 'Company',
     links: [
-      { label: 'About Us',      href: '/company'      },
-      { label: 'Technology',    href: '/technology'   },
-      { label: 'Case Studies',  href: '/case-studies' },
-      { label: 'Blog',          href: '#'             },
-      { label: 'Careers',       href: '#'             },
+      { label: 'About Us',     href: '/company'      },
+      { label: 'Technology',   href: '/technology'   },
+      { label: 'Case Studies', href: '/case-studies' },
+      { label: 'Blog',         href: '#'             },
+      { label: 'Careers',      href: '#'             },
     ],
   },
   {
     title: 'Connect',
     links: [
-      { label: 'contact@prostackng.com', href: 'mailto:contact@prostackng.com' },
-      { label: 'WhatsApp Chat',          href: 'https://wa.me/2347059449360'   },
-      { label: 'Free Consultation',      href: '/contact'                      },
+      { label: 'contact@prostackng.com',  href: 'mailto:contact@prostackng.com' },
+      { label: 'WhatsApp: +234 705 944 9360', href: 'https://wa.me/2347059449360' },
+      { label: 'Free Consultation',       href: '/contact'                      },
+      { label: 'Boardroom (Staff)',        href: '/boardroom'                    },
     ],
   },
 ];
 
 export default function Footer() {
   return (
-    <footer style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(60px,7vw,100px) clamp(16px,4vw,56px) 40px' }}>
+    <footer style={{ background: 'var(--s1)', borderTop: '1px solid var(--border)' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(56px,7vw,96px) clamp(16px,4vw,56px) 40px' }}>
 
-        {/* Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 48, marginBottom: 56 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px,1fr))', gap: 48, marginBottom: 56 }}>
 
           {/* Brand */}
-          <div style={{ maxWidth: 300 }}>
-            <Link href="/" className="flex items-center gap-3 no-underline mb-5">
-              <div
-                className="font-display font-black flex items-center justify-center"
-                style={{ width: 34, height: 34, background: 'var(--accent)', fontSize: 12, color: '#fff', letterSpacing: '.05em' }}
-              >
-                PS
-              </div>
+          <div style={{ maxWidth: 280 }}>
+            <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none', marginBottom: 20 }}>
+              <StackLogo size={32} />
               <div>
-                <div className="font-display font-black text-text leading-none" style={{ fontSize: 15 }}>
-                  ProStack<span style={{ color: 'var(--accent)' }}>NG</span>
+                <div className="f-display" style={{ fontWeight: 800, fontSize: 15, letterSpacing: '-.02em', color: 'var(--text)', lineHeight: 1 }}>
+                  ProStack<span style={{ color: 'var(--blue-hi)' }}>NG</span>
                 </div>
-                <div className="font-mono text-muted leading-none mt-0.5" style={{ fontSize: 8, letterSpacing: '.2em' }}>TECHNOLOGIES</div>
+                <div className="f-mono" style={{ fontSize: 7.5, letterSpacing: '.2em', color: 'var(--muted)', marginTop: 2 }}>
+                  TECHNOLOGIES
+                </div>
               </div>
             </Link>
-            <p className="text-sub leading-relaxed mb-6" style={{ fontSize: 13 }}>
-              Building intelligent platforms that power Africa's commerce, mobility, and digital infrastructure ecosystem.
+            <p style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.8, marginBottom: 24 }}>
+              Building intelligent platforms that power Africa's commerce, mobility, and digital infrastructure.
             </p>
-            <div className="flex gap-2">
+            <div style={{ display: 'flex', gap: 8 }}>
               {['𝕏', 'in', 'ig', 'gh'].map(s => (
-                <div key={s}
-                  className="social-icon flex items-center justify-center cursor-pointer"
-                  style={{
-                    width: 30, height: 30,
-                    border: '1px solid var(--border)',
-                    fontSize: 11,
-                  }}
-                >
+                <div key={s} style={{
+                  width: 30, height: 30,
+                  border: '1px solid var(--border)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 11, color: 'var(--muted)',
+                  cursor: 'pointer',
+                  transition: 'border-color .2s, color .2s',
+                }}>
                   {s}
                 </div>
               ))}
@@ -77,13 +75,11 @@ export default function Footer() {
 
           {COLS.map(col => (
             <div key={col.title}>
-              <div className="font-display font-bold text-text mb-5" style={{ fontSize: 12, letterSpacing: '.06em', textTransform: 'uppercase' }}>
+              <div className="f-display" style={{ fontWeight: 700, fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text)', marginBottom: 20 }}>
                 {col.title}
               </div>
               {col.links.map(l => (
-                <Link key={l.label} href={l.href}
-                  className="footer-link-item block no-underline mb-2.5"
-                  style={{ fontSize: 13 }}>
+                <Link key={l.label} href={l.href} className="footer-link">
                   {l.label}
                 </Link>
               ))}
@@ -91,18 +87,13 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Bottom bar */}
-        <div
-          className="flex flex-wrap justify-between items-center gap-4"
-          style={{ borderTop: '1px solid var(--border)', paddingTop: 28 }}
-        >
-          <p className="font-mono text-muted" style={{ fontSize: 11, letterSpacing: '.06em' }}>
-            © 2026 ProStack NG Technologies · Port Harcourt, Nigeria · CAC Registration Pending
+        <div style={{ borderTop: '1px solid var(--border)', paddingTop: 28, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+          <p className="f-mono" style={{ fontSize: 10, color: 'var(--muted)', letterSpacing: '.08em' }}>
+            © 2026 ProStack NG Technologies Ltd · Port Harcourt, Nigeria · CAC Registration Pending
           </p>
-          <div className="flex gap-6">
+          <div style={{ display: 'flex', gap: 24 }}>
             {['Privacy Policy', 'Terms of Service'].map(l => (
-              <span key={l} className="font-mono text-muted cursor-pointer hover-accent"
-                style={{ fontSize: 11 }}>
+              <span key={l} className="f-mono" style={{ fontSize: 10, color: 'var(--muted)', cursor: 'pointer', letterSpacing: '.06em' }}>
                 {l}
               </span>
             ))}

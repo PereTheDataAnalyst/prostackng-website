@@ -98,9 +98,9 @@ export default function BoardroomPage() {
   const scrollContainerRef              = useRef<HTMLDivElement>(null);
   const inputRef                        = useRef<HTMLInputElement>(null);
 
-  const BG  = theme === 'darker' ? '#020305' : '#050507';
-  const BG2 = theme === 'darker' ? '#060810' : '#08080C';
-  const BG3 = theme === 'darker' ? '#080C14' : '#0D0D14';
+  const BG  = theme === 'darker' ? '#020305' : '#04050A';
+  const BG2 = theme === 'darker' ? '#060810' : '#07080F';
+  const BG3 = theme === 'darker' ? '#080C14' : '#0D0F1E';
 
   // ── Mobile detection ───────────────────────────────────
   useEffect(() => {
@@ -531,64 +531,69 @@ export default function BoardroomPage() {
   // ── SIDEBAR component (shared between mobile/desktop) ──
   const SidebarContent = () => (
     <>
-      <div style={{ padding: '14px 16px 12px', borderBottom: '1px solid #16162A', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+      <div style={{ padding: '14px 16px 12px', borderBottom: '1px solid #131526', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 30, height: 30, background: '#8B5CF6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 11, color: '#000', flexShrink: 0 }}>PS</div>
+          <svg width="36" height="30" viewBox="0 0 52 44" fill="none" style={{ flexShrink: 0 }}>
+              <path d="M6 30 L36 30 L46 38 L16 38 Z" fill="#1E3A8A" opacity=".5"/>
+              <path d="M2 20 L32 20 L42 28 L12 28 Z" fill="#1D4ED8" opacity=".75"/>
+              <path d="M0 10 L30 10 L40 18 L10 18 Z" fill="#2563EB"/>
+              <path d="M0 10 L30 10" stroke="#93C5FD" strokeWidth="1.5" opacity=".7"/>
+            </svg>
           <div>
-            <div style={{ color: '#E2EAF4', fontWeight: 700, fontSize: 13 }}>ProStack NG</div>
-            <div style={{ color: '#8B5CF6', fontSize: 9, fontFamily: 'monospace', letterSpacing: '.08em' }}>● WORKSPACE</div>
+            <div style={{ color: '#EEF0FF', fontWeight: 700, fontSize: 13 }}>ProStack NG</div>
+            <div style={{ color: '#2563EB', fontSize: 9, fontFamily: 'monospace', letterSpacing: '.08em' }}>● WORKSPACE</div>
           </div>
         </div>
-        {isMobile && <button onClick={() => setSidebarOpen(false)} style={{ background: 'none', border: 'none', color: '#7A758E', fontSize: 24, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>×</button>}
+        {isMobile && <button onClick={() => setSidebarOpen(false)} style={{ background: 'none', border: 'none', color: '#636687', fontSize: 24, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>×</button>}
       </div>
 
       {callActive && (
-        <div style={{ margin: '8px 10px 0', background: 'rgba(139,92,246,.07)', border: '1px solid rgba(139,92,246,.2)', padding: '7px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+        <div style={{ margin: '8px 10px 0', background: 'rgba(139,92,246,.07)', border: '1px solid rgba(37,99,235,.2)', padding: '7px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div>
-            <div style={{ color: '#8B5CF6', fontSize: 9, fontFamily: 'monospace' }}>● {callMode?.toUpperCase()} · #{callRoom}</div>
-            <div style={{ color: '#3A3550', fontSize: 10, marginTop: 1 }}>{peers.length} participant{peers.length !== 1 ? 's' : ''}</div>
+            <div style={{ color: '#2563EB', fontSize: 9, fontFamily: 'monospace' }}>● {callMode?.toUpperCase()} · #{callRoom}</div>
+            <div style={{ color: '#272A45', fontSize: 10, marginTop: 1 }}>{peers.length} participant{peers.length !== 1 ? 's' : ''}</div>
           </div>
           <button onClick={endCall} style={{ background: '#FF5757', border: 'none', color: '#fff', padding: '3px 8px', fontSize: 10, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>End</button>
         </div>
       )}
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 0' }}>
-        <div style={{ padding: '4px 16px 6px', fontFamily: 'monospace', color: '#3A3550', fontSize: 9, letterSpacing: '.12em' }}>CHANNELS</div>
+        <div style={{ padding: '4px 16px 6px', fontFamily: 'monospace', color: '#272A45', fontSize: 9, letterSpacing: '.12em' }}>CHANNELS</div>
         {ROOMS.map(room => (
           <button key={room.id} onClick={() => switchRoom(room.id)}
-            style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: activeRoom === room.id ? 'rgba(139,92,246,.08)' : 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', borderLeft: activeRoom === room.id ? '2px solid #8B5CF6' : '2px solid transparent', fontFamily: 'Instrument Sans, sans-serif' }}>
-            <span style={{ color: activeRoom === room.id ? '#8B5CF6' : '#3A3550', fontSize: 14, flexShrink: 0 }}>{room.icon}</span>
-            <span style={{ color: activeRoom === room.id ? '#E2EAF4' : '#7A758E', fontSize: 13, fontWeight: activeRoom === room.id ? 600 : 400, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{room.name}</span>
+            style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: activeRoom === room.id ? 'rgba(37,99,235,.08)' : 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', borderLeft: activeRoom === room.id ? '2px solid #2563EB' : '2px solid transparent', fontFamily: 'Instrument Sans, sans-serif' }}>
+            <span style={{ color: activeRoom === room.id ? '#2563EB' : '#272A45', fontSize: 14, flexShrink: 0 }}>{room.icon}</span>
+            <span style={{ color: activeRoom === room.id ? '#EEF0FF' : '#636687', fontSize: 13, fontWeight: activeRoom === room.id ? 600 : 400, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{room.name}</span>
           </button>
         ))}
         {pinned.length > 0 && (
           <div style={{ marginTop: 10 }}>
-            <div style={{ padding: '4px 16px 6px', fontFamily: 'monospace', color: '#3A3550', fontSize: 9, letterSpacing: '.12em' }}>PINNED · {pinned.length}</div>
+            <div style={{ padding: '4px 16px 6px', fontFamily: 'monospace', color: '#272A45', fontSize: 9, letterSpacing: '.12em' }}>PINNED · {pinned.length}</div>
             <button onClick={() => setShowPinned(!showPinned)}
               style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: showPinned ? 'rgba(245,181,48,.06)' : 'transparent', border: 'none', cursor: 'pointer', borderLeft: showPinned ? '2px solid #F5B530' : '2px solid transparent', fontFamily: 'Instrument Sans, sans-serif' }}>
               <span style={{ color: '#F5B530', fontSize: 13 }}>📌</span>
-              <span style={{ color: '#7A758E', fontSize: 13 }}>Pinned Messages</span>
+              <span style={{ color: '#636687', fontSize: 13 }}>Pinned Messages</span>
             </button>
           </div>
         )}
       </div>
 
-      <div style={{ borderTop: '1px solid #16162A', flexShrink: 0 }}>
+      <div style={{ borderTop: '1px solid #131526', flexShrink: 0 }}>
         <button onClick={() => { setPanel(p => p === 'settings' ? 'chat' : 'settings'); setSidebarOpen(false); }}
-          style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: panel === 'settings' ? 'rgba(139,92,246,.06)' : 'transparent', border: 'none', cursor: 'pointer', borderLeft: panel === 'settings' ? '2px solid #8B5CF6' : '2px solid transparent', fontFamily: 'Instrument Sans, sans-serif' }}>
-          <span style={{ fontSize: 14, color: panel === 'settings' ? '#8B5CF6' : '#3A3550', flexShrink: 0 }}>⚙</span>
-          <span style={{ color: panel === 'settings' ? '#E2EAF4' : '#7A758E', fontSize: 13 }}>Settings</span>
+          style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: panel === 'settings' ? 'rgba(37,99,235,.06)' : 'transparent', border: 'none', cursor: 'pointer', borderLeft: panel === 'settings' ? '2px solid #2563EB' : '2px solid transparent', fontFamily: 'Instrument Sans, sans-serif' }}>
+          <span style={{ fontSize: 14, color: panel === 'settings' ? '#2563EB' : '#272A45', flexShrink: 0 }}>⚙</span>
+          <span style={{ color: panel === 'settings' ? '#EEF0FF' : '#636687', fontSize: 13 }}>Settings</span>
         </button>
-        <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, borderTop: '1px solid #16162A' }}>
+        <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, borderTop: '1px solid #131526' }}>
           <div style={{ position: 'relative', flexShrink: 0 }}>
             <Avatar name={displayName} color={user!.color} url={user?.avatarUrl} size={30} />
-            <div style={{ position: 'absolute', bottom: -2, right: -2, width: 8, height: 8, background: '#8B5CF6', border: `2px solid ${BG2}`, borderRadius: '50%' }} />
+            <div style={{ position: 'absolute', bottom: -2, right: -2, width: 8, height: 8, background: '#2563EB', border: `2px solid ${BG2}`, borderRadius: '50%' }} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ color: '#E2EAF4', fontSize: 12, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
-            <div style={{ color: '#3A3550', fontSize: 10, fontFamily: 'monospace' }}>{user!.role}</div>
+            <div style={{ color: '#EEF0FF', fontSize: 12, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
+            <div style={{ color: '#272A45', fontSize: 10, fontFamily: 'monospace' }}>{user!.role}</div>
           </div>
-          <button onClick={() => { endCall(); setScreen('login'); setUser(null); }} style={{ background: 'none', border: 'none', color: '#3A3550', cursor: 'pointer', fontSize: 15, flexShrink: 0 }}>⎋</button>
+          <button onClick={() => { endCall(); setScreen('login'); setUser(null); }} style={{ background: 'none', border: 'none', color: '#272A45', cursor: 'pointer', fontSize: 15, flexShrink: 0 }}>⎋</button>
         </div>
       </div>
     </>
@@ -598,31 +603,36 @@ export default function BoardroomPage() {
   // LOGIN
   // ─────────────────────────────────────────────────────
   if (screen === 'login') return (
-    <div style={{ minHeight: '100dvh', background: '#050507', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Instrument Sans, sans-serif', backgroundImage: 'linear-gradient(rgba(139,92,246,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,.025) 1px,transparent 1px)', backgroundSize: '60px 60px', padding: 16 }}>
-      <div style={{ position: 'absolute', top: '18%', left: '50%', transform: 'translateX(-50%)', width: 500, height: 500, background: 'radial-gradient(circle,rgba(139,92,246,.06) 0%,transparent 65%)', pointerEvents: 'none' }} />
+    <div style={{ minHeight: '100dvh', background: '#04050A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Instrument Sans, sans-serif', backgroundImage: 'linear-gradient(rgba(139,92,246,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,.025) 1px,transparent 1px)', backgroundSize: '60px 60px', padding: 16 }}>
+      <div style={{ position: 'absolute', top: '18%', left: '50%', transform: 'translateX(-50%)', width: 500, height: 500, background: 'radial-gradient(circle,rgba(37,99,235,.06) 0%,transparent 65%)', pointerEvents: 'none' }} />
       <div style={{ width: '100%', maxWidth: 420, position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 52, height: 52, background: '#8B5CF6', color: '#000', fontWeight: 900, fontSize: 17, marginBottom: 14 }}>PS</div>
-          <div style={{ color: '#E2EAF4', fontWeight: 800, fontSize: 20 }}>ProStack BoardRoom</div>
-          <div style={{ color: '#3A3550', fontSize: 10, marginTop: 6, fontFamily: 'monospace', letterSpacing: '.14em' }}>STAFF ACCESS ONLY · v4.0</div>
+          <svg width="62" height="52" viewBox="0 0 52 44" fill="none" style={{ marginBottom: 14 }}>
+            <path d="M6 30 L36 30 L46 38 L16 38 Z" fill="#1E3A8A" opacity=".5"/>
+            <path d="M2 20 L32 20 L42 28 L12 28 Z" fill="#1D4ED8" opacity=".75"/>
+            <path d="M0 10 L30 10 L40 18 L10 18 Z" fill="#2563EB"/>
+            <path d="M0 10 L30 10" stroke="#93C5FD" strokeWidth="1.5" opacity=".7"/>
+          </svg>
+          <div style={{ color: '#EEF0FF', fontWeight: 800, fontSize: 20, fontFamily: 'Syne, sans-serif', letterSpacing: '-.02em' }}>ProStack BoardRoom</div>
+          <div style={{ color: '#272A45', fontSize: 10, marginTop: 6, fontFamily: 'monospace', letterSpacing: '.14em' }}>STAFF ACCESS ONLY · v4.0</div>
         </div>
-        <div style={{ background: '#0D0D14', border: '1px solid #16162A', padding: '36px 28px', position: 'relative' }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg,#8B5CF6,#EC4899,#A78BFA,transparent)' }} />
-          <div style={{ fontFamily: 'monospace', color: '#3A3550', fontSize: 10, letterSpacing: '.15em', marginBottom: 8 }}>STAFF ACCESS TOKEN</div>
-          <div style={{ color: '#E2EAF4', fontWeight: 700, fontSize: 17, marginBottom: 6 }}>Enter your token</div>
-          <div style={{ color: '#7A758E', fontSize: 13, lineHeight: 1.6, marginBottom: 24 }}>Each staff member has a unique token. Contact your administrator if you don't have one.</div>
+        <div style={{ background: '#0D0F1E', border: '1px solid #131526', padding: '36px 28px', position: 'relative' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg,#2563EB,#EC4899,#3B82F6,transparent)' }} />
+          <div style={{ fontFamily: 'monospace', color: '#272A45', fontSize: 10, letterSpacing: '.15em', marginBottom: 8 }}>STAFF ACCESS TOKEN</div>
+          <div style={{ color: '#EEF0FF', fontWeight: 700, fontSize: 17, marginBottom: 6 }}>Enter your token</div>
+          <div style={{ color: '#636687', fontSize: 13, lineHeight: 1.6, marginBottom: 24 }}>Each staff member has a unique token. Contact your administrator if you don't have one.</div>
           <input value={tokenInput} onChange={e => setTokenInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleLogin()} placeholder="PSN-XXX-000" autoFocus
-            style={{ width: '100%', background: '#08080C', border: `1px solid ${tokenError ? '#FF5757' : '#1E1E38'}`, color: '#E2EAF4', padding: '13px 16px', fontSize: 15, fontFamily: 'monospace', letterSpacing: '.1em', outline: 'none', boxSizing: 'border-box', marginBottom: 8 }} />
+            style={{ width: '100%', background: '#07080F', border: `1px solid ${tokenError ? '#FF5757' : '#1B1E35'}`, color: '#EEF0FF', padding: '13px 16px', fontSize: 15, fontFamily: 'monospace', letterSpacing: '.1em', outline: 'none', boxSizing: 'border-box', marginBottom: 8 }} />
           {tokenError && <div style={{ color: '#FF5757', fontSize: 12, fontFamily: 'monospace', marginBottom: 12 }}>⚠ {tokenError}</div>}
           <button onClick={handleLogin} disabled={authLoading}
-            style={{ width: '100%', background: '#8B5CF6', color: '#000', border: 'none', padding: '14px 0', fontWeight: 700, fontSize: 13, letterSpacing: '.08em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>
+            style={{ width: '100%', background: '#2563EB', color: '#000', border: 'none', padding: '14px 0', fontWeight: 700, fontSize: 13, letterSpacing: '.08em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>
             {authLoading ? 'Verifying…' : 'Enter BoardRoom →'}
           </button>
-          <div style={{ marginTop: 24, paddingTop: 18, borderTop: '1px solid #16162A', display: 'flex', justifyContent: 'center', gap: 24, flexWrap: 'wrap' }}>
+          <div style={{ marginTop: 24, paddingTop: 18, borderTop: '1px solid #131526', display: 'flex', justifyContent: 'center', gap: 24, flexWrap: 'wrap' }}>
             {[{ icon: '💬', label: 'Real-time chat' }, { icon: '🎤', label: 'Voice notes' }, { icon: '📞', label: 'P2P Calls' }, { icon: '🖥', label: 'Screen share' }].map(f => (
               <div key={f.label} style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 18, marginBottom: 4 }}>{f.icon}</div>
-                <div style={{ fontFamily: 'monospace', color: '#2A2040', fontSize: 9, letterSpacing: '.08em' }}>{f.label}</div>
+                <div style={{ fontFamily: 'monospace', color: '#131526', fontSize: 9, letterSpacing: '.08em' }}>{f.label}</div>
               </div>
             ))}
           </div>
@@ -648,7 +658,7 @@ export default function BoardroomPage() {
           )}
           <div style={{
             position: 'fixed', top: 0, left: 0, bottom: 0, width: 240,
-            background: BG2, borderRight: '1px solid #16162A',
+            background: BG2, borderRight: '1px solid #131526',
             display: 'flex', flexDirection: 'column',
             zIndex: 99,
             transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
@@ -662,7 +672,7 @@ export default function BoardroomPage() {
 
       {/* ── DESKTOP SIDEBAR (in flex flow) ── */}
       {!isMobile && (
-        <div style={{ width: 228, background: BG2, borderRight: '1px solid #16162A', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+        <div style={{ width: 228, background: BG2, borderRight: '1px solid #131526', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
           <SidebarContent />
         </div>
       )}
@@ -670,15 +680,15 @@ export default function BoardroomPage() {
       {/* ── INCOMING CALL ── */}
       {incomingCall && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(5,7,9,.9)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(6px)', padding: 16 }}>
-          <div style={{ background: BG2, border: '1px solid #1E1E38', padding: '40px 28px', textAlign: 'center', maxWidth: 360, width: '100%', position: 'relative' }}>
+          <div style={{ background: BG2, border: '1px solid #1B1E35', padding: '40px 28px', textAlign: 'center', maxWidth: 360, width: '100%', position: 'relative' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,${incomingCall.fromColor},transparent)` }} />
             <div style={{ fontSize: 44, marginBottom: 14 }}>{incomingCall.mode === 'video' ? '📹' : '🎙'}</div>
-            <div style={{ fontFamily: 'monospace', color: '#8B5CF6', fontSize: 10, letterSpacing: '.12em', marginBottom: 10 }}>INCOMING {incomingCall.mode.toUpperCase()} CALL</div>
-            <div style={{ color: '#E2EAF4', fontWeight: 700, fontSize: 20, marginBottom: 4 }}>{incomingCall.from}</div>
-            <div style={{ color: '#3A3550', fontSize: 13, marginBottom: 32 }}>calling in #{incomingCall.room}</div>
+            <div style={{ fontFamily: 'monospace', color: '#2563EB', fontSize: 10, letterSpacing: '.12em', marginBottom: 10 }}>INCOMING {incomingCall.mode.toUpperCase()} CALL</div>
+            <div style={{ color: '#EEF0FF', fontWeight: 700, fontSize: 20, marginBottom: 4 }}>{incomingCall.from}</div>
+            <div style={{ color: '#272A45', fontSize: 13, marginBottom: 32 }}>calling in #{incomingCall.room}</div>
             <div style={{ display: 'flex', gap: 12 }}>
               <button onClick={() => setIncomingCall(null)} style={{ flex: 1, background: '#FF5757', border: 'none', color: '#fff', padding: '13px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>📵 Decline</button>
-              <button onClick={acceptCall} style={{ flex: 1, background: '#8B5CF6', border: 'none', color: '#000', padding: '13px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>📞 Accept</button>
+              <button onClick={acceptCall} style={{ flex: 1, background: '#2563EB', border: 'none', color: '#000', padding: '13px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>📞 Accept</button>
             </div>
           </div>
         </div>
@@ -688,24 +698,24 @@ export default function BoardroomPage() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0, width: 0 }}>
 
         {/* HEADER */}
-        <div style={{ height: 50, display: 'flex', alignItems: 'center', borderBottom: '1px solid #16162A', background: BG2, flexShrink: 0, padding: '0 10px', gap: 8 }}>
+        <div style={{ height: 50, display: 'flex', alignItems: 'center', borderBottom: '1px solid #131526', background: BG2, flexShrink: 0, padding: '0 10px', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, minWidth: 0 }}>
             {isMobile && (
-              <button onClick={() => setSidebarOpen(true)} style={{ background: 'none', border: 'none', color: '#7A758E', fontSize: 20, cursor: 'pointer', padding: '2px 4px', flexShrink: 0 }}>☰</button>
+              <button onClick={() => setSidebarOpen(true)} style={{ background: 'none', border: 'none', color: '#636687', fontSize: 20, cursor: 'pointer', padding: '2px 4px', flexShrink: 0 }}>☰</button>
             )}
-            <span style={{ color: '#8B5CF6', fontSize: 14, flexShrink: 0 }}>{currentRoom?.icon}</span>
-            <span style={{ color: '#E2EAF4', fontWeight: 700, fontSize: 14, flexShrink: 0, whiteSpace: 'nowrap' }}>{currentRoom?.name}</span>
-            {!isMobile && <span style={{ color: '#3A3550', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{currentRoom?.desc}</span>}
+            <span style={{ color: '#2563EB', fontSize: 14, flexShrink: 0 }}>{currentRoom?.icon}</span>
+            <span style={{ color: '#EEF0FF', fontWeight: 700, fontSize: 14, flexShrink: 0, whiteSpace: 'nowrap' }}>{currentRoom?.name}</span>
+            {!isMobile && <span style={{ color: '#272A45', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{currentRoom?.desc}</span>}
           </div>
           <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexShrink: 0 }}>
             <button onClick={() => setSearchOpen(s => !s)}
-              style={{ width: 32, height: 32, background: searchOpen ? 'rgba(139,92,246,.12)' : 'transparent', border: `1px solid ${searchOpen ? '#8B5CF6' : '#1E1E38'}`, color: searchOpen ? '#8B5CF6' : '#7A758E', cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🔍</button>
+              style={{ width: 32, height: 32, background: searchOpen ? 'rgba(37,99,235,.07)' : 'transparent', border: `1px solid ${searchOpen ? '#2563EB' : '#1B1E35'}`, color: searchOpen ? '#2563EB' : '#636687', cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🔍</button>
             <button onClick={() => startCall('audio')} disabled={callActive}
-              style={{ height: 32, padding: '0 10px', background: 'transparent', border: '1px solid #1E1E38', color: callActive ? '#2A2040' : '#8B5CF6', cursor: callActive ? 'default' : 'pointer', fontWeight: 600, fontSize: 12, fontFamily: 'Instrument Sans, sans-serif', whiteSpace: 'nowrap' }}>
+              style={{ height: 32, padding: '0 10px', background: 'transparent', border: '1px solid #1B1E35', color: callActive ? '#131526' : '#2563EB', cursor: callActive ? 'default' : 'pointer', fontWeight: 600, fontSize: 12, fontFamily: 'Instrument Sans, sans-serif', whiteSpace: 'nowrap' }}>
               {isMobile ? '🎙' : '🎙 Audio'}
             </button>
             <button onClick={() => startCall('video')} disabled={callActive}
-              style={{ height: 32, padding: '0 10px', background: callActive ? '#1E1E38' : '#8B5CF6', color: callActive ? '#2A2040' : '#000', border: 'none', cursor: callActive ? 'default' : 'pointer', fontWeight: 700, fontSize: 12, fontFamily: 'Instrument Sans, sans-serif', whiteSpace: 'nowrap' }}>
+              style={{ height: 32, padding: '0 10px', background: callActive ? '#1B1E35' : '#2563EB', color: callActive ? '#131526' : '#000', border: 'none', cursor: callActive ? 'default' : 'pointer', fontWeight: 700, fontSize: 12, fontFamily: 'Instrument Sans, sans-serif', whiteSpace: 'nowrap' }}>
               {isMobile ? '📹' : '📹 Video'}
             </button>
           </div>
@@ -713,27 +723,27 @@ export default function BoardroomPage() {
 
         {/* Search */}
         {searchOpen && (
-          <div style={{ padding: '8px 10px', borderBottom: '1px solid #16162A', background: BG2, display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
+          <div style={{ padding: '8px 10px', borderBottom: '1px solid #131526', background: BG2, display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
             <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search messages…" autoFocus
-              style={{ flex: 1, background: BG3, border: '1px solid #1E1E38', color: '#E2EAF4', padding: '8px 12px', fontSize: 13, outline: 'none', fontFamily: 'Instrument Sans, sans-serif', minWidth: 0 }} />
-            {searchQuery && <span style={{ color: '#3A3550', fontSize: 11, whiteSpace: 'nowrap', flexShrink: 0 }}>{filteredMsgs.length} found</span>}
-            <button onClick={() => { setSearchOpen(false); setSearchQuery(''); }} style={{ background: 'none', border: 'none', color: '#3A3550', cursor: 'pointer', fontSize: 20, flexShrink: 0 }}>×</button>
+              style={{ flex: 1, background: BG3, border: '1px solid #1B1E35', color: '#EEF0FF', padding: '8px 12px', fontSize: 13, outline: 'none', fontFamily: 'Instrument Sans, sans-serif', minWidth: 0 }} />
+            {searchQuery && <span style={{ color: '#272A45', fontSize: 11, whiteSpace: 'nowrap', flexShrink: 0 }}>{filteredMsgs.length} found</span>}
+            <button onClick={() => { setSearchOpen(false); setSearchQuery(''); }} style={{ background: 'none', border: 'none', color: '#272A45', cursor: 'pointer', fontSize: 20, flexShrink: 0 }}>×</button>
           </div>
         )}
 
         {/* Call panel */}
         {callActive && (
-          <div style={{ borderBottom: '1px solid #16162A', background: '#000', flexShrink: 0 }}>
+          <div style={{ borderBottom: '1px solid #131526', background: '#000', flexShrink: 0 }}>
             <div style={{ display: 'flex', gap: 3, padding: 6, height: callMode === 'video' ? (isMobile ? 170 : 230) : 68 }}>
-              <div style={{ flex: 1, background: '#0A0A0A', border: '1px solid #1E1E38', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+              <div style={{ flex: 1, background: '#0A0A0A', border: '1px solid #1B1E35', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                 {callMode === 'video'
                   ? <video ref={localVideoRef} autoPlay muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }} />
                   : <Avatar name={displayName} color={user!.color} url={user?.avatarUrl} size={34} />
                 }
-                <div style={{ position: 'absolute', bottom: 4, left: 6, background: 'rgba(0,0,0,.75)', padding: '2px 6px', fontFamily: 'monospace', color: '#8B5CF6', fontSize: 9 }}>{muted ? '🔇' : '🎙'} You</div>
+                <div style={{ position: 'absolute', bottom: 4, left: 6, background: 'rgba(0,0,0,.75)', padding: '2px 6px', fontFamily: 'monospace', color: '#2563EB', fontSize: 9 }}>{muted ? '🔇' : '🎙'} You</div>
               </div>
               {peers.map(peer => (
-                <div key={peer.peerId} style={{ flex: 1, background: '#0A0A0A', border: '1px solid #1E1E38', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                <div key={peer.peerId} style={{ flex: 1, background: '#0A0A0A', border: '1px solid #1B1E35', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                   {peer.stream && !peer.audioOnly
                     ? <video autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} ref={el => { if (el && peer.stream) { el.srcObject = peer.stream; el.play().catch(() => {}); } }} />
                     : <div><Avatar name={peer.name} color={peer.color} size={34} />{peer.stream && <audio autoPlay ref={el => { if (el && peer.stream) { el.srcObject = peer.stream; el.play().catch(() => {}); } }} />}</div>
@@ -741,9 +751,9 @@ export default function BoardroomPage() {
                   <div style={{ position: 'absolute', bottom: 4, left: 6, background: 'rgba(0,0,0,.75)', padding: '2px 6px', fontFamily: 'monospace', color: peer.color, fontSize: 9 }}>{peer.name}</div>
                 </div>
               ))}
-              {peers.length === 0 && <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2A2040', fontSize: 11, fontFamily: 'monospace', textAlign: 'center' }}>Waiting for others…</div>}
+              {peers.length === 0 && <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#131526', fontSize: 11, fontFamily: 'monospace', textAlign: 'center' }}>Waiting for others…</div>}
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 5, padding: '5px 8px 7px', borderTop: '1px solid #16162A', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 5, padding: '5px 8px 7px', borderTop: '1px solid #131526', flexWrap: 'wrap' }}>
               {[
                 { label: muted ? '🔇 Unmute' : '🎙 Mute', action: toggleMute, active: muted },
                 ...(callMode === 'video' ? [{ label: camOff ? '📷 On' : '📷 Off', action: toggleCamera, active: camOff }] : []),
@@ -751,7 +761,7 @@ export default function BoardroomPage() {
                 { label: '📵 End', action: endCall, danger: true },
               ].map((btn: any) => (
                 <button key={btn.label} onClick={btn.action}
-                  style={{ background: btn.danger ? '#FF5757' : btn.active ? 'rgba(139,92,246,.15)' : BG3, border: `1px solid ${btn.danger ? '#FF5757' : btn.active ? '#8B5CF6' : '#1E1E38'}`, color: btn.danger ? '#fff' : btn.active ? '#8B5CF6' : '#7A758E', padding: '5px 11px', cursor: 'pointer', fontSize: 11, fontFamily: 'Instrument Sans, sans-serif', fontWeight: btn.danger ? 700 : 400, whiteSpace: 'nowrap' }}>
+                  style={{ background: btn.danger ? '#FF5757' : btn.active ? 'rgba(37,99,235,.1)' : BG3, border: `1px solid ${btn.danger ? '#FF5757' : btn.active ? '#2563EB' : '#1B1E35'}`, color: btn.danger ? '#fff' : btn.active ? '#2563EB' : '#636687', padding: '5px 11px', cursor: 'pointer', fontSize: 11, fontFamily: 'Instrument Sans, sans-serif', fontWeight: btn.danger ? 700 : 400, whiteSpace: 'nowrap' }}>
                   {btn.label}
                 </button>
               ))}
@@ -763,42 +773,42 @@ export default function BoardroomPage() {
         {panel === 'settings' ? (
           <div style={{ flex: 1, overflowY: 'auto', padding: isMobile ? '16px 14px' : '24px 28px', background: BG }}>
             <div style={{ maxWidth: 540 }}>
-              <div style={{ fontFamily: 'monospace', color: '#8B5CF6', fontSize: 10, letterSpacing: '.15em', marginBottom: 4 }}>WORKSPACE SETTINGS</div>
-              <h2 style={{ color: '#E2EAF4', fontWeight: 800, fontSize: 20, margin: '0 0 4px' }}>Settings</h2>
-              <div style={{ color: '#3A3550', fontSize: 13, marginBottom: 22 }}>Manage your profile and preferences</div>
+              <div style={{ fontFamily: 'monospace', color: '#2563EB', fontSize: 10, letterSpacing: '.15em', marginBottom: 4 }}>WORKSPACE SETTINGS</div>
+              <h2 style={{ color: '#EEF0FF', fontWeight: 800, fontSize: 20, margin: '0 0 4px' }}>Settings</h2>
+              <div style={{ color: '#272A45', fontSize: 13, marginBottom: 22 }}>Manage your profile and preferences</div>
 
-              <div style={{ background: BG2, border: '1px solid #16162A', padding: 18, marginBottom: 10, position: 'relative' }}>
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg,#8B5CF6,#EC4899,transparent)' }} />
-                <div style={{ fontFamily: 'monospace', color: '#3A3550', fontSize: 9, letterSpacing: '.12em', marginBottom: 14 }}>YOUR PROFILE</div>
+              <div style={{ background: BG2, border: '1px solid #131526', padding: 18, marginBottom: 10, position: 'relative' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg,#2563EB,#EC4899,transparent)' }} />
+                <div style={{ fontFamily: 'monospace', color: '#272A45', fontSize: 9, letterSpacing: '.12em', marginBottom: 14 }}>YOUR PROFILE</div>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 16 }}>
                   <div style={{ position: 'relative', flexShrink: 0 }}>
                     <Avatar name={displayName} color={user!.color} url={user?.avatarUrl} size={58} />
                     <button onClick={() => fileInputRef.current?.click()}
-                      style={{ position: 'absolute', bottom: -3, right: -3, width: 22, height: 22, background: '#8B5CF6', border: 'none', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 11 }}>
+                      style={{ position: 'absolute', bottom: -3, right: -3, width: 22, height: 22, background: '#2563EB', border: 'none', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 11 }}>
                       {avatarUploading ? '…' : '📷'}
                     </button>
                     <input ref={fileInputRef} type="file" accept="image/*" onChange={uploadAvatar} style={{ display: 'none' }} />
                   </div>
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ color: '#E2EAF4', fontWeight: 700, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
-                    <div style={{ color: '#9D6EF8', fontFamily: 'monospace', fontSize: 11, marginTop: 2 }}>{user!.role}</div>
-                    <div style={{ color: '#2A2040', fontFamily: 'monospace', fontSize: 10, marginTop: 3 }}>{user!.token}</div>
-                    {avatarUploading && <div style={{ color: '#8B5CF6', fontSize: 11, marginTop: 3, fontFamily: 'monospace' }}>Uploading…</div>}
+                    <div style={{ color: '#EEF0FF', fontWeight: 700, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
+                    <div style={{ color: '#3B82F6', fontFamily: 'monospace', fontSize: 11, marginTop: 2 }}>{user!.role}</div>
+                    <div style={{ color: '#131526', fontFamily: 'monospace', fontSize: 10, marginTop: 3 }}>{user!.token}</div>
+                    {avatarUploading && <div style={{ color: '#2563EB', fontSize: 11, marginTop: 3, fontFamily: 'monospace' }}>Uploading…</div>}
                   </div>
                 </div>
-                <div style={{ color: '#3A3550', fontSize: 10, fontFamily: 'monospace', marginBottom: 6, letterSpacing: '.08em' }}>DISPLAY NAME</div>
+                <div style={{ color: '#272A45', fontSize: 10, fontFamily: 'monospace', marginBottom: 6, letterSpacing: '.08em' }}>DISPLAY NAME</div>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <input value={profileName} onChange={e => setProfileName(e.target.value)} placeholder="Your display name"
-                    style={{ flex: 1, minWidth: 0, background: BG3, border: '1px solid #1E1E38', color: '#E2EAF4', padding: '9px 12px', fontSize: 14, outline: 'none', fontFamily: 'Instrument Sans, sans-serif' }} />
+                    style={{ flex: 1, minWidth: 0, background: BG3, border: '1px solid #1B1E35', color: '#EEF0FF', padding: '9px 12px', fontSize: 14, outline: 'none', fontFamily: 'Instrument Sans, sans-serif' }} />
                   <button onClick={saveProfile} disabled={profileSaving}
-                    style={{ background: '#8B5CF6', border: 'none', color: '#000', padding: '9px 14px', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif', flexShrink: 0 }}>
+                    style={{ background: '#2563EB', border: 'none', color: '#000', padding: '9px 14px', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif', flexShrink: 0 }}>
                     {profileSaving ? '…' : 'Save'}
                   </button>
                 </div>
               </div>
 
-              <div style={{ background: BG2, border: '1px solid #16162A', padding: 18, marginBottom: 10 }}>
-                <div style={{ fontFamily: 'monospace', color: '#3A3550', fontSize: 9, letterSpacing: '.12em', marginBottom: 12 }}>PREFERENCES</div>
+              <div style={{ background: BG2, border: '1px solid #131526', padding: 18, marginBottom: 10 }}>
+                <div style={{ fontFamily: 'monospace', color: '#272A45', fontSize: 9, letterSpacing: '.12em', marginBottom: 12 }}>PREFERENCES</div>
                 {[
                   { label: 'Notification sounds', desc: 'Tone when a message arrives', val: notifSound, set: setNotifSound },
                   { label: 'Compact view', desc: 'Reduce spacing between messages', val: compactMode, set: setCompact },
@@ -806,25 +816,25 @@ export default function BoardroomPage() {
                 ].map((item, idx, arr) => (
                   <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 0', borderBottom: idx < arr.length - 1 ? '1px solid #0D1525' : 'none' }}>
                     <div style={{ paddingRight: 10 }}>
-                      <div style={{ color: '#E2EAF4', fontSize: 13, fontWeight: 600 }}>{item.label}</div>
-                      <div style={{ color: '#3A3550', fontSize: 12, marginTop: 2 }}>{item.desc}</div>
+                      <div style={{ color: '#EEF0FF', fontSize: 13, fontWeight: 600 }}>{item.label}</div>
+                      <div style={{ color: '#272A45', fontSize: 12, marginTop: 2 }}>{item.desc}</div>
                     </div>
                     <button onClick={() => item.set(!item.val)}
-                      style={{ width: 44, height: 24, background: item.val ? '#8B5CF6' : '#16162A', borderRadius: 12, position: 'relative', border: 'none', cursor: 'pointer', flexShrink: 0, transition: 'background .2s' }}>
-                      <div style={{ position: 'absolute', top: 3, left: item.val ? 23 : 3, width: 18, height: 18, background: item.val ? '#000' : '#3A3550', borderRadius: '50%', transition: 'left .2s' }} />
+                      style={{ width: 44, height: 24, background: item.val ? '#2563EB' : '#131526', borderRadius: 12, position: 'relative', border: 'none', cursor: 'pointer', flexShrink: 0, transition: 'background .2s' }}>
+                      <div style={{ position: 'absolute', top: 3, left: item.val ? 23 : 3, width: 18, height: 18, background: item.val ? '#000' : '#272A45', borderRadius: '50%', transition: 'left .2s' }} />
                     </button>
                   </div>
                 ))}
               </div>
 
-              <div style={{ background: BG2, border: '1px solid #16162A', padding: 18, marginBottom: 10 }}>
-                <div style={{ fontFamily: 'monospace', color: '#3A3550', fontSize: 9, letterSpacing: '.12em', marginBottom: 12 }}>APPEARANCE</div>
+              <div style={{ background: BG2, border: '1px solid #131526', padding: 18, marginBottom: 10 }}>
+                <div style={{ fontFamily: 'monospace', color: '#272A45', fontSize: 9, letterSpacing: '.12em', marginBottom: 12 }}>APPEARANCE</div>
                 <div style={{ display: 'flex', gap: 10 }}>
                   {(['dark','darker'] as const).map(t => (
                     <button key={t} onClick={() => setTheme(t)}
-                      style={{ flex: 1, padding: '12px 8px', background: t === 'dark' ? '#08080C' : '#020305', border: `2px solid ${theme === t ? '#8B5CF6' : '#1E1E38'}`, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>
-                      <div style={{ color: theme === t ? '#8B5CF6' : '#3A3550', fontSize: 13, fontWeight: 600, textTransform: 'capitalize' }}>{t}</div>
-                      <div style={{ color: '#2A2040', fontSize: 11, marginTop: 3 }}>{t === 'dark' ? 'Default' : 'Extra dark'}</div>
+                      style={{ flex: 1, padding: '12px 8px', background: t === 'dark' ? '#07080F' : '#020305', border: `2px solid ${theme === t ? '#2563EB' : '#1B1E35'}`, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>
+                      <div style={{ color: theme === t ? '#2563EB' : '#272A45', fontSize: 13, fontWeight: 600, textTransform: 'capitalize' }}>{t}</div>
+                      <div style={{ color: '#131526', fontSize: 11, marginTop: 3 }}>{t === 'dark' ? 'Default' : 'Extra dark'}</div>
                     </button>
                   ))}
                 </div>
@@ -834,8 +844,8 @@ export default function BoardroomPage() {
                 <div style={{ fontFamily: 'monospace', color: '#FF5757', fontSize: 9, letterSpacing: '.12em', marginBottom: 12 }}>ACCOUNT</div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                   <div>
-                    <div style={{ color: '#E2EAF4', fontSize: 13, fontWeight: 600 }}>Sign out</div>
-                    <div style={{ color: '#3A3550', fontSize: 12, marginTop: 2 }}>You'll need your token to sign back in</div>
+                    <div style={{ color: '#EEF0FF', fontSize: 13, fontWeight: 600 }}>Sign out</div>
+                    <div style={{ color: '#272A45', fontSize: 12, marginTop: 2 }}>You'll need your token to sign back in</div>
                   </div>
                   <button onClick={() => { endCall(); setScreen('login'); setUser(null); }}
                     style={{ background: 'rgba(255,87,87,.1)', border: '1px solid #FF5757', color: '#FF5757', padding: '8px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif', whiteSpace: 'nowrap', flexShrink: 0 }}>
@@ -850,13 +860,13 @@ export default function BoardroomPage() {
           /* ══ CHAT ══ */
           <>
             {showPinned && pinned.length > 0 && (
-              <div style={{ borderBottom: '1px solid #16162A', background: 'rgba(245,181,48,.04)', padding: '8px 14px', maxHeight: 110, overflowY: 'auto', flexShrink: 0 }}>
+              <div style={{ borderBottom: '1px solid #131526', background: 'rgba(245,181,48,.04)', padding: '8px 14px', maxHeight: 110, overflowY: 'auto', flexShrink: 0 }}>
                 <div style={{ fontFamily: 'monospace', color: '#F5B530', fontSize: 9, letterSpacing: '.12em', marginBottom: 6 }}>📌 PINNED</div>
                 {pinned.map(msg => (
                   <div key={msg.id} style={{ display: 'flex', gap: 6, marginBottom: 4 }}>
                     <div style={{ width: 5, height: 5, background: '#F5B530', borderRadius: '50%', marginTop: 6, flexShrink: 0 }} />
                     <span style={{ color: '#F5B530', fontSize: 11, fontWeight: 600, flexShrink: 0 }}>{msg.author_name}: </span>
-                    <span style={{ color: '#7A758E', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{msg.message.slice(0,80)}</span>
+                    <span style={{ color: '#636687', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{msg.message.slice(0,80)}</span>
                   </div>
                 ))}
               </div>
@@ -866,15 +876,15 @@ export default function BoardroomPage() {
             <div ref={scrollContainerRef} style={{
               flex: 1, overflowY: 'auto', overflowX: 'hidden',
               padding: '10px 12px', display: 'flex', flexDirection: 'column',
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Crect width='60' height='60' fill='%23050507'/%3E%3Ccircle cx='30' cy='30' r='1.2' fill='%238B5CF6' opacity='0.13'/%3E%3Ccircle cx='0' cy='0' r='0.9' fill='%238B5CF6' opacity='0.09'/%3E%3Ccircle cx='60' cy='0' r='0.9' fill='%238B5CF6' opacity='0.09'/%3E%3Ccircle cx='0' cy='60' r='0.9' fill='%238B5CF6' opacity='0.09'/%3E%3Ccircle cx='60' cy='60' r='0.9' fill='%238B5CF6' opacity='0.09'/%3E%3Ccircle cx='30' cy='0' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='0' cy='30' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='60' cy='30' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='30' cy='60' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='60' height='60' fill='url(%23p)'/%3E%3C/svg%3E")`,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Crect width='60' height='60' fill='%23050507'/%3E%3Ccircle cx='30' cy='30' r='1.2' fill='%232563EB' opacity='0.13'/%3E%3Ccircle cx='0' cy='0' r='0.9' fill='%232563EB' opacity='0.09'/%3E%3Ccircle cx='60' cy='0' r='0.9' fill='%232563EB' opacity='0.09'/%3E%3Ccircle cx='0' cy='60' r='0.9' fill='%232563EB' opacity='0.09'/%3E%3Ccircle cx='60' cy='60' r='0.9' fill='%232563EB' opacity='0.09'/%3E%3Ccircle cx='30' cy='0' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='0' cy='30' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='60' cy='30' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='30' cy='60' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='60' height='60' fill='url(%23p)'/%3E%3C/svg%3E")`,
               backgroundSize: '60px 60px',
               backgroundRepeat: 'repeat',
             }}>
 
               {filteredMsgs.length === 0 && (
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#2A2040', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#131526', textAlign: 'center', position: 'relative', zIndex: 1 }}>
                   <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.3 }}>{currentRoom?.icon}</div>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: '#3A3550', marginBottom: 4 }}>#{currentRoom?.name}</div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: '#272A45', marginBottom: 4 }}>#{currentRoom?.name}</div>
                   <div style={{ fontSize: 13 }}>{searchQuery ? 'No messages match.' : 'No messages yet. Say hello!'}</div>
                 </div>
               )}
@@ -883,7 +893,7 @@ export default function BoardroomPage() {
                 <div key={group.date} style={{ position: 'relative', zIndex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '14px 0 10px' }}>
                     <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,.05)' }} />
-                    <span style={{ fontFamily: 'monospace', color: '#3A3550', fontSize: 9, letterSpacing: '.1em', whiteSpace: 'nowrap', background: BG, padding: '2px 10px', border: '1px solid #16162A' }}>{group.date}</span>
+                    <span style={{ fontFamily: 'monospace', color: '#272A45', fontSize: 9, letterSpacing: '.1em', whiteSpace: 'nowrap', background: BG, padding: '2px 10px', border: '1px solid #131526' }}>{group.date}</span>
                     <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,.05)' }} />
                   </div>
 
@@ -918,20 +928,20 @@ export default function BoardroomPage() {
                             <div style={{ display: 'flex', gap: 6, marginTop: 4, flexWrap: 'wrap' }}>
                               <input value={editText} onChange={e => setEditText(e.target.value)}
                                 onKeyDown={e => { if (e.key === 'Enter') saveEdit(msg.id); if (e.key === 'Escape') { setEditingId(null); setEditText(''); } }}
-                                autoFocus style={{ flex: 1, minWidth: 100, background: BG3, border: '1px solid #8B5CF6', color: '#E2EAF4', padding: '7px 10px', fontSize: 13, outline: 'none', fontFamily: 'Instrument Sans, sans-serif' }} />
-                              <button onClick={() => saveEdit(msg.id)} style={{ background: '#8B5CF6', color: '#000', border: 'none', padding: '7px 12px', fontWeight: 700, fontSize: 12, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>Save</button>
-                              <button onClick={() => { setEditingId(null); setEditText(''); }} style={{ background: '#16162A', color: '#7A758E', border: 'none', padding: '7px 10px', fontSize: 12, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>✕</button>
+                                autoFocus style={{ flex: 1, minWidth: 100, background: BG3, border: '1px solid #2563EB', color: '#EEF0FF', padding: '7px 10px', fontSize: 13, outline: 'none', fontFamily: 'Instrument Sans, sans-serif' }} />
+                              <button onClick={() => saveEdit(msg.id)} style={{ background: '#2563EB', color: '#000', border: 'none', padding: '7px 12px', fontWeight: 700, fontSize: 12, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>Save</button>
+                              <button onClick={() => { setEditingId(null); setEditText(''); }} style={{ background: '#131526', color: '#636687', border: 'none', padding: '7px 10px', fontSize: 12, cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>✕</button>
                             </div>
                           ) : msg.message_type === 'audio' && msg.audio_url ? (
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(12,18,32,0.9)', border: '1px solid #1E1E38', padding: '8px 12px', maxWidth: '100%' }}>
-                              <span style={{ color: '#8B5CF6', fontSize: 15, flexShrink: 0 }}>🎤</span>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(12,18,32,0.9)', border: '1px solid #1B1E35', padding: '8px 12px', maxWidth: '100%' }}>
+                              <span style={{ color: '#2563EB', fontSize: 15, flexShrink: 0 }}>🎤</span>
                               <audio controls src={msg.audio_url} style={{ height: 28, maxWidth: 'calc(100vw - 180px)' }} />
                             </div>
                           ) : msg.message_type === 'image' && msg.audio_url ? (
-                            <div style={{ display: 'inline-block', maxWidth: isMobile ? '85vw' : 360, background: 'rgba(12,18,32,0.9)', border: '1px solid #1E1E38', padding: 6, cursor: 'pointer' }}
+                            <div style={{ display: 'inline-block', maxWidth: isMobile ? '85vw' : 360, background: 'rgba(12,18,32,0.9)', border: '1px solid #1B1E35', padding: 6, cursor: 'pointer' }}
                               onClick={() => window.open(msg.audio_url!, '_blank')}>
                               <img src={msg.audio_url} alt="shared image" style={{ width: '100%', display: 'block', maxHeight: 320, objectFit: 'contain' }} />
-                              <div style={{ color: '#3A3550', fontSize: 10, fontFamily: 'monospace', padding: '4px 2px 0' }}>🖼 Click to open full size</div>
+                              <div style={{ color: '#272A45', fontSize: 10, fontFamily: 'monospace', padding: '4px 2px 0' }}>🖼 Click to open full size</div>
                             </div>
                           ) : (
                             <div style={{
@@ -950,8 +960,8 @@ export default function BoardroomPage() {
                               {Object.entries(reactions).map(([emoji, users]: [string, any]) =>
                                 (users as string[]).length > 0 && (
                                   <button key={emoji} onClick={() => addReaction(msg, emoji)} title={(users as string[]).join(', ')}
-                                    style={{ background: (users as string[]).includes(displayName) ? 'rgba(139,92,246,.15)' : 'rgba(12,18,32,.8)', border: `1px solid ${(users as string[]).includes(displayName) ? 'rgba(139,92,246,.4)' : '#1E1E38'}`, color: '#E2EAF4', padding: '2px 7px', fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3, fontFamily: 'Instrument Sans, sans-serif' }}>
-                                    {emoji} <span style={{ fontSize: 11, color: '#7A758E' }}>{(users as string[]).length}</span>
+                                    style={{ background: (users as string[]).includes(displayName) ? 'rgba(37,99,235,.1)' : 'rgba(12,18,32,.8)', border: `1px solid ${(users as string[]).includes(displayName) ? 'rgba(37,99,235,.35)' : '#1B1E35'}`, color: '#EEF0FF', padding: '2px 7px', fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3, fontFamily: 'Instrument Sans, sans-serif' }}>
+                                    {emoji} <span style={{ fontSize: 11, color: '#636687' }}>{(users as string[]).length}</span>
                                   </button>
                                 )
                               )}
@@ -962,29 +972,29 @@ export default function BoardroomPage() {
                           {isMobile && (
                             <div style={{ display: 'flex', gap: 4, marginTop: 5, flexWrap: 'wrap' }}>
                               <button data-menu onClick={e => { e.stopPropagation(); setReactionMsgId(reactionMsgId === msg.id ? null : msg.id); setMenuMsgId(null); }}
-                                style={{ background: 'rgba(12,18,32,.8)', border: '1px solid #1E1E38', color: '#3A3550', cursor: 'pointer', fontSize: 12, padding: '3px 7px' }}>😊</button>
+                                style={{ background: 'rgba(12,18,32,.8)', border: '1px solid #1B1E35', color: '#272A45', cursor: 'pointer', fontSize: 12, padding: '3px 7px' }}>😊</button>
                               {isOwn && msg.message_type === 'text' && (
                                 <button onClick={() => { setEditingId(msg.id); setEditText(msg.message.replace(' ✎','')); }}
-                                  style={{ background: 'rgba(12,18,32,.8)', border: '1px solid #1E1E38', color: '#3A3550', cursor: 'pointer', fontSize: 12, padding: '3px 7px' }}>✎</button>
+                                  style={{ background: 'rgba(12,18,32,.8)', border: '1px solid #1B1E35', color: '#272A45', cursor: 'pointer', fontSize: 12, padding: '3px 7px' }}>✎</button>
                               )}
                               <button data-menu onClick={e => { e.stopPropagation(); setMenuMsgId(menuMsgId === msg.id ? null : msg.id); setReactionMsgId(null); }}
-                                style={{ background: 'rgba(12,18,32,.8)', border: '1px solid #1E1E38', color: '#3A3550', cursor: 'pointer', fontSize: 12, padding: '3px 7px' }}>⋯</button>
+                                style={{ background: 'rgba(12,18,32,.8)', border: '1px solid #1B1E35', color: '#272A45', cursor: 'pointer', fontSize: 12, padding: '3px 7px' }}>⋯</button>
                             </div>
                           )}
 
                           {reactionMsgId === msg.id && (
-                            <div data-menu onClick={e => e.stopPropagation()} style={{ display: 'flex', gap: 4, flexWrap: 'wrap', background: BG2, border: '1px solid #1E1E38', padding: 8, marginTop: 5, width: 'fit-content', zIndex: 30, boxShadow: '0 4px 20px rgba(0,0,0,.6)' }}>
-                              {REACTIONS.map(emoji => <button key={emoji} onClick={() => addReaction(msg, emoji)} style={{ background: 'none', border: '1px solid #1E1E38', fontSize: 18, padding: '4px 5px', cursor: 'pointer' }}>{emoji}</button>)}
+                            <div data-menu onClick={e => e.stopPropagation()} style={{ display: 'flex', gap: 4, flexWrap: 'wrap', background: BG2, border: '1px solid #1B1E35', padding: 8, marginTop: 5, width: 'fit-content', zIndex: 30, boxShadow: '0 4px 20px rgba(0,0,0,.6)' }}>
+                              {REACTIONS.map(emoji => <button key={emoji} onClick={() => addReaction(msg, emoji)} style={{ background: 'none', border: '1px solid #1B1E35', fontSize: 18, padding: '4px 5px', cursor: 'pointer' }}>{emoji}</button>)}
                             </div>
                           )}
 
                           {menuMsgId === msg.id && (
-                            <div data-menu onClick={e => e.stopPropagation()} style={{ background: BG2, border: '1px solid #1E1E38', width: 196, zIndex: 30, boxShadow: '0 8px 24px rgba(0,0,0,.7)', marginTop: 4 }}>
+                            <div data-menu onClick={e => e.stopPropagation()} style={{ background: BG2, border: '1px solid #1B1E35', width: 196, zIndex: 30, boxShadow: '0 8px 24px rgba(0,0,0,.7)', marginTop: 4 }}>
                               <div style={{ padding: '4px 0' }}>
                                 <button onClick={() => togglePin(msg)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: 'none', border: 'none', color: '#C8D8E8', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>📌 {msg.pinned ? 'Unpin' : 'Pin message'}</button>
                                 <button onClick={() => { navigator.clipboard?.writeText(msg.message); setMenuMsgId(null); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: 'none', border: 'none', color: '#C8D8E8', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>📋 Copy text</button>
-                                <div style={{ height: 1, background: '#16162A', margin: '4px 0' }} />
-                                <button onClick={() => deleteForMe(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: 'none', border: 'none', color: '#7A758E', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>🙈 Delete for me</button>
+                                <div style={{ height: 1, background: '#131526', margin: '4px 0' }} />
+                                <button onClick={() => deleteForMe(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: 'none', border: 'none', color: '#636687', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>🙈 Delete for me</button>
                                 {isOwn && <button onClick={() => deleteForAll(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', background: 'none', border: 'none', color: '#FF5757', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>🗑 Delete for everyone</button>}
                               </div>
                             </div>
@@ -993,30 +1003,30 @@ export default function BoardroomPage() {
 
                         {/* Desktop hover actions */}
                         {!isMobile && hoveredMsg === msg.id && editingId !== msg.id && (
-                          <div data-menu style={{ position: 'absolute', right: 6, top: 0, display: 'flex', gap: 2, background: BG2, border: '1px solid #1E1E38', padding: '3px 4px', zIndex: 20, boxShadow: '0 2px 12px rgba(0,0,0,.5)' }}>
+                          <div data-menu style={{ position: 'absolute', right: 6, top: 0, display: 'flex', gap: 2, background: BG2, border: '1px solid #1B1E35', padding: '3px 4px', zIndex: 20, boxShadow: '0 2px 12px rgba(0,0,0,.5)' }}>
                             <div data-menu style={{ position: 'relative' }}>
                               <button onClick={e => { e.stopPropagation(); setReactionMsgId(reactionMsgId === msg.id ? null : msg.id); setMenuMsgId(null); }}
-                                style={{ background: 'none', border: 'none', color: '#3A3550', cursor: 'pointer', fontSize: 14, padding: '4px 6px' }}>😊</button>
+                                style={{ background: 'none', border: 'none', color: '#272A45', cursor: 'pointer', fontSize: 14, padding: '4px 6px' }}>😊</button>
                               {reactionMsgId === msg.id && (
-                                <div data-menu style={{ position: 'absolute', right: 0, bottom: 'calc(100% + 4px)', background: BG2, border: '1px solid #1E1E38', padding: 8, display: 'flex', gap: 5, flexWrap: 'wrap', width: 188, zIndex: 30, boxShadow: '0 8px 24px rgba(0,0,0,.6)' }}>
-                                  {REACTIONS.map(emoji => <button key={emoji} onClick={() => addReaction(msg, emoji)} style={{ background: 'none', border: '1px solid #1E1E38', fontSize: 18, padding: '4px 5px', cursor: 'pointer' }}>{emoji}</button>)}
+                                <div data-menu style={{ position: 'absolute', right: 0, bottom: 'calc(100% + 4px)', background: BG2, border: '1px solid #1B1E35', padding: 8, display: 'flex', gap: 5, flexWrap: 'wrap', width: 188, zIndex: 30, boxShadow: '0 8px 24px rgba(0,0,0,.6)' }}>
+                                  {REACTIONS.map(emoji => <button key={emoji} onClick={() => addReaction(msg, emoji)} style={{ background: 'none', border: '1px solid #1B1E35', fontSize: 18, padding: '4px 5px', cursor: 'pointer' }}>{emoji}</button>)}
                                 </div>
                               )}
                             </div>
                             {isOwn && msg.message_type === 'text' && (
                               <button onClick={() => { setEditingId(msg.id); setEditText(msg.message.replace(' ✎','')); setMenuMsgId(null); setReactionMsgId(null); }}
-                                style={{ background: 'none', border: 'none', color: '#3A3550', cursor: 'pointer', fontSize: 13, padding: '4px 6px' }}>✎</button>
+                                style={{ background: 'none', border: 'none', color: '#272A45', cursor: 'pointer', fontSize: 13, padding: '4px 6px' }}>✎</button>
                             )}
                             <div data-menu style={{ position: 'relative' }}>
                               <button onClick={e => { e.stopPropagation(); setMenuMsgId(menuMsgId === msg.id ? null : msg.id); setReactionMsgId(null); }}
-                                style={{ background: 'none', border: 'none', color: '#3A3550', cursor: 'pointer', fontSize: 16, padding: '4px 6px' }}>⋯</button>
+                                style={{ background: 'none', border: 'none', color: '#272A45', cursor: 'pointer', fontSize: 16, padding: '4px 6px' }}>⋯</button>
                               {menuMsgId === msg.id && (
-                                <div data-menu style={{ position: 'absolute', right: 0, bottom: 'calc(100% + 4px)', background: BG2, border: '1px solid #1E1E38', minWidth: 200, zIndex: 30, boxShadow: '0 8px 32px rgba(0,0,0,.7)' }}>
+                                <div data-menu style={{ position: 'absolute', right: 0, bottom: 'calc(100% + 4px)', background: BG2, border: '1px solid #1B1E35', minWidth: 200, zIndex: 30, boxShadow: '0 8px 32px rgba(0,0,0,.7)' }}>
                                   <div style={{ padding: '4px 0' }}>
                                     <button onClick={() => togglePin(msg)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'none', border: 'none', color: '#C8D8E8', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>📌 {msg.pinned ? 'Unpin' : 'Pin message'}</button>
                                     <button onClick={() => { navigator.clipboard?.writeText(msg.message); setMenuMsgId(null); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'none', border: 'none', color: '#C8D8E8', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>📋 Copy text</button>
-                                    <div style={{ height: 1, background: '#16162A', margin: '4px 0' }} />
-                                    <button onClick={() => deleteForMe(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'none', border: 'none', color: '#7A758E', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>🙈 Delete for me</button>
+                                    <div style={{ height: 1, background: '#131526', margin: '4px 0' }} />
+                                    <button onClick={() => deleteForMe(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'none', border: 'none', color: '#636687', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>🙈 Delete for me</button>
                                     {isOwn && <button onClick={() => deleteForAll(msg.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'none', border: 'none', color: '#FF5757', fontSize: 13, textAlign: 'left', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>🗑 Delete for everyone</button>}
                                   </div>
                                 </div>
@@ -1036,23 +1046,23 @@ export default function BoardroomPage() {
             {typing.length > 0 && (
               <div style={{ padding: '3px 14px 0', display: 'flex', alignItems: 'center', gap: 7, flexShrink: 0, background: BG2 }}>
                 <div style={{ display: 'flex', gap: 3 }}>
-                  {[0,1,2].map(i => <div key={i} style={{ width: 4, height: 4, background: '#3A3550', borderRadius: '50%', animation: `bounce 1.2s ${i*0.2}s ease-in-out infinite` }} />)}
+                  {[0,1,2].map(i => <div key={i} style={{ width: 4, height: 4, background: '#272A45', borderRadius: '50%', animation: `bounce 1.2s ${i*0.2}s ease-in-out infinite` }} />)}
                 </div>
-                <span style={{ color: '#3A3550', fontSize: 12, fontStyle: 'italic' }}>{typing.join(', ')} {typing.length === 1 ? 'is' : 'are'} typing…</span>
+                <span style={{ color: '#272A45', fontSize: 12, fontStyle: 'italic' }}>{typing.join(', ')} {typing.length === 1 ? 'is' : 'are'} typing…</span>
               </div>
             )}
 
             {/* Input bar */}
-            <div style={{ padding: '8px 10px 10px', borderTop: '1px solid #16162A', background: BG2, flexShrink: 0, position: 'relative' }}>
-              {(uploading || imageUploading) && <div style={{ fontFamily: 'monospace', color: '#8B5CF6', fontSize: 10, marginBottom: 6 }}>⬆ {imageUploading ? 'Uploading image…' : 'Uploading voice…'}</div>}
+            <div style={{ padding: '8px 10px 10px', borderTop: '1px solid #131526', background: BG2, flexShrink: 0, position: 'relative' }}>
+              {(uploading || imageUploading) && <div style={{ fontFamily: 'monospace', color: '#2563EB', fontSize: 10, marginBottom: 6 }}>⬆ {imageUploading ? 'Uploading image…' : 'Uploading voice…'}</div>}
 
               {/* Emoji picker */}
               {showEmojiPicker && (
-                <div style={{ position: 'absolute', bottom: '100%', left: 10, right: 10, background: BG2, border: '1px solid #1E1E38', padding: 10, zIndex: 50, boxShadow: '0 -8px 32px rgba(0,0,0,.6)', marginBottom: 4 }}>
+                <div style={{ position: 'absolute', bottom: '100%', left: 10, right: 10, background: BG2, border: '1px solid #1B1E35', padding: 10, zIndex: 50, boxShadow: '0 -8px 32px rgba(0,0,0,.6)', marginBottom: 4 }}>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                     {EMOJI_LIST.map(emoji => (
                       <button key={emoji} onClick={() => { setInput(p => p + emoji); setShowEmojiPicker(false); inputRef.current?.focus(); }}
-                        style={{ background: 'none', border: '1px solid #16162A', fontSize: 20, padding: '4px 6px', cursor: 'pointer', lineHeight: 1 }}>
+                        style={{ background: 'none', border: '1px solid #131526', fontSize: 20, padding: '4px 6px', cursor: 'pointer', lineHeight: 1 }}>
                         {emoji}
                       </button>
                     ))}
@@ -1063,36 +1073,36 @@ export default function BoardroomPage() {
               <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                 {/* Emoji button */}
                 <button onClick={() => setShowEmojiPicker(p => !p)}
-                  style={{ width: 36, height: 36, background: showEmojiPicker ? 'rgba(139,92,246,.12)' : BG3, border: `1px solid ${showEmojiPicker ? '#8B5CF6' : '#1E1E38'}`, color: showEmojiPicker ? '#8B5CF6' : '#3A3550', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}>😊</button>
+                  style={{ width: 36, height: 36, background: showEmojiPicker ? 'rgba(37,99,235,.07)' : BG3, border: `1px solid ${showEmojiPicker ? '#2563EB' : '#1B1E35'}`, color: showEmojiPicker ? '#2563EB' : '#272A45', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}>😊</button>
 
                 {/* Image upload */}
                 <input ref={imageInputRef} type="file" accept="image/*" onChange={uploadImage} style={{ display: 'none' }} />
                 <button onClick={() => imageInputRef.current?.click()} disabled={imageUploading}
                   title="Send image"
-                  style={{ width: 36, height: 36, background: BG3, border: '1px solid #1E1E38', color: '#3A3550', fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}>🖼</button>
+                  style={{ width: 36, height: 36, background: BG3, border: '1px solid #1B1E35', color: '#272A45', fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}>🖼</button>
 
                 {/* Voice */}
                 <button onMouseDown={startRecording} onMouseUp={stopRecording} onTouchStart={startRecording} onTouchEnd={stopRecording}
                   disabled={uploading} title="Hold to record"
-                  style={{ width: 36, height: 36, background: recording ? '#FF5757' : BG3, border: `1px solid ${recording ? '#FF5757' : '#1E1E38'}`, color: recording ? '#fff' : '#3A3550', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer', userSelect: 'none', touchAction: 'none' }}>🎤</button>
+                  style={{ width: 36, height: 36, background: recording ? '#FF5757' : BG3, border: `1px solid ${recording ? '#FF5757' : '#1B1E35'}`, color: recording ? '#fff' : '#272A45', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer', userSelect: 'none', touchAction: 'none' }}>🎤</button>
 
                 {recording ? (
                   <div style={{ flex: 1, background: BG3, border: '1px solid #FF5757', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                     <div style={{ width: 6, height: 6, background: '#FF5757', borderRadius: '50%', animation: 'pulse 1s ease-in-out infinite', flexShrink: 0 }} />
                     <span style={{ color: '#FF5757', fontSize: 9, fontFamily: 'monospace', flexShrink: 0 }}>REC</span>
-                    <span style={{ color: '#E2EAF4', fontSize: 13, fontFamily: 'monospace', flexShrink: 0 }}>{fmtSec(recordSecs)}</span>
-                    <span style={{ color: '#3A3550', fontSize: 11 }}>Release to send</span>
+                    <span style={{ color: '#EEF0FF', fontSize: 13, fontFamily: 'monospace', flexShrink: 0 }}>{fmtSec(recordSecs)}</span>
+                    <span style={{ color: '#272A45', fontSize: 11 }}>Release to send</span>
                   </div>
                 ) : (
                   <input ref={inputRef} value={input} onChange={e => { handleInputChange(e.target.value); setShowEmojiPicker(false); }}
                     onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
                     placeholder={`Message #${currentRoom?.name}…`}
-                    style={{ flex: 1, background: BG3, border: '1px solid #1E1E38', color: '#E2EAF4', padding: '9px 12px', fontSize: 14, outline: 'none', fontFamily: 'Instrument Sans, sans-serif', minWidth: 0 }} />
+                    style={{ flex: 1, background: BG3, border: '1px solid #1B1E35', color: '#EEF0FF', padding: '9px 12px', fontSize: 14, outline: 'none', fontFamily: 'Instrument Sans, sans-serif', minWidth: 0 }} />
                 )}
                 <button onClick={sendMessage} disabled={!input.trim() || sending || recording}
-                  style={{ width: 36, height: 36, background: input.trim() && !recording ? '#8B5CF6' : BG3, border: `1px solid ${input.trim() && !recording ? '#8B5CF6' : '#16162A'}`, color: input.trim() && !recording ? '#000' : '#3A3550', fontWeight: 700, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: input.trim() && !recording ? 'pointer' : 'default' }}>→</button>
+                  style={{ width: 36, height: 36, background: input.trim() && !recording ? '#2563EB' : BG3, border: `1px solid ${input.trim() && !recording ? '#2563EB' : '#131526'}`, color: input.trim() && !recording ? '#000' : '#272A45', fontWeight: 700, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: input.trim() && !recording ? 'pointer' : 'default' }}>→</button>
               </div>
-              {!isMobile && <div style={{ fontFamily: 'monospace', color: '#2A2040', fontSize: 10, marginTop: 5 }}>ENTER to send · 😊 emoji · 🖼 image · Hold 🎤 for voice · Hover message for actions</div>}
+              {!isMobile && <div style={{ fontFamily: 'monospace', color: '#131526', fontSize: 10, marginTop: 5 }}>ENTER to send · 😊 emoji · 🖼 image · Hold 🎤 for voice · Hover message for actions</div>}
             </div>
           </>
         )}
@@ -1104,9 +1114,9 @@ export default function BoardroomPage() {
         @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #1E1E38; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb { background: #1B1E35; border-radius: 2px; }
         audio { max-width: 100%; }
-        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #050507; }
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #04050A; }
         input, button { -webkit-tap-highlight-color: transparent; }
         @supports (-webkit-touch-callout: none) {
           /* iOS Safari specific */

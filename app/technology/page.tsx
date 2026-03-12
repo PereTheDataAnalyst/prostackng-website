@@ -1,12 +1,8 @@
-import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { STACK, SHARED_SERVICES } from '@/lib/data';
 
-export const metadata: Metadata = {
-  title: 'Technology',
-  description: 'The standardised tech stack and shared infrastructure that powers every ProStack NG product.',
-};
+export const metadata = { title: 'Technology — ProStack NG', description: 'Our full engineering stack and shared infrastructure.' };
 
 export default function TechnologyPage() {
   return (
@@ -15,48 +11,38 @@ export default function TechnologyPage() {
       <main style={{ paddingTop: 68 }}>
 
         {/* Header */}
-        <div
-          className="relative overflow-hidden bg-grid"
-          style={{ padding: 'clamp(60px,8vw,120px) clamp(16px,4vw,56px) clamp(40px,5vw,80px)', backgroundSize: '56px 56px' }}
-        >
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 40%, transparent 30%, var(--bg) 100%)' }} />
-          <div className="absolute pointer-events-none"
-            style={{ top: '-20%', right: '-10%', width: 600, height: 600, borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(139,92,246,.1) 0%, transparent 65%)' }} />
-          <div className="relative" style={{ maxWidth: 1200, margin: '0 auto' }}>
-            <div className="section-label">Technology</div>
-            <h1 className="font-display font-black text-text" style={{ fontSize: 'clamp(40px,6vw,84px)', letterSpacing: '-.04em', lineHeight: .95, marginBottom: 20 }}>
-              The stack behind<br /><span style={{ color: 'var(--accent)' }}>everything we build.</span>
+        <div className="bg-grid" style={{ padding: 'clamp(64px,8vw,100px) clamp(16px,4vw,56px) clamp(48px,6vw,72px)', backgroundSize: '52px 52px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 60% at 50% 40%, transparent 30%, var(--bg) 100%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'relative', maxWidth: 1200, margin: '0 auto' }}>
+            <div className="eyebrow" style={{ marginBottom: 16 }}>Engineering Stack</div>
+            <h1 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(44px,7vw,96px)', letterSpacing: '-.05em', lineHeight: .9, color: 'var(--text)', marginBottom: 20 }}>
+              How we build.
             </h1>
-            <p className="text-sub" style={{ fontSize: 17, lineHeight: 1.9, maxWidth: 560 }}>
-              We standardise our entire stack across every product. Every new service inherits battle-tested infrastructure — no reinventing auth, no rebuilding payment flows. Just shipping.
+            <p style={{ fontSize: 17, color: 'var(--sub)', lineHeight: 1.85, maxWidth: 560 }}>
+              Every tool, framework, and service we use — chosen for reliability, performance, and African market constraints.
             </p>
           </div>
         </div>
 
         {/* Stack grid */}
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(40px,5vw,80px) clamp(16px,4vw,56px)' }}>
-          <div className="section-label" style={{ marginBottom: 32 }}>Core Stack</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(320px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)', marginBottom: 80 }}>
-            {STACK.map((layer, i) => (
-              <div key={i}
-                className="hover-surface"
-                style={{ background: 'var(--card)', padding: 40 }}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div style={{ width: 3, height: 28, background: layer.color, flexShrink: 0 }} />
-                  <div className="font-display font-bold text-text" style={{ fontSize: 14, letterSpacing: '.02em' }}>{layer.label}</div>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(48px,6vw,80px) clamp(16px,4vw,56px)' }}>
+          <div className="eyebrow" style={{ marginBottom: 40 }}>Full-Stack Technology</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)', marginBottom: 80 }}>
+            {STACK.map(s => (
+              <div key={s.label} style={{ background: 'var(--card)', padding: 36, position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,${s.color},transparent)` }} />
+                <div className="f-mono" style={{ fontSize: 9.5, color: s.color, letterSpacing: '.16em', textTransform: 'uppercase', marginBottom: 20 }}>
+                  {s.label}
                 </div>
-                <div className="flex flex-col gap-2">
-                  {layer.items.map(t => (
-                    <div key={t}
-                      className="flex items-center gap-3"
-                      style={{ padding: '10px 14px', border: '1px solid var(--border)', background: 'var(--surface)' }}
-                    >
-                      <span style={{ width: 5, height: 5, borderRadius: '50%', background: layer.color, flexShrink: 0 }} />
-                      <span className="text-sub font-medium" style={{ fontSize: 14 }}>{t}</span>
-                    </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+                  {s.items.map(item => (
+                    <span key={item} style={{
+                      fontSize: 13, color: 'var(--text)', fontWeight: 500,
+                      background: 'var(--s2)', border: '1px solid var(--border)',
+                      padding: '5px 12px',
+                    }}>
+                      {item}
+                    </span>
                   ))}
                 </div>
               </div>
@@ -64,20 +50,41 @@ export default function TechnologyPage() {
           </div>
 
           {/* Shared services */}
-          <div className="section-label" style={{ marginBottom: 32 }}>Shared Infrastructure</div>
-          <p className="text-sub" style={{ fontSize: 15, lineHeight: 1.85, maxWidth: 560, marginBottom: 40 }}>
-            Every ProStack NG product is deployed as a module on our shared service layer. New products inherit all infrastructure from day one.
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
-            {SHARED_SERVICES.map((s, i) => (
-              <div key={i}
-                className="hover-surface"
-                style={{ background: 'var(--card)', padding: 32 }}
-              >
-                <div className="font-mono mb-2" style={{ color: s.color, fontSize: 10, letterSpacing: '.12em' }}>{s.subdomain}</div>
-                <div className="text-sub" style={{ fontSize: 13.5, lineHeight: 1.65 }}>{s.desc}</div>
+          <div className="eyebrow" style={{ marginBottom: 28 }}>Shared Infrastructure</div>
+          <h2 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(24px,3vw,40px)', letterSpacing: '-.04em', color: 'var(--text)', marginBottom: 40 }}>
+            One backbone. Every product.
+          </h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
+            {SHARED_SERVICES.map(s => (
+              <div key={s.subdomain} style={{ background: 'var(--s1)', padding: '28px 28px 24px', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,${s.color},transparent)` }} />
+                <div className="f-mono" style={{ fontSize: 10, color: s.color, letterSpacing: '.06em', marginBottom: 10, wordBreak: 'break-all' }}>
+                  {s.subdomain}
+                </div>
+                <p style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7 }}>{s.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Principles */}
+        <div style={{ background: 'var(--s1)', borderTop: '1px solid var(--border)', padding: 'clamp(48px,6vw,80px) clamp(16px,4vw,56px)' }}>
+          <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+            <div className="eyebrow" style={{ marginBottom: 28 }}>Engineering Principles</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
+              {[
+                { n: '01', title: 'Real-time First',   desc: 'Every product uses WebSocket connections. Data is always live, never stale.' },
+                { n: '02', title: 'Africa-native',      desc: 'Built for slow connections, Nigerian payment rails, and local compliance.' },
+                { n: '03', title: 'Platform thinking',  desc: 'No product is an island. Every feature is designed to serve the whole ecosystem.' },
+                { n: '04', title: 'Security by design', desc: 'Row-level security, encrypted storage, and full audit trails from day one.' },
+              ].map(p => (
+                <div key={p.n} style={{ background: 'var(--card)', padding: 32 }}>
+                  <div className="f-mono" style={{ fontSize: 10, color: 'var(--blue)', letterSpacing: '.12em', marginBottom: 16 }}>{p.n}</div>
+                  <div className="f-display" style={{ fontWeight: 700, fontSize: 16, color: 'var(--text)', marginBottom: 10 }}>{p.title}</div>
+                  <p style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.75 }}>{p.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

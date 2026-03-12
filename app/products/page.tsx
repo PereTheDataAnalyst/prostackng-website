@@ -1,16 +1,12 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { PRODUCTS } from '@/lib/data';
 
-export const metadata: Metadata = {
-  title: 'Products',
-  description: 'Six intelligent platforms built on one shared infrastructure — ProTrackNG, NightOps, AutoReport, MyHarriet, SwiftRide, StakeX.',
-};
+export const metadata = { title: 'Products — ProStack NG', description: 'Six intelligent platforms built on shared infrastructure.' };
 
-const LIVE_IDS = ['protrackng', 'nightops', 'autoreport'];
+const LIVE = ['protrackng', 'nightops', 'autoreport'];
 
 export default function ProductsPage() {
   return (
@@ -19,89 +15,87 @@ export default function ProductsPage() {
       <main style={{ paddingTop: 68 }}>
 
         {/* Header */}
-        <div
-          className="relative overflow-hidden bg-grid"
-          style={{ padding: 'clamp(60px,8vw,120px) clamp(16px,4vw,56px) clamp(40px,5vw,80px)', backgroundSize: '56px 56px' }}
-        >
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 40%, transparent 30%, var(--bg) 100%)' }} />
-          <div className="absolute pointer-events-none"
-            style={{ top: '-20%', left: '-10%', width: 600, height: 600, borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(139,92,246,.1) 0%, transparent 65%)' }} />
-          <div className="relative" style={{ maxWidth: 1200, margin: '0 auto' }}>
-            <div className="section-label">Product Ecosystem</div>
-            <h1 className="font-display font-black text-text" style={{ fontSize: 'clamp(40px,6vw,84px)', letterSpacing: '-.04em', lineHeight: .95, marginBottom: 20 }}>
-              Our platforms.<br /><span style={{ color: 'var(--accent)' }}>One mission.</span>
+        <div className="bg-grid" style={{
+          padding: 'clamp(64px,8vw,100px) clamp(16px,4vw,56px) clamp(48px,6vw,80px)',
+          backgroundSize: '52px 52px',
+          position: 'relative', overflow: 'hidden',
+        }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 70% at 50% 40%, transparent 30%, var(--bg) 100%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'relative', maxWidth: 1200, margin: '0 auto' }}>
+            <div className="eyebrow" style={{ marginBottom: 16 }}>Product Ecosystem</div>
+            <h1 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(44px,7vw,96px)', letterSpacing: '-.05em', lineHeight: .9, color: 'var(--text)', marginBottom: 20 }}>
+              Our platforms.<br /><span style={{ color: 'var(--blue-hi)' }}>One mission.</span>
             </h1>
-            <p className="text-sub" style={{ fontSize: 17, lineHeight: 1.9, maxWidth: 540 }}>
+            <p style={{ fontSize: 17, color: 'var(--sub)', lineHeight: 1.85, maxWidth: 560 }}>
               Every ProStack NG product shares core infrastructure — auth, payments, notifications, and analytics. We build once. The ecosystem compounds.
             </p>
           </div>
         </div>
 
         {/* Products list */}
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(40px,5vw,80px) clamp(16px,4vw,56px) clamp(60px,8vw,120px)' }}>
-          <div className="flex flex-col" style={{ gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
-            {PRODUCTS.map((p) => {
-              const isLive = LIVE_IDS.includes(p.id);
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(48px,6vw,80px) clamp(16px,4vw,56px) clamp(64px,8vw,120px)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 1, background: 'var(--border)' }}>
+            {PRODUCTS.map(p => {
+              const isLive = LIVE.includes(p.id);
               return (
-                <div
-                  key={p.id}
-                  id={p.id}
-                  className="relative overflow-hidden hover-surface"
-                  style={{
-                    background: 'var(--card)',
-                    padding: 'clamp(28px,4vw,52px)',
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))',
-                    gap: 'clamp(24px,4vw,56px)',
-                    opacity: isLive ? 1 : .6,
-                  }}
-                >
-                  {/* Top accent */}
-                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: p.color }} />
+                <div key={p.id} id={p.id} style={{
+                  background: 'var(--card)',
+                  padding: 'clamp(28px,4vw,52px)',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px,1fr))',
+                  gap: 'clamp(24px,4vw,56px)',
+                  opacity: isLive ? 1 : .6,
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}>
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${p.color}, transparent)` }} />
 
                   {/* Identity */}
                   <div>
-                    <div className="flex items-start gap-4 mb-6">
-                      <div
-                        className="flex items-center justify-center font-display font-bold text-2xl border"
-                        style={{ width: 56, height: 56, flexShrink: 0, background: `${p.color}10`, borderColor: `${p.color}22`, color: p.color }}
-                      >
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, marginBottom: 24 }}>
+                      <div style={{
+                        width: 52, height: 52, flexShrink: 0,
+                        background: `${p.color}10`, border: `1px solid ${p.color}22`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 22, color: p.color,
+                      }}>
                         {p.icon}
                       </div>
                       <div>
                         <StatusBadge status={isLive ? p.status : 'COMING_SOON'} />
-                        <div className="font-display font-black text-text mt-2" style={{ fontSize: 24 }}>{p.name}</div>
-                        <div className="font-mono mt-1" style={{ color: p.color, fontSize: 10.5, letterSpacing: '.1em', textTransform: 'uppercase' }}>{p.tagline}</div>
+                        <div className="f-display" style={{ fontWeight: 800, fontSize: 22, letterSpacing: '-.02em', color: 'var(--text)', marginTop: 8 }}>
+                          {p.name}
+                        </div>
+                        <div className="f-mono" style={{ fontSize: 9.5, color: p.color, letterSpacing: '.1em', textTransform: 'uppercase', marginTop: 3 }}>
+                          {p.tagline}
+                        </div>
                       </div>
                     </div>
-                    <div className="font-mono text-muted mb-1.5" style={{ fontSize: 9.5, letterSpacing: '.12em' }}>CATEGORY</div>
-                    <div className="text-sub font-medium" style={{ fontSize: 13.5 }}>{p.category}</div>
+                    <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', color: 'var(--muted)', marginBottom: 6, textTransform: 'uppercase' }}>Category</div>
+                    <div style={{ fontSize: 13, color: 'var(--sub)', fontWeight: 500 }}>{p.category}</div>
                   </div>
 
                   {/* Description */}
                   <div>
-                    <div className="font-mono text-muted mb-3" style={{ fontSize: 9.5, letterSpacing: '.12em' }}>ABOUT</div>
-                    <p className="text-sub leading-relaxed" style={{ fontSize: 14 }}>{p.desc}</p>
+                    <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', color: 'var(--muted)', marginBottom: 12, textTransform: 'uppercase' }}>About</div>
+                    <p style={{ fontSize: 14, color: 'var(--sub)', lineHeight: 1.8 }}>{p.desc}</p>
                   </div>
 
                   {/* Metrics + Stack */}
                   <div>
-                    <div className="font-mono text-muted mb-3" style={{ fontSize: 9.5, letterSpacing: '.12em' }}>KEY METRICS</div>
-                    <div className="flex flex-col gap-2 mb-6">
+                    <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', color: 'var(--muted)', marginBottom: 12, textTransform: 'uppercase' }}>Key Metrics</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24 }}>
                       {p.metrics.map((m, i) => (
-                        <div key={i} className="flex items-center gap-3">
-                          <span style={{ color: 'var(--accent)', fontSize: 9, fontWeight: 700 }}>✓</span>
-                          <span className="text-sub" style={{ fontSize: 13.5 }}>{m}</span>
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <span style={{ color: 'var(--blue)', fontSize: 8, fontWeight: 700 }}>◆</span>
+                          <span style={{ fontSize: 13.5, color: 'var(--sub)' }}>{m}</span>
                         </div>
                       ))}
                     </div>
-                    <div className="font-mono text-muted mb-3" style={{ fontSize: 9.5, letterSpacing: '.12em' }}>TECH STACK</div>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', color: 'var(--muted)', marginBottom: 10, textTransform: 'uppercase' }}>Tech Stack</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                       {p.stack.map(t => (
-                        <span key={t} className="font-mono text-muted"
-                          style={{ padding: '3px 9px', fontSize: 10.5, border: '1px solid var(--border)', background: 'rgba(255,255,255,.02)' }}>
+                        <span key={t} className="f-mono" style={{ fontSize: 10, color: 'var(--muted)', border: '1px solid var(--border)', padding: '3px 9px' }}>
                           {t}
                         </span>
                       ))}
@@ -114,14 +108,14 @@ export default function ProductsPage() {
         </div>
 
         {/* CTA */}
-        <div style={{ borderTop: '1px solid var(--border)', padding: 'clamp(40px,5vw,80px) clamp(16px,4vw,56px)', textAlign: 'center' }}>
-          <h2 className="font-display font-black text-text" style={{ fontSize: 'clamp(28px,4vw,48px)', letterSpacing: '-.03em', marginBottom: 16 }}>
+        <div style={{ borderTop: '1px solid var(--border)', padding: 'clamp(48px,6vw,80px) clamp(16px,4vw,56px)', textAlign: 'center', background: 'var(--s1)' }}>
+          <h2 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(28px,4vw,52px)', letterSpacing: '-.04em', color: 'var(--text)', marginBottom: 16 }}>
             Want a demo or custom build?
           </h2>
-          <p className="text-sub" style={{ fontSize: 16, marginBottom: 36 }}>We'll walk you through any product or scope something custom for your business.</p>
-          <Link href="/contact"
-            className="font-display font-bold no-underline hover-glow inline-block"
-            style={{ padding: '14px 40px', fontSize: 13, letterSpacing: '.06em', textTransform: 'uppercase', background: 'var(--accent)', color: '#fff' }}>
+          <p style={{ fontSize: 16, color: 'var(--sub)', marginBottom: 36 }}>
+            We&apos;ll walk you through any product or scope something custom for your business.
+          </p>
+          <Link href="/contact" className="btn btn-primary">
             Get In Touch →
           </Link>
         </div>
