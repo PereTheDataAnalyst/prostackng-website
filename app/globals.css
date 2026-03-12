@@ -11,15 +11,15 @@
   --blue-dim:  #1D4ED8;
   --blue-lo:   rgba(37,99,235,.08);
   --blue-glow: rgba(37,99,235,.2);
-  --bg:        #04050A;
-  --s1:        #07080F;
-  --s2:        #0B0D1A;
-  --card:      #0D0F1E;
-  --border:    #131526;
-  --hi:        #1B1E35;
+  --bg:        #080B14;
+  --s1:        #0C0F1C;
+  --s2:        #0F1220;
+  --card:      #111428;
+  --border:    #181C30;
+  --hi:        #1E2238;
   --text:      #EEF0FF;
-  --sub:       #636687;
-  --muted:     #272A45;
+  --sub:       #7A7DA0;
+  --muted:     #32365A;
   --white:     #FFFFFF;
 }
 
@@ -59,14 +59,14 @@ body {
 /* ─── GRID BACKGROUND ─────────────────────────────────────────── */
 .bg-grid {
   background-image:
-    linear-gradient(rgba(37,99,235,.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37,99,235,.035) 1px, transparent 1px);
+    linear-gradient(rgba(37,99,235,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,.05) 1px, transparent 1px);
   background-size: 52px 52px;
 }
 .bg-grid-fine {
   background-image:
-    linear-gradient(rgba(37,99,235,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37,99,235,.025) 1px, transparent 1px);
+    linear-gradient(rgba(37,99,235,.038) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,.038) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 

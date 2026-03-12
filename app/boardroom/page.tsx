@@ -876,10 +876,22 @@ export default function BoardroomPage() {
             <div ref={scrollContainerRef} style={{
               flex: 1, overflowY: 'auto', overflowX: 'hidden',
               padding: '10px 12px', display: 'flex', flexDirection: 'column',
+              position: 'relative',
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Crect width='60' height='60' fill='%23050507'/%3E%3Ccircle cx='30' cy='30' r='1.2' fill='%232563EB' opacity='0.13'/%3E%3Ccircle cx='0' cy='0' r='0.9' fill='%232563EB' opacity='0.09'/%3E%3Ccircle cx='60' cy='0' r='0.9' fill='%232563EB' opacity='0.09'/%3E%3Ccircle cx='0' cy='60' r='0.9' fill='%232563EB' opacity='0.09'/%3E%3Ccircle cx='60' cy='60' r='0.9' fill='%232563EB' opacity='0.09'/%3E%3Ccircle cx='30' cy='0' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='0' cy='30' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='60' cy='30' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='30' cy='60' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='60' height='60' fill='url(%23p)'/%3E%3C/svg%3E")`,
               backgroundSize: '60px 60px',
               backgroundRepeat: 'repeat',
             }}>
+              {/* Stack logo watermark — centered, faint, non-interactive */}
+              <div style={{ position: 'sticky', top: 0, height: 0, overflow: 'visible', pointerEvents: 'none', zIndex: 0, display: 'flex', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', opacity: 0.028 }}>
+                  <svg width="340" height="286" viewBox="0 0 52 44" fill="none">
+                    <path d="M6 30 L36 30 L46 38 L16 38 Z" fill="#2563EB" opacity=".5"/>
+                    <path d="M2 20 L32 20 L42 28 L12 28 Z" fill="#2563EB" opacity=".75"/>
+                    <path d="M0 10 L30 10 L40 18 L10 18 Z" fill="#2563EB"/>
+                    <path d="M0 10 L30 10" stroke="#93C5FD" strokeWidth="1.5" opacity=".7"/>
+                  </svg>
+                </div>
+              </div>
 
               {filteredMsgs.length === 0 && (
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#131526', textAlign: 'center', position: 'relative', zIndex: 1 }}>
@@ -1058,11 +1070,14 @@ export default function BoardroomPage() {
 
               {/* Emoji picker */}
               {showEmojiPicker && (
-                <div style={{ position: 'absolute', bottom: '100%', left: 10, right: 10, background: BG2, border: '1px solid #1B1E35', padding: 10, zIndex: 50, boxShadow: '0 -8px 32px rgba(0,0,0,.6)', marginBottom: 4 }}>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                <div data-menu style={{ position: 'absolute', bottom: '100%', left: 10, right: 10, background: BG2, border: '1px solid #1B1E35', padding: 12, zIndex: 50, boxShadow: '0 -8px 32px rgba(0,0,0,.6)', marginBottom: 4 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(36px, 1fr))', gap: 4 }}>
                     {EMOJI_LIST.map(emoji => (
-                      <button key={emoji} onClick={() => { setInput(p => p + emoji); setShowEmojiPicker(false); inputRef.current?.focus(); }}
-                        style={{ background: 'none', border: '1px solid #131526', fontSize: 20, padding: '4px 6px', cursor: 'pointer', lineHeight: 1 }}>
+                      <button key={emoji}
+                        data-menu
+                        type="button"
+                        onClick={e => { e.preventDefault(); e.stopPropagation(); setInput(p => p + emoji); setShowEmojiPicker(false); setTimeout(() => { const el = inputRef.current; if (el) { el.focus(); const len = el.value.length; el.setSelectionRange(len, len); } }, 0); }}
+                        style={{ background: 'none', border: '1px solid #131526', fontSize: 22, padding: '5px', cursor: 'pointer', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 2 }}>
                         {emoji}
                       </button>
                     ))}
@@ -1072,7 +1087,7 @@ export default function BoardroomPage() {
 
               <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                 {/* Emoji button */}
-                <button onClick={() => setShowEmojiPicker(p => !p)}
+                <button data-menu onClick={() => setShowEmojiPicker(p => !p)}
                   style={{ width: 36, height: 36, background: showEmojiPicker ? 'rgba(37,99,235,.07)' : BG3, border: `1px solid ${showEmojiPicker ? '#2563EB' : '#1B1E35'}`, color: showEmojiPicker ? '#2563EB' : '#272A45', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}>😊</button>
 
                 {/* Image upload */}
@@ -1094,7 +1109,7 @@ export default function BoardroomPage() {
                     <span style={{ color: '#272A45', fontSize: 11 }}>Release to send</span>
                   </div>
                 ) : (
-                  <input ref={inputRef} value={input} onChange={e => { handleInputChange(e.target.value); setShowEmojiPicker(false); }}
+                  <input ref={inputRef} value={input} onChange={e => { handleInputChange(e.target.value); }}
                     onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
                     placeholder={`Message #${currentRoom?.name}…`}
                     style={{ flex: 1, background: BG3, border: '1px solid #1B1E35', color: '#EEF0FF', padding: '9px 12px', fontSize: 14, outline: 'none', fontFamily: 'Instrument Sans, sans-serif', minWidth: 0 }} />
