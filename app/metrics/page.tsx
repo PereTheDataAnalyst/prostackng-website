@@ -10,9 +10,9 @@ export const metadata = {
 // Static numbers — update these regularly or connect to a data source later
 const METRICS = {
   updatedAt: 'March 2026',
-  clients: { n: '20+', label: 'Active Clients', delta: '+4 this quarter', up: true },
+  clients: { n: '20+', label: 'Active Clients', delta: '+3 this quarter', up: true },
   platforms: { n: '3',   label: 'Live Platforms', delta: 'AutoReport · ProTrackNG · NightOps', up: null },
-  reports: { n: '1,200+', label: 'Reports Generated', delta: 'By AutoReport to date', up: true },
+  reports: { n: '800+', label: 'Reports Generated', delta: 'By AutoReport to date', up: true },
   tenders: { n: '400+',  label: 'Portals Monitored', delta: 'By ProTrackNG daily', up: null },
   reconcile: { n: '5min', label: 'Avg. Reconciliation Time', delta: 'Down from ~2 hrs', up: true },
   uptime: { n: '99.7%', label: 'Platform Uptime', delta: 'Last 90 days', up: true },
@@ -216,7 +216,7 @@ export default function MetricsPage() {
               <div className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(16px,2.5vw,24px)', color: 'var(--text)', letterSpacing: '-.02em' }}>
                 Interested in investing?
               </div>
-              <p style={{ fontSize: 13.5, color: 'var(--sub)', marginTop: 6 }}>We&apos;re preparing for a $500K–$2M raise. View our full investor page or request the deck directly.</p>
+              <p style={{ fontSize: 13.5, color: 'var(--sub)', marginTop: 6 }}>We&apos;re preparing for a ₦75M – ₦150M raise. View our full investor page or request the deck directly.</p>
             </div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               <Link href="/investor" className="btn btn-primary btn-sm">Investor Page →</Link>
