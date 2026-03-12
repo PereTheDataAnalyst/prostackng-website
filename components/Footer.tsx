@@ -16,13 +16,14 @@ const COLS = [
   {
     title: 'Company',
     links: [
-      { label: 'About Us',        href: '/company'       },
-      { label: 'Technology',      href: '/technology'    },
-      { label: 'Case Studies',    href: '/case-studies'  },
-      { label: 'Testimonials',    href: '/testimonials'  },
-      { label: 'Blog & Insights', href: '/blog'          },
-      { label: 'Press & Media',   href: '/press'         },
-      { label: 'Careers',         href: '#'              },
+      { label: 'About Us',           href: '/company'      },
+      { label: 'Technology',         href: '/technology'   },
+      { label: 'Case Studies',       href: '/case-studies' },
+      { label: 'Testimonials',       href: '/testimonials' },
+      { label: 'Blog & Insights',    href: '/blog'         },
+      { label: 'Press & Media',      href: '/press'        },
+      { label: 'Investor Relations', href: '/investor'     },
+      { label: 'Careers',            href: '/careers'      },
     ],
   },
   {
@@ -30,9 +31,11 @@ const COLS = [
     links: [
       { label: 'contact@prostackng.com',      href: 'mailto:contact@prostackng.com'    },
       { label: 'WhatsApp: +234 705 944 9360', href: 'https://wa.me/2347059449360'      },
-      { label: 'Book a Free Demo',             href: '/demo'                            },
-      { label: 'Pricing',                      href: '/pricing'                         },
-      { label: 'Boardroom (Staff)',             href: '/boardroom'                       },
+      { label: 'Book a Free Demo',            href: '/demo'                            },
+      { label: 'Pricing',                     href: '/pricing'                         },
+      { label: 'Client Portal',               href: '/portal'                          },
+      { label: 'Public Metrics',              href: '/metrics'                         },
+      { label: 'Boardroom (Staff)',            href: '/boardroom'                       },
     ],
   },
 ];
