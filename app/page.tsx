@@ -4,6 +4,36 @@ import Footer from '@/components/Footer';
 import Ticker from '@/components/Ticker';
 import StatusBadge from '@/components/ui/StatusBadge';
 import StackLogo from '@/components/StackLogo';
+import { ytThumb, ytEmbed } from '@/lib/videos';
+
+// Lightweight inline video card for homepage (opens YouTube in new tab — no state needed in server component)
+function HomeVideoCard({ id, title, tag, tagColor, large }: { id: string; title: string; tag: string; tagColor: string; large?: boolean }) {
+  return (
+    <a href={`https://youtube.com/watch?v=${id}`} target="_blank" rel="noreferrer"
+      style={{ display: 'block', textDecoration: 'none', position: 'relative', overflow: 'hidden', background: 'var(--card)', cursor: 'pointer' }}
+    >
+      {/* Thumbnail */}
+      <div style={{ position: 'relative', paddingBottom: '56.25%', background: 'var(--s2)', overflow: 'hidden' }}>
+        <img
+          src={ytThumb(id, large ? 'max' : 'hq')}
+          alt={title}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+        {/* Overlay */}
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(4,5,10,.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: large ? 68 : 50, height: large ? 68 : 50, borderRadius: '50%', background: 'rgba(37,99,235,.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 32px rgba(37,99,235,.45)' }}>
+            <div style={{ width: 0, height: 0, borderTop: `${large ? 13 : 9}px solid transparent`, borderBottom: `${large ? 13 : 9}px solid transparent`, borderLeft: `${large ? 20 : 14}px solid #fff`, marginLeft: large ? 4 : 3 }} />
+          </div>
+        </div>
+        <div style={{ position: 'absolute', top: 12, left: 12, fontFamily: 'JetBrains Mono, monospace', fontSize: 8.5, letterSpacing: '.14em', textTransform: 'uppercase', background: 'rgba(4,5,10,.8)', border: `1px solid ${tagColor}44`, color: tagColor, padding: '3px 9px' }}>{tag}</div>
+      </div>
+      {/* Title */}
+      <div style={{ padding: large ? '18px 24px' : '14px 18px' }}>
+        <div className="f-display" style={{ fontWeight: 700, fontSize: large ? 16 : 13, color: 'var(--text)', lineHeight: 1.3 }}>{title}</div>
+      </div>
+    </a>
+  );
+}
 
 export const metadata = {
   title: 'ProStack NG — Platform-first technology for Africa',
@@ -375,6 +405,58 @@ export default function HomePage() {
                   <p style={{ fontSize: 13.5, color: 'var(--sub)', lineHeight: 1.75 }}>{c.result}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════ VIDEO ═════════════════════════════════ */}
+        <section style={{ padding: 'clamp(64px,8vw,120px) clamp(16px,4vw,56px)', background: 'var(--bg)' }}>
+          <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 44 }}>
+              <div>
+                <div className="eyebrow" style={{ marginBottom: 14 }}>From Our Studio</div>
+                <h2 className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(32px,4.5vw,60px)', letterSpacing: '-.04em', lineHeight: .95, color: 'var(--text)' }}>
+                  Watch us<br />build Africa.
+                </h2>
+              </div>
+              <Link href="/media" className="f-mono" style={{ fontSize: 10.5, letterSpacing: '.14em', color: 'var(--sub)', textDecoration: 'none', borderBottom: '1px solid var(--border)', paddingBottom: 3, textTransform: 'uppercase' }}>
+                All Videos →
+              </Link>
+            </div>
+
+            {/* Featured + 3 secondary */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 1, background: 'var(--border)' }}>
+
+              {/* Featured — spans 2 cols on wide screens */}
+              <div style={{ gridColumn: 'span 2', minWidth: 0 }}>
+                <HomeVideoCard
+                  id="LXb3EKWsInQ"
+                  title="AutoReport: From Raw Data to Board-Ready PDF in 8 Seconds"
+                  tag="Product Demo" tagColor="#FF5757"
+                  large
+                />
+              </div>
+
+              <HomeVideoCard id="JTxsNm9IdYU" title="ProTrackNG: Never Miss a Tender Deadline Again" tag="Product Demo" tagColor="#06B6D4" />
+              <HomeVideoCard id="hY7m5jjJ9mM" title="NightOps: Running a Nightclub with Zero Manual Counting" tag="Case Study" tagColor="#A78BFA" />
+              <HomeVideoCard id="KgpclqP-LBA" title="ProStack NG: Building Africa's Digital Infrastructure" tag="Company" tagColor="#2563EB" />
+            </div>
+
+            {/* YouTube subscribe strip */}
+            <div style={{ marginTop: 1, background: 'var(--card)', border: '1px solid var(--border)', borderTop: 'none', padding: '20px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+              <p className="f-mono" style={{ fontSize: 10, letterSpacing: '.12em', color: 'var(--muted)', textTransform: 'uppercase' }}>
+                More demos, walkthroughs & case studies on our YouTube channel
+              </p>
+              <a href="https://youtube.com/@prostackng" target="_blank" rel="noreferrer" style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                fontFamily: 'JetBrains Mono, monospace', fontWeight: 500, fontSize: 10,
+                letterSpacing: '.1em', textTransform: 'uppercase',
+                color: '#fff', background: '#FF0000',
+                padding: '8px 20px', textDecoration: 'none',
+                transition: 'opacity .2s', flexShrink: 0,
+              }}>
+                ▶ Subscribe
+              </a>
             </div>
           </div>
         </section>

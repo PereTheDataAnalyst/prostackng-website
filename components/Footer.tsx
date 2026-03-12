@@ -19,6 +19,7 @@ const COLS = [
       { label: 'About Us',     href: '/company'      },
       { label: 'Technology',   href: '/technology'   },
       { label: 'Case Studies', href: '/case-studies' },
+      { label: 'Media',        href: '/media'        },
       { label: 'Blog',         href: '#'             },
       { label: 'Careers',      href: '#'             },
     ],

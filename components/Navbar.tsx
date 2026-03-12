@@ -8,6 +8,7 @@ const LINKS = [
   { href: '/products',     label: 'Products'     },
   { href: '/technology',   label: 'Technology'   },
   { href: '/case-studies', label: 'Case Studies' },
+  { href: '/media',        label: 'Media'        },
   { href: '/company',      label: 'Company'      },
   { href: '/contact',      label: 'Contact'      },
 ];
