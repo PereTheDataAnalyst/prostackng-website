@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const TOKENS: Record<string, { name: string; role: string; color: string }> = {
-  'PSN-CEO-001':   { name: 'Pere A.',    role: 'CEO',               color: '#2563EB' },
+  'PSN-CEO-001':   { name: 'Fubara',     role: 'CEO',               color: '#2563EB' },
   'PSN-ENG-001':   { name: 'Eng 01',     role: 'Lead Engineer',     color: '#06B6D4' },
   'PSN-ENG-002':   { name: 'Eng 02',     role: 'Backend Engineer',  color: '#38BDF8' },
   'PSN-DES-001':   { name: 'Design 01',  role: 'UI/UX Designer',    color: '#A78BFA' },

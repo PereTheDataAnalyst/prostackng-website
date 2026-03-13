@@ -38,38 +38,35 @@ function VideoCard({ v, onClick }: { v: VideoEntry; onClick?: () => void }) {
   return (
     <div
       onClick={ready ? onClick : undefined}
-      style={{ cursor: ready ? 'pointer' : 'default', background: 'var(--card)', overflow: 'hidden', opacity: ready ? 1 : .6, transition: 'opacity .2s, transform .2s' }}
-      onMouseEnter={e => ready && ((e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)')}
-      onMouseLeave={e => ((e.currentTarget as HTMLElement).style.transform = 'translateY(0)')}
+      style={{ display: 'flex', alignItems: 'center', height: 56, cursor: ready ? 'pointer' : 'default', background: 'var(--card)', overflow: 'hidden', opacity: ready ? 1 : .6, borderBottom: '1px solid var(--border)' }}
     >
-      {/* Thumbnail */}
-      <div style={{ position: 'relative', paddingBottom: '56.25%', background: 'var(--s2)', overflow: 'hidden' }}>
+      {/* Thumbnail — 96×56 fixed */}
+      <div style={{ width: 96, height: 56, flexShrink: 0, background: 'var(--s2)', position: 'relative', overflow: 'hidden' }}>
         {ready ? (
-          <img src={ytThumb(v.id)} alt={v.title} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img src={ytThumb(v.id)} alt={v.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         ) : (
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,var(--card),var(--s2))', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            <svg width="40" height="33" viewBox="0 0 52 44" fill="none" opacity=".1">
+          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="22" height="18" viewBox="0 0 52 44" fill="none" opacity=".12">
               <path d="M6 30 L36 30 L46 38 L16 38 Z" fill="#2563EB" opacity=".5"/>
               <path d="M2 20 L32 20 L42 28 L12 28 Z" fill="#2563EB" opacity=".75"/>
               <path d="M0 10 L30 10 L40 18 L10 18 Z" fill="#2563EB"/>
             </svg>
-            <span className="f-mono" style={{ fontSize: 8, letterSpacing: '.14em', color: 'var(--muted)', textTransform: 'uppercase' }}>Coming Soon</span>
           </div>
         )}
-        <div style={{ position: 'absolute', inset: 0, background: ready ? 'rgba(8,11,20,.22)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {ready && (
-            <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(37,99,235,.88)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 20px rgba(37,99,235,.4)' }}>
-              <div style={{ width: 0, height: 0, borderTop: '8px solid transparent', borderBottom: '8px solid transparent', borderLeft: '13px solid #fff', marginLeft: 3 }} />
+        {ready && (
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,11,20,.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(37,99,235,.88)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: 0, height: 0, borderTop: '3px solid transparent', borderBottom: '3px solid transparent', borderLeft: '6px solid #fff', marginLeft: 2 }} />
             </div>
-          )}
-        </div>
-        <div style={{ position: 'absolute', top: 10, left: 10, fontFamily: 'JetBrains Mono, monospace', fontSize: 8, letterSpacing: '.12em', textTransform: 'uppercase', background: 'rgba(8,11,20,.85)', border: `1px solid ${v.tagColor}38`, color: v.tagColor, padding: '2px 8px' }}>{v.tag}</div>
-        <div style={{ position: 'absolute', top: 10, right: 10, fontFamily: 'JetBrains Mono, monospace', fontSize: 8, letterSpacing: '.08em', color: 'var(--muted)', background: 'rgba(8,11,20,.8)', padding: '2px 7px' }}>{v.date}</div>
+          </div>
+        )}
+        <div style={{ position: 'absolute', bottom: 3, left: 3, fontFamily: 'JetBrains Mono, monospace', fontSize: 5.5, letterSpacing: '.08em', textTransform: 'uppercase', background: 'rgba(8,11,20,.9)', color: v.tagColor, padding: '1px 4px' }}>{v.tag}</div>
       </div>
       {/* Meta */}
-      <div style={{ padding: '16px 18px' }}>
-        <div className="f-display" style={{ fontWeight: 700, fontSize: 13.5, color: ready ? 'var(--text)' : 'var(--sub)', lineHeight: 1.3, marginBottom: 6 }}>{v.title}</div>
-        <p style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.65 }}>{v.desc}</p>
+      <div style={{ flex: 1, padding: '0 14px', minWidth: 0 }}>
+        <div className="f-display" style={{ fontWeight: 700, fontSize: 11.5, color: ready ? 'var(--text)' : 'var(--sub)', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginBottom: ready ? 0 : 2 }}>{v.title}</div>
+        {!ready && <div className="f-mono" style={{ fontSize: 7, color: 'var(--muted)', letterSpacing: '.1em' }}>UPLOADING SOON</div>}
+        {ready && v.date && <div className="f-mono" style={{ fontSize: 7.5, color: 'var(--muted)', letterSpacing: '.06em', marginTop: 3 }}>{v.date}</div>}
       </div>
     </div>
   );
@@ -157,7 +154,7 @@ export default function MediaPage() {
                 ))}
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 1, background: 'var(--border)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', background: 'var(--border)', gap: 0 }}>
                 {channelFiltered.map((v, i) => (
                   <VideoCard key={i} v={v} onClick={() => v.hasVideo && v.id && setActive(v)} />
                 ))}
@@ -171,7 +168,7 @@ export default function MediaPage() {
               <div className="f-mono" style={{ fontSize: 9.5, letterSpacing: '.14em', color: 'var(--muted)', textTransform: 'uppercase', marginBottom: 28 }}>
                 Short-form promotional content produced by the ProStack NG ad team.
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 1, background: 'var(--border)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', background: 'var(--border)', gap: 0 }}>
                 {AD_VIDEOS.map((v, i) => (
                   <VideoCard key={i} v={v} onClick={() => v.hasVideo && v.id && setActive(v)} />
                 ))}

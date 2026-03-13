@@ -15,11 +15,12 @@ const ICE_SERVERS = [
 ];
 
 const ROOMS = [
-  { id: 'general',     name: 'General',     icon: '◈', desc: 'Company-wide updates' },
-  { id: 'engineering', name: 'Engineering', icon: '⬡', desc: 'Dev team channel' },
-  { id: 'boardroom',   name: 'BoardRoom',   icon: '▦', desc: 'Executive meetings' },
-  { id: 'ops',         name: 'Operations',  icon: '◎', desc: 'Day-to-day ops' },
-  { id: 'random',      name: 'Random',      icon: '⟁', desc: 'Non-work chat' },
+  { id: 'announcements', name: 'Announcements', icon: '📢', desc: 'Company-wide announcements', readOnly: true },
+  { id: 'general',       name: 'General',       icon: '◈', desc: 'Company-wide updates',     readOnly: false },
+  { id: 'engineering',   name: 'Engineering',   icon: '⬡', desc: 'Dev team channel',          readOnly: false },
+  { id: 'boardroom',     name: 'BoardRoom',     icon: '▦', desc: 'Executive meetings',        readOnly: false },
+  { id: 'ops',           name: 'Operations',    icon: '◎', desc: 'Day-to-day ops',            readOnly: false },
+  { id: 'random',        name: 'Random',        icon: '⟁', desc: 'Non-work chat',             readOnly: false },
 ];
 
 const REACTIONS = ['👍','❤️','😂','🔥','👏','✅','💡','⚡'];
@@ -31,6 +32,8 @@ type Message = {
   message: string; message_type: string; audio_url: string | null;
   reactions: Record<string, string[]> | null;
   pinned: boolean;
+  reply_to_id: number | null;
+  seen_by: string[];
   created_at: string;
 };
 type Peer = { peerId: string; name: string; color: string; stream: MediaStream | null; audioOnly: boolean };
@@ -92,6 +95,14 @@ export default function BoardroomPage() {
   const imageInputRef                   = useRef<HTMLInputElement>(null);
   const [imageUploading, setImageUploading] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  // ── Thread / reply state ───────────────────────────────
+  const [replyingTo, setReplyingTo]   = useState<Message|null>(null);
+  const [threadParent, setThreadParent] = useState<Message|null>(null);
+  const [threadMessages, setThreadMessages] = useState<Message[]>([]);
+  const [showThread, setShowThread]   = useState(false);
+  const [threadInput, setThreadInput] = useState('');
+  const [threadSending, setThreadSending] = useState(false);
+  const fileAttachRef                 = useRef<HTMLInputElement>(null);
 
 
   const bottomRef                       = useRef<HTMLDivElement>(null);
@@ -342,6 +353,21 @@ export default function BoardroomPage() {
     return () => { supabase.removeChannel(ch); };
   }, [screen, user, callActive, playRing]);
 
+  // ── Thread subscription ─────────────────────────────────
+  useEffect(() => {
+    if (!showThread || !threadParent || screen !== 'app') return;
+    const ch = supabase.channel(`thread-${threadParent.id}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'boardroom_messages', filter: `reply_to_id=eq.${threadParent.id}` }, (payload) => {
+        setThreadMessages(p => [...p, payload.new as Message]);
+      }).subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [showThread, threadParent, screen]);
+
+  // ── Mark room seen when messages load ───────────────────
+  useEffect(() => {
+    if (messages.length > 0 && user) markRoomSeen(messages);
+  }, [activeRoom]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const toggleMute   = () => { localStream?.getAudioTracks().forEach(t => { t.enabled = muted; }); setMuted(!muted); };
   const toggleCamera = () => { localStream?.getVideoTracks().forEach(t => { t.enabled = camOff; }); setCamOff(!camOff); };
   const toggleScreenShare = async () => {
@@ -484,6 +510,63 @@ export default function BoardroomPage() {
     }
     setAvatarUploading(false);
   };
+
+  // ── Thread replies ─────────────────────────────────────
+  const openThread = useCallback(async (msg: Message) => {
+    setThreadParent(msg);
+    setShowThread(true);
+    const { data } = await supabase.from('boardroom_messages').select('*')
+      .eq('reply_to_id', msg.id).order('created_at', { ascending: true });
+    setThreadMessages(data || []);
+  }, []);
+
+  const sendThreadReply = async () => {
+    if (!threadInput.trim() || !user || threadSending || !threadParent) return;
+    setThreadSending(true);
+    const text = threadInput.trim(); setThreadInput('');
+    await supabase.from('boardroom_messages').insert({
+      room_id: activeRoom, author_name: user.displayName || user.name,
+      author_role: user.role, author_color: user.color,
+      message: text, message_type: 'text', audio_url: null,
+      reactions: {}, pinned: false, reply_to_id: threadParent.id,
+    });
+    setThreadSending(false);
+  };
+
+  // ── File attachment ─────────────────────────────────────
+  const uploadFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (file.size > 20 * 1024 * 1024) { alert('File must be under 20MB.'); return; }
+    setUploading(true);
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const { data, error } = await supabase.storage.from('voice-messages').upload(
+      `${activeRoom}/files-${Date.now()}-${safeName}`, file, { contentType: file.type, upsert: false }
+    );
+    if (!error && data) {
+      const { data: u } = supabase.storage.from('voice-messages').getPublicUrl(data.path);
+      await supabase.from('boardroom_messages').insert({
+        room_id: activeRoom, author_name: user.displayName || user.name,
+        author_role: user.role, author_color: user.color,
+        message: `📎 ${file.name}`, message_type: 'file', audio_url: u.publicUrl,
+        reactions: {}, pinned: false,
+      });
+    } else if (error) { alert('File upload failed. Check storage bucket permissions.'); }
+    setUploading(false);
+    if (fileAttachRef.current) fileAttachRef.current.value = '';
+  };
+
+  // ── Read receipts ───────────────────────────────────────
+  const markRoomSeen = useCallback(async (msgs: Message[]) => {
+    if (!user) return;
+    const name = user.displayName || user.name;
+    // Only mark last 20 messages to limit DB calls
+    const recent = msgs.slice(-20).filter(m => m.author_name !== name && !(m.seen_by || []).includes(name));
+    if (recent.length === 0) return;
+    await Promise.all(recent.map(m =>
+      supabase.from('boardroom_messages').update({ seen_by: [...(m.seen_by || []), name] }).eq('id', m.id)
+    ));
+  }, [user]);
 
   // ── Auth ───────────────────────────────────────────────
   const handleLogin = async () => {
@@ -955,7 +1038,28 @@ export default function BoardroomPage() {
                               <img src={msg.audio_url} alt="shared image" style={{ width: '100%', display: 'block', maxHeight: 320, objectFit: 'contain' }} />
                               <div style={{ color: '#272A45', fontSize: 10, fontFamily: 'monospace', padding: '4px 2px 0' }}>🖼 Click to open full size</div>
                             </div>
+                          ) : msg.message_type === 'file' && msg.audio_url ? (
+                            <a href={msg.audio_url} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: 'rgba(12,18,32,0.9)', border: '1px solid #1B1E35', padding: '10px 14px', textDecoration: 'none', maxWidth: isMobile ? '85vw' : 360 }}>
+                              <span style={{ fontSize: 22, flexShrink: 0 }}>
+                                {msg.message.includes('.pdf') ? '📄' : msg.message.includes('.doc') ? '📝' : msg.message.includes('.xl') || msg.message.includes('.csv') ? '📊' : msg.message.includes('.zip') || msg.message.includes('.rar') ? '🗜' : '📎'}
+                              </span>
+                              <div style={{ minWidth: 0 }}>
+                                <div style={{ color: '#D0E0F0', fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: isMobile ? '60vw' : 260 }}>{msg.message.replace('📎 ', '')}</div>
+                                <div style={{ color: '#2563EB', fontSize: 10, fontFamily: 'monospace', marginTop: 2 }}>Click to download →</div>
+                              </div>
+                            </a>
                           ) : (
+                            <>
+                              {/* Reply-to quote */}
+                              {msg.reply_to_id && (() => {
+                                const parent = messages.find(m => m.id === msg.reply_to_id);
+                                return parent ? (
+                                  <div style={{ borderLeft: `2px solid ${parent.author_color}`, paddingLeft: 8, marginBottom: 5, opacity: .65, cursor: 'pointer' }} onClick={() => openThread(parent)}>
+                                    <div style={{ color: parent.author_color, fontSize: 11, fontWeight: 600 }}>{parent.author_name}</div>
+                                    <div style={{ color: '#636687', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: isMobile ? '60vw' : 340 }}>{parent.message.slice(0, 80)}</div>
+                                  </div>
+                                ) : null;
+                              })()}
                             <div style={{
                               display: 'inline-block', maxWidth: '85%',
                               background: isOwn ? 'rgba(139,92,246,.09)' : 'rgba(12,18,32,0.82)',
@@ -965,6 +1069,7 @@ export default function BoardroomPage() {
                             }}>
                               {msg.message}
                             </div>
+                            </>
                           )}
 
                           {hasReact && (
@@ -980,11 +1085,33 @@ export default function BoardroomPage() {
                             </div>
                           )}
 
+                          {/* Thread reply count */}
+                          {!msg.reply_to_id && (() => {
+                            const replyCount = messages.filter(m => m.reply_to_id === msg.id).length;
+                            return replyCount > 0 ? (
+                              <button onClick={() => openThread(msg)} style={{ background: 'none', border: 'none', color: '#2563EB', fontSize: 11, cursor: 'pointer', padding: '3px 0', fontFamily: 'Instrument Sans, sans-serif', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                💬 {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
+                              </button>
+                            ) : null;
+                          })()}
+
+                          {/* Read receipts — only on own messages */}
+                          {isOwn && (msg.seen_by || []).filter((n: string) => n !== displayName).length > 0 && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3 }}>
+                              <span style={{ color: '#2563EB', fontSize: 10 }}>✓✓</span>
+                              <span style={{ color: '#272A45', fontSize: 10, fontFamily: 'monospace' }}>
+                                Seen by {(msg.seen_by || []).filter((n: string) => n !== displayName).join(', ')}
+                              </span>
+                            </div>
+                          )}
+
                           {/* Mobile actions */}
                           {isMobile && (
                             <div style={{ display: 'flex', gap: 4, marginTop: 5, flexWrap: 'wrap' }}>
                               <button data-menu onClick={e => { e.stopPropagation(); setReactionMsgId(reactionMsgId === msg.id ? null : msg.id); setMenuMsgId(null); }}
                                 style={{ background: 'rgba(12,18,32,.8)', border: '1px solid #1B1E35', color: '#272A45', cursor: 'pointer', fontSize: 12, padding: '3px 7px' }}>😊</button>
+                              <button onClick={() => openThread(msg)}
+                                style={{ background: 'rgba(12,18,32,.8)', border: '1px solid #1B1E35', color: '#272A45', cursor: 'pointer', fontSize: 12, padding: '3px 7px' }}>↩</button>
                               {isOwn && msg.message_type === 'text' && (
                                 <button onClick={() => { setEditingId(msg.id); setEditText(msg.message.replace(' ✎','')); }}
                                   style={{ background: 'rgba(12,18,32,.8)', border: '1px solid #1B1E35', color: '#272A45', cursor: 'pointer', fontSize: 12, padding: '3px 7px' }}>✎</button>
@@ -1025,6 +1152,9 @@ export default function BoardroomPage() {
                                 </div>
                               )}
                             </div>
+                            <button onClick={() => { openThread(msg); setMenuMsgId(null); setReactionMsgId(null); }}
+                              title="Reply in thread"
+                              style={{ background: 'none', border: 'none', color: '#272A45', cursor: 'pointer', fontSize: 13, padding: '4px 6px' }}>↩</button>
                             {isOwn && msg.message_type === 'text' && (
                               <button onClick={() => { setEditingId(msg.id); setEditText(msg.message.replace(' ✎','')); setMenuMsgId(null); setReactionMsgId(null); }}
                                 style={{ background: 'none', border: 'none', color: '#272A45', cursor: 'pointer', fontSize: 13, padding: '4px 6px' }}>✎</button>
@@ -1066,8 +1196,16 @@ export default function BoardroomPage() {
 
             {/* Input bar */}
             <div style={{ padding: '8px 10px 10px', borderTop: '1px solid #131526', background: BG2, flexShrink: 0, position: 'relative' }}>
-              {(uploading || imageUploading) && <div style={{ fontFamily: 'monospace', color: '#2563EB', fontSize: 10, marginBottom: 6 }}>⬆ {imageUploading ? 'Uploading image…' : 'Uploading voice…'}</div>}
+              {(uploading || imageUploading) && <div style={{ fontFamily: 'monospace', color: '#2563EB', fontSize: 10, marginBottom: 6 }}>⬆ {imageUploading ? 'Uploading image…' : 'Uploading file…'}</div>}
 
+              {/* Announcements channel — read-only for non-CEO */}
+              {currentRoom?.readOnly && user?.role !== 'CEO' ? (
+                <div style={{ background: 'rgba(245,181,48,.04)', border: '1px solid rgba(245,181,48,.15)', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 16 }}>📢</span>
+                  <span style={{ color: '#636687', fontSize: 13 }}>Only admins can post in <strong style={{ color: '#F5B530' }}>#Announcements</strong>.</span>
+                </div>
+              ) : (
+                <>
               {/* Emoji picker */}
               {showEmojiPicker && (
                 <div data-menu style={{ position: 'absolute', bottom: '100%', left: 10, right: 10, background: BG2, border: '1px solid #1B1E35', padding: 12, zIndex: 50, boxShadow: '0 -8px 32px rgba(0,0,0,.6)', marginBottom: 4 }}>
@@ -1096,6 +1234,12 @@ export default function BoardroomPage() {
                   title="Send image"
                   style={{ width: 36, height: 36, background: BG3, border: '1px solid #1B1E35', color: '#272A45', fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}>🖼</button>
 
+                {/* File attachment */}
+                <input ref={fileAttachRef} type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx,.txt,.zip,.rar" onChange={uploadFile} style={{ display: 'none' }} />
+                <button onClick={() => fileAttachRef.current?.click()} disabled={uploading}
+                  title="Attach file (PDF, Word, Excel…)"
+                  style={{ width: 36, height: 36, background: BG3, border: '1px solid #1B1E35', color: '#272A45', fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}>📎</button>
+
                 {/* Voice */}
                 <button onMouseDown={startRecording} onMouseUp={stopRecording} onTouchStart={startRecording} onTouchEnd={stopRecording}
                   disabled={uploading} title="Hold to record"
@@ -1111,17 +1255,108 @@ export default function BoardroomPage() {
                 ) : (
                   <input ref={inputRef} value={input} onChange={e => { handleInputChange(e.target.value); }}
                     onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
-                    placeholder={`Message #${currentRoom?.name}…`}
+                    placeholder={currentRoom?.readOnly ? `Post to #Announcements…` : `Message #${currentRoom?.name}…`}
                     style={{ flex: 1, background: BG3, border: '1px solid #1B1E35', color: '#EEF0FF', padding: '9px 12px', fontSize: 14, outline: 'none', fontFamily: 'Instrument Sans, sans-serif', minWidth: 0 }} />
                 )}
                 <button onClick={sendMessage} disabled={!input.trim() || sending || recording}
                   style={{ width: 36, height: 36, background: input.trim() && !recording ? '#2563EB' : BG3, border: `1px solid ${input.trim() && !recording ? '#2563EB' : '#131526'}`, color: input.trim() && !recording ? '#000' : '#272A45', fontWeight: 700, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: input.trim() && !recording ? 'pointer' : 'default' }}>→</button>
               </div>
-              {!isMobile && <div style={{ fontFamily: 'monospace', color: '#131526', fontSize: 10, marginTop: 5 }}>ENTER to send · 😊 emoji · 🖼 image · Hold 🎤 for voice · Hover message for actions</div>}
+              {!isMobile && <div style={{ fontFamily: 'monospace', color: '#131526', fontSize: 10, marginTop: 5 }}>ENTER to send · 😊 emoji · 🖼 image · 📎 file · Hold 🎤 for voice · Hover for actions · ↩ reply</div>}
+                </>
+              )}
             </div>
           </>
         )}
       </div>
+
+      {/* ══ THREAD PANEL ══ */}
+      {showThread && threadParent && (
+        <div style={{
+          width: isMobile ? '100%' : 320, background: BG2,
+          borderLeft: '1px solid #131526',
+          display: 'flex', flexDirection: 'column',
+          flexShrink: 0,
+          ...(isMobile ? { position: 'fixed', inset: 0, zIndex: 90 } : {}),
+        }}>
+          {/* Thread header */}
+          <div style={{ height: 50, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 14px', borderBottom: '1px solid #131526', flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ color: '#2563EB', fontSize: 13 }}>↩</span>
+              <span style={{ color: '#EEF0FF', fontWeight: 700, fontSize: 14 }}>Thread</span>
+              <span style={{ color: '#272A45', fontSize: 12 }}>#{currentRoom?.name}</span>
+            </div>
+            <button onClick={() => setShowThread(false)} style={{ background: 'none', border: 'none', color: '#272A45', fontSize: 22, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>×</button>
+          </div>
+
+          {/* Parent message */}
+          <div style={{ padding: '14px 14px 10px', borderBottom: '1px solid #131526', flexShrink: 0 }}>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <div style={{ width: 28, height: 28, background: threadParent.author_color + '20', border: `1.5px solid ${threadParent.author_color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: threadParent.author_color, fontWeight: 700, flexShrink: 0 }}>
+                {threadParent.author_name.split(' ').map((n:string) => n[0]).join('').slice(0,2)}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', gap: 6, alignItems: 'baseline', marginBottom: 3 }}>
+                  <span style={{ color: threadParent.author_color, fontWeight: 700, fontSize: 12 }}>{threadParent.author_name}</span>
+                  <span style={{ fontFamily: 'monospace', color: '#272A45', fontSize: 9 }}>{fmt(threadParent.created_at)}</span>
+                </div>
+                <div style={{ color: '#C8D8E8', fontSize: 13, lineHeight: 1.55, wordBreak: 'break-word' }}>{threadParent.message}</div>
+              </div>
+            </div>
+            <div style={{ marginTop: 8, fontFamily: 'monospace', color: '#272A45', fontSize: 9, letterSpacing: '.1em' }}>
+              {threadMessages.length} {threadMessages.length === 1 ? 'REPLY' : 'REPLIES'}
+            </div>
+          </div>
+
+          {/* Thread messages */}
+          <div style={{ flex: 1, overflowY: 'auto', padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {threadMessages.length === 0 && (
+              <div style={{ color: '#272A45', fontSize: 13, textAlign: 'center', marginTop: 24 }}>No replies yet. Be the first.</div>
+            )}
+            {threadMessages.map(msg => {
+              const isOwn = msg.author_name === displayName || msg.author_name === user?.name;
+              return (
+                <div key={msg.id} style={{ display: 'flex', gap: 8 }}>
+                  <div style={{ width: 28, height: 28, background: msg.author_color + '20', border: `1.5px solid ${msg.author_color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: msg.author_color, fontWeight: 700, flexShrink: 0 }}>
+                    {msg.author_name.split(' ').map((n:string) => n[0]).join('').slice(0,2)}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'baseline', marginBottom: 3 }}>
+                      <span style={{ color: isOwn ? '#A78BFA' : '#EEF0FF', fontWeight: 600, fontSize: 12 }}>{msg.author_name}</span>
+                      <span style={{ fontFamily: 'monospace', color: '#272A45', fontSize: 9 }}>{fmt(msg.created_at)}</span>
+                    </div>
+                    <div style={{ background: isOwn ? 'rgba(139,92,246,.09)' : 'rgba(12,18,32,.8)', border: `1px solid ${isOwn ? 'rgba(139,92,246,.18)' : 'rgba(255,255,255,.05)'}`, padding: '7px 11px', color: '#D0E0F0', fontSize: 13, lineHeight: 1.55, wordBreak: 'break-word' }}>
+                      {msg.message}
+                    </div>
+                    {/* Seen indicator */}
+                    {isOwn && (msg.seen_by || []).filter((n:string) => n !== displayName).length > 0 && (
+                      <div style={{ color: '#2563EB', fontSize: 9, fontFamily: 'monospace', marginTop: 2 }}>✓✓ Seen</div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Thread input */}
+          <div style={{ padding: '8px 10px 10px', borderTop: '1px solid #131526', flexShrink: 0 }}>
+            <div style={{ display: 'flex', gap: 6 }}>
+              <input
+                value={threadInput}
+                onChange={e => setThreadInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendThreadReply(); } }}
+                placeholder="Reply to thread…"
+                style={{ flex: 1, background: BG3, border: '1px solid #1B1E35', color: '#EEF0FF', padding: '9px 12px', fontSize: 13, outline: 'none', fontFamily: 'Instrument Sans, sans-serif', minWidth: 0 }}
+              />
+              <button
+                onClick={sendThreadReply}
+                disabled={!threadInput.trim() || threadSending}
+                style={{ width: 36, height: 36, background: threadInput.trim() ? '#2563EB' : BG3, border: `1px solid ${threadInput.trim() ? '#2563EB' : '#131526'}`, color: threadInput.trim() ? '#000' : '#272A45', fontWeight: 700, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: threadInput.trim() ? 'pointer' : 'default' }}>
+                {threadSending ? '…' : '→'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         * { box-sizing: border-box; }

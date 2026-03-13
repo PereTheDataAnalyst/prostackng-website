@@ -14,14 +14,14 @@ function VideoCard({ v, size = 'md' }: { v: VideoEntry; size?: 'sm' | 'md' }) {
   // ── HORIZONTAL ROW (sm) ──────────────────────────────────────────────────
   if (size === 'sm') {
     const row = (
-      <div style={{ display: 'flex', alignItems: 'center', gap: 0, height: 72 }}>
-        {/* Thumbnail — fixed 128×72 */}
-        <div style={{ width: 128, height: 72, flexShrink: 0, background: 'var(--s2)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 0, height: 56 }}>
+        {/* Thumbnail — fixed 96×56 */}
+        <div style={{ width: 96, height: 56, flexShrink: 0, background: 'var(--s2)', position: 'relative', overflow: 'hidden' }}>
           {ready ? (
             <img src={ytThumb(v.id, 'mq')} alt={v.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           ) : (
-            <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-              <svg width="28" height="23" viewBox="0 0 52 44" fill="none" opacity=".12">
+            <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+              <svg width="22" height="18" viewBox="0 0 52 44" fill="none" opacity=".12">
                 <path d="M6 30 L36 30 L46 38 L16 38 Z" fill="#2563EB" opacity=".5"/>
                 <path d="M2 20 L32 20 L42 28 L12 28 Z" fill="#2563EB" opacity=".75"/>
                 <path d="M0 10 L30 10 L40 18 L10 18 Z" fill="#2563EB"/>
@@ -30,22 +30,22 @@ function VideoCard({ v, size = 'md' }: { v: VideoEntry; size?: 'sm' | 'md' }) {
           )}
           {ready && (
             <div style={{ position: 'absolute', inset: 0, background: 'rgba(4,5,10,.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'rgba(37,99,235,.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ width: 0, height: 0, borderTop: '4px solid transparent', borderBottom: '4px solid transparent', borderLeft: '7px solid #fff', marginLeft: 2 }} />
+              <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(37,99,235,.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 0, height: 0, borderTop: '3px solid transparent', borderBottom: '3px solid transparent', borderLeft: '6px solid #fff', marginLeft: 2 }} />
               </div>
             </div>
           )}
           {/* Tag */}
-          <div style={{ position: 'absolute', bottom: 4, left: 4, fontFamily: 'JetBrains Mono, monospace', fontSize: 6.5, letterSpacing: '.1em', textTransform: 'uppercase', background: 'rgba(8,11,20,.9)', color: v.tagColor, padding: '1px 5px' }}>
+          <div style={{ position: 'absolute', bottom: 3, left: 3, fontFamily: 'JetBrains Mono, monospace', fontSize: 5.5, letterSpacing: '.08em', textTransform: 'uppercase', background: 'rgba(8,11,20,.9)', color: v.tagColor, padding: '1px 4px' }}>
             {v.tag}
           </div>
         </div>
         {/* Title */}
-        <div style={{ flex: 1, padding: '0 14px', minWidth: 0 }}>
-          <div className="f-display" style={{ fontWeight: 700, fontSize: 12, color: ready ? 'var(--text)' : 'var(--sub)', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+        <div style={{ flex: 1, padding: '0 12px', minWidth: 0 }}>
+          <div className="f-display" style={{ fontWeight: 700, fontSize: 11, color: ready ? 'var(--text)' : 'var(--sub)', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
             {v.title}
           </div>
-          {!ready && <div className="f-mono" style={{ fontSize: 7.5, color: 'var(--muted)', letterSpacing: '.1em', marginTop: 3 }}>UPLOADING SOON</div>}
+          {!ready && <div className="f-mono" style={{ fontSize: 7, color: 'var(--muted)', letterSpacing: '.1em', marginTop: 2 }}>UPLOADING SOON</div>}
         </div>
       </div>
     );
