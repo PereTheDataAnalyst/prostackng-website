@@ -1,3 +1,4 @@
+// rebuilt: 2026-03-13
 import { NextRequest, NextResponse } from 'next/server';
 
 const TOKENS: Record<string, { name: string; role: string; color: string }> = {
