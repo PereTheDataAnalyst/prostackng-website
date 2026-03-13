@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Analytics from '@/components/Analytics';
+import ChatWidget from '@/components/ChatWidget';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://prostackng-website.vercel.app'),
@@ -55,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <Analytics />
       </head>
-      <body>{children}</body>
+      <body>{children}<ChatWidget /></body>
     </html>
   );
 }
