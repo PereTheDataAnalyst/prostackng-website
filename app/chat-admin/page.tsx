@@ -27,7 +27,7 @@ type Message = {
 };
 
 // Simple PIN auth — change this to something private
-const ADMIN_PIN = '0000';
+const ADMIN_PIN = '1993';
 
 export default function ChatAdmin() {
   const [authed, setAuthed]         = useState(false);
