@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import PwaInstallButton from './PwaInstallButton';
 import StackLogo from './StackLogo';
 
 const COLS = [
@@ -19,11 +20,11 @@ const COLS = [
       { label: 'About Us',           href: '/company',      ready: true  },
       { label: 'Technology',         href: '/technology',   ready: true  },
       { label: 'Case Studies',       href: '/case-studies', ready: true  },
-      { label: 'Testimonials',       href: '/testimonials', ready: true  },
-      { label: 'Blog & Insights',    href: '/blog',         ready: true  },
-      { label: 'Press & Media',      href: '/press',        ready: true  },
-      { label: 'Investor Relations', href: '/investor',     ready: true  },
-      { label: 'Careers',            href: '/careers',      ready: true  },
+      { label: 'Testimonials',       href: '/testimonials', ready: false },
+      { label: 'Blog & Insights',    href: '/blog',         ready: false },
+      { label: 'Press & Media',      href: '/press',        ready: false },
+      { label: 'Investor Relations', href: '/investor',     ready: false },
+      { label: 'Careers',            href: '/careers',      ready: false },
     ],
   },
   {
@@ -119,7 +120,8 @@ export default function Footer() {
           <p className="f-mono" style={{ fontSize: 10, color: 'var(--muted)', letterSpacing: '.08em' }}>
             © 2026 ProStack NG Technologies Ltd · Port Harcourt, Nigeria
           </p>
-          <div style={{ display: 'flex', gap: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+            <PwaInstallButton variant="footer" />
             {['Privacy Policy', 'Terms of Service'].map(l => (
               <span key={l} className="f-mono" style={{ fontSize: 10, color: 'var(--muted)', cursor: 'pointer', letterSpacing: '.06em' }}>
                 {l}
