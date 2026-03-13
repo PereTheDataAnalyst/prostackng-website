@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import Analytics from '@/components/Analytics';
-import ChatWidget from '@/components/ChatWidget';
+import ChatWidgetWrapper from '@/components/ChatWidgetWrapper';
 
 // viewport-fit=cover activates env(safe-area-inset-*) on iPhone —
 // critical for the Boardroom not being cut off on notch/Dynamic Island devices.
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     shortcut: '/favicon-16x16.png',
     apple: '/apple-touch-icon.png',
   },
-  manifest: '/site.webmanifest',
+  manifest: '/site.webmanifest', // enables PWA install + kills 'No manifest' DevTools warning
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -64,7 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <Analytics />
       </head>
-      <body>{children}<ChatWidget /></body>
+      <body>{children}<ChatWidgetWrapper /></body>
     </html>
   );
 }
