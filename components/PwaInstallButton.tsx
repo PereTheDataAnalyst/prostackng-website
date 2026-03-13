@@ -6,10 +6,10 @@ import { useState, useEffect } from 'react';
 // 2. Safari on iPhone/iPad  — shows step-by-step instructions modal
 // 3. Already installed      — shows nothing (detects via display-mode: standalone)
 
-type InstallState = 'hidden' | 'android' | 'ios' | 'installed';
+type InstallState = 'loading' | 'android' | 'ios' | 'desktop' | 'installed';
 
 export default function PwaInstallButton({ variant = 'footer' }: { variant?: 'footer' | 'banner' }) {
-  const [state, setState]       = useState<InstallState>('hidden');
+  const [state, setState]       = useState<InstallState>('loading');
   const [showIosModal, setShowIosModal] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
@@ -20,7 +20,7 @@ export default function PwaInstallButton({ variant = 'footer' }: { variant?: 'fo
       return;
     }
 
-    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isIos    = /iphone|ipad|ipod/i.test(navigator.userAgent);
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
     if (isIos && isSafari) {
@@ -35,7 +35,18 @@ export default function PwaInstallButton({ variant = 'footer' }: { variant?: 'fo
       setState('android');
     };
     window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+
+    // Fallback for desktop or browsers that don't fire beforeinstallprompt —
+    // show a generic "Install App" button that opens the iOS instructions modal
+    // (which explains mobile-only installation).
+    const fallback = setTimeout(() => {
+      setState(s => s === 'loading' ? 'desktop' : s);
+    }, 800);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+      clearTimeout(fallback);
+    };
   }, []);
 
   const handleAndroidInstall = async () => {
@@ -48,8 +59,8 @@ export default function PwaInstallButton({ variant = 'footer' }: { variant?: 'fo
     }
   };
 
-  // Don't render if already installed or state unknown
-  if (state === 'hidden' || state === 'installed') return null;
+  // Hide only if already installed or still loading
+  if (state === 'installed' || state === 'loading') return null;
 
   // ── FOOTER VARIANT ────────────────────────────────────────────────────────
   if (variant === 'footer') {
@@ -57,6 +68,7 @@ export default function PwaInstallButton({ variant = 'footer' }: { variant?: 'fo
       <>
         <button
           onClick={state === 'android' ? handleAndroidInstall : () => setShowIosModal(true)}
+          aria-label="Install ProStack NG as an app"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -83,7 +95,7 @@ export default function PwaInstallButton({ variant = 'footer' }: { variant?: 'fo
           }}
         >
           <span style={{ fontSize: 14 }}>📲</span>
-          {state === 'android' ? 'Install App' : 'Add to Home Screen'}
+          {state === 'android' ? 'Install App' : state === 'desktop' ? 'Install App' : 'Add to Home Screen'}
         </button>
 
         {showIosModal && <IosInstructionsModal onClose={() => setShowIosModal(false)} />}
@@ -120,6 +132,7 @@ export default function PwaInstallButton({ variant = 'footer' }: { variant?: 'fo
         </div>
         <button
           onClick={state === 'android' ? handleAndroidInstall : () => setShowIosModal(true)}
+          aria-label="Install ProStack NG as an app"
           style={{
             background: 'var(--blue, #2563EB)',
             color: '#fff',
