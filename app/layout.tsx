@@ -1,60 +1,61 @@
-﻿import type { Metadata } from 'next';
-import Script from 'next/script';
+import type { Metadata } from 'next';
 import './globals.css';
+import Analytics from '@/components/Analytics';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://prostackng.com'),
-  title: { default: 'ProStack NG — Platform Technology for Africa', template: '%s | ProStack NG' },
-  description: 'ProStack NG builds intelligent digital platforms — tender intelligence, nightlife OS, marketplace commerce, ride-hailing, and data automation — from Port Harcourt to the world.',
-  keywords: ['tech company Nigeria', 'software development Port Harcourt', 'web development Nigeria', 'mobile app development', 'ERP Nigeria', 'digital transformation Africa'],
+  metadataBase: new URL('https://prostackng-website.vercel.app'),
+  title: {
+    default: 'ProStack NG — Platform-first technology for African businesses',
+    template: '%s — ProStack NG',
+  },
+  description: 'ProStack NG Technologies builds intelligent digital platforms for Nigerian businesses. AutoReport, ProTrackNG, and NightOps are live. Three more in development.',
+  keywords: ['Nigerian software', 'African tech', 'business automation', 'tender intelligence Nigeria', 'nightclub POS Nigeria', 'Port Harcourt tech company', 'SaaS Nigeria'],
+  authors: [{ name: 'ProStack NG Technologies', url: 'https://prostackng-website.vercel.app' }],
+  creator: 'ProStack NG Technologies',
   openGraph: {
     type: 'website',
     locale: 'en_NG',
-    url: 'https://prostackng.com',
+    url: 'https://prostackng-website.vercel.app',
     siteName: 'ProStack NG Technologies',
-    title: 'ProStack NG — Platform Technology for Africa',
-    description: 'Building intelligent digital platforms that power Africa\'s commerce, mobility, and digital infrastructure ecosystem.',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'ProStack NG Technologies' }],
+    title: 'ProStack NG — Platform-first technology for African businesses',
+    description: 'ProStack NG Technologies builds intelligent digital platforms for Nigerian businesses. AutoReport, ProTrackNG, and NightOps are live.',
+    images: [
+      {
+        url: '/og-default.png',
+        width: 1200,
+        height: 630,
+        alt: 'ProStack NG Technologies',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ProStack NG — Platform Technology for Africa',
-    description: 'Building intelligent digital platforms for Africa.',
-    images: ['/og-image.png'],
+    site: '@prostackng',
+    creator: '@prostackng',
+    title: 'ProStack NG — Platform-first technology for African businesses',
+    description: 'Three live SaaS platforms for Nigerian businesses. AutoReport, ProTrackNG, NightOps.',
+    images: ['/og-default.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
   },
   icons: {
-    icon: [
-      { url: '/favicon.ico' },
-      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon-16.png', sizes: '16x16', type: 'image/png' },
-    ],
+    icon: '/favicon.ico',
+    shortcut: '/favicon-16x16.png',
     apple: '/apple-touch-icon.png',
   },
-  themeColor: '#050709',
-  other: {
-    'viewport': 'width=device-width, initial-scale=1, viewport-fit=cover',
-  },
+  manifest: '/site.webmanifest',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const umamiId  = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
-  const umamiUrl = process.env.NEXT_PUBLIC_UMAMI_URL;
-
   return (
     <html lang="en">
       <head>
-        {umamiId && umamiUrl && (
-          <Script
-            src={`${umamiUrl}/script.js`}
-            data-website-id={umamiId}
-            strategy="afterInteractive"
-            defer
-          />
-        )}
+        <Analytics />
       </head>
-      <body className="bg-bg text-text antialiased">
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

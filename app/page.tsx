@@ -4,6 +4,7 @@ import Footer from '@/components/Footer';
 import Ticker from '@/components/Ticker';
 import StatusBadge from '@/components/ui/StatusBadge';
 import StackLogo from '@/components/StackLogo';
+import NewsletterSignup from '@/components/NewsletterSignup';
 import { CHANNEL_VIDEOS, AD_VIDEOS, ytThumb, ytWatch } from '@/lib/videos';
 import type { VideoEntry } from '@/lib/videos';
 
@@ -597,6 +598,17 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════ NEWSLETTER ═════════════════════════════ */}
+        <section style={{ padding: '0 clamp(16px,4vw,56px) 1px', background: 'var(--s1)', borderTop: '1px solid var(--border)' }}>
+          <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(48px,6vw,80px) 0' }}>
+            <NewsletterSignup
+              variant="banner"
+              heading="Stay ahead of Nigerian tech."
+              sub="Product updates, industry insights, and ProStack NG news — directly from Fubara's desk. Roughly once a month."
+            />
           </div>
         </section>
 

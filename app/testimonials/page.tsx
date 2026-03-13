@@ -84,7 +84,7 @@ export default function TestimonialsPage() {
               Don&apos;t take<br /><span style={{ color: 'var(--blue-hi)' }}>our word for it.</span>
             </h1>
             <p style={{ fontSize: 16, color: 'var(--sub)', lineHeight: 1.85, maxWidth: 480, margin: '0 auto' }}>
-              Real clients. Real results. Every quote below is from an active ProStack NG user.
+              Real clients. Real results. Quotes below reflect the experiences of ProStack NG clients across our three live platforms.
             </p>
           </div>
         </div>

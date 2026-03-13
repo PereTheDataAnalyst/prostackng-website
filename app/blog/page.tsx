@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import NewsletterSignup from '@/components/NewsletterSignup';
 import { POSTS, FEATURED_POST, CATEGORIES } from '@/lib/blog-data';
 import type { Post } from '@/lib/blog-data';
 
@@ -93,17 +94,13 @@ export default function BlogPage() {
             {filtered.map(p => <PostCard key={p.slug} post={p} />)}
           </div>
 
-          {/* Newsletter CTA */}
-          <div style={{ marginTop: 64, background: 'var(--card)', border: '1px solid var(--hi)', padding: 'clamp(28px,4vw,48px)', display: 'flex', flexWrap: 'wrap', gap: 32, alignItems: 'center', justifyContent: 'space-between', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, var(--blue), #06B6D4)' }} />
-            <div>
-              <div className="eyebrow" style={{ marginBottom: 10 }}>Newsletter</div>
-              <div className="f-display" style={{ fontWeight: 800, fontSize: 'clamp(18px,2.5vw,28px)', color: 'var(--text)', letterSpacing: '-.03em' }}>
-                New posts, straight to your inbox.
-              </div>
-              <p style={{ fontSize: 13.5, color: 'var(--sub)', marginTop: 8 }}>One email per week. No noise. Unsubscribe any time.</p>
-            </div>
-            <Link href="/contact" className="btn btn-primary">Subscribe →</Link>
+          {/* Newsletter */}
+          <div style={{ marginTop: 64 }}>
+            <NewsletterSignup
+              variant="banner"
+              heading="New posts, straight to your inbox."
+              sub="African tech insights, product updates, and ProStack NG news. Roughly once a month."
+            />
           </div>
         </div>
 
