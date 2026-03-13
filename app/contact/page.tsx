@@ -50,7 +50,7 @@ export default function ContactPage() {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
                 {[
-                  { icon: '📧', label: 'Email', value: 'contact@prostackng.com', href: 'mailto:contact@prostackng.com' },
+                  { icon: '📧', label: 'Email', value: 'contact@prostackng.com.ng', href: 'mailto:contact@prostackng.com.ng' },
                   { icon: '💬', label: 'WhatsApp', value: '+234 705 944 9360', href: 'https://wa.me/2347059449360' },
                   { icon: '📍', label: 'Location', value: 'Port Harcourt, Rivers State, Nigeria', href: undefined },
                 ].map(c => (

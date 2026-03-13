@@ -119,9 +119,9 @@ export default function DemoPage() {
                   <span style={{ fontSize: 14 }}>💬</span>
                   <span style={{ fontSize: 13, color: 'var(--sub)' }}>WhatsApp: <span style={{ color: 'var(--blue-hi)' }}>+234 705 944 9360</span></span>
                 </a>
-                <a href="mailto:contact@prostackng.com" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+                <a href="mailto:contact@prostackng.com.ng" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
                   <span style={{ fontSize: 14 }}>📧</span>
-                  <span style={{ fontSize: 13, color: 'var(--sub)' }}>Email: <span style={{ color: 'var(--blue-hi)' }}>contact@prostackng.com</span></span>
+                  <span style={{ fontSize: 13, color: 'var(--sub)' }}>Email: <span style={{ color: 'var(--blue-hi)' }}>contact@prostackng.com.ng</span></span>
                 </a>
               </div>
 

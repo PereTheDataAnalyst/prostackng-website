@@ -80,7 +80,7 @@ export default function PressPage() {
               ))}
             </div>
             <p style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.75 }}>
-              Contact <a href="mailto:contact@prostackng.com" style={{ color: 'var(--blue-hi)' }}>contact@prostackng.com</a> to request hi-res logo files, brand guidelines, or custom assets.
+              Contact <a href="mailto:contact@prostackng.com.ng" style={{ color: 'var(--blue-hi)' }}>contact@prostackng.com.ng</a> to request hi-res logo files, brand guidelines, or custom assets.
             </p>
           </div>
 
@@ -168,7 +168,7 @@ export default function PressPage() {
               For interviews, product enquiries, or custom asset requests, reach out directly.
             </p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="mailto:contact@prostackng.com" className="btn btn-primary">📧 contact@prostackng.com</a>
+              <a href="mailto:contact@prostackng.com.ng" className="btn btn-primary">📧 contact@prostackng.com.ng</a>
               <a href="https://wa.me/2347059449360" target="_blank" rel="noreferrer" className="btn btn-ghost">💬 WhatsApp</a>
             </div>
           </div>

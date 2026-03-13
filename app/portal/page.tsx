@@ -41,7 +41,7 @@ const PORTALS = [
 
 const SUPPORT_OPTIONS = [
   { icon: '💬', label: 'WhatsApp Support', desc: 'Fastest response. Business hours.', action: 'https://wa.me/2347059449360', cta: 'Open WhatsApp' },
-  { icon: '📧', label: 'Email Support',    desc: 'Detailed issues and reports.',      action: 'mailto:contact@prostackng.com', cta: 'Send Email' },
+  { icon: '📧', label: 'Email Support',    desc: 'Detailed issues and reports.',      action: 'mailto:contact@prostackng.com.ng', cta: 'Send Email' },
   { icon: '📅', label: 'Book a Session',   desc: 'Screen share with our team.',        action: '/demo', cta: 'Book Now' },
 ];
 
@@ -134,7 +134,7 @@ export default function ClientPortalPage() {
                 { icon: '📄', label: 'ProTrackNG Setup Guide',   href: '#', tag: 'PDF'   },
                 { icon: '📄', label: 'NightOps Onboarding',      href: '#', tag: 'PDF'   },
                 { icon: '🎥', label: 'Video Walkthroughs',        href: '/media', tag: 'Media' },
-                { icon: '💰', label: 'Billing & Invoices',        href: 'mailto:contact@prostackng.com?subject=Billing enquiry', tag: 'Email' },
+                { icon: '💰', label: 'Billing & Invoices',        href: 'mailto:contact@prostackng.com.ng?subject=Billing enquiry', tag: 'Email' },
                 { icon: '🔄', label: 'Upgrade or Change Plan',    href: '/pricing', tag: 'Pricing' },
               ].map(r => (
                 <a key={r.label} href={r.href} style={{ background: 'var(--card)', padding: '18px 20px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 14, transition: 'background .2s' }}

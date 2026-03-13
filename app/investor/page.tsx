@@ -288,7 +288,7 @@ export default function InvestorPage() {
                     style={{ opacity: sending || !form.name || !form.email ? .4 : 1, cursor: sending || !form.name || !form.email ? 'default' : 'pointer', justifyContent: 'center' }}>
                     {sending ? 'Sending...' : 'Request Investor Deck →'}
                   </button>
-                  <p className="f-mono" style={{ fontSize: 9, letterSpacing: '.08em', color: 'var(--muted)', textAlign: 'center' }}>Or email directly: contact@prostackng.com</p>
+                  <p className="f-mono" style={{ fontSize: 9, letterSpacing: '.08em', color: 'var(--muted)', textAlign: 'center' }}>Or email directly: contact@prostackng.com.ng</p>
                 </div>
               </div>
             )}

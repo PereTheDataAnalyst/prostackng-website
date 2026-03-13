@@ -61,11 +61,11 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://prostackng.com/blog/${post.slug}`)}`} target="_blank" rel="noreferrer"
+              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://prostackng.com.ng/blog/${post.slug}`)}`} target="_blank" rel="noreferrer"
                 style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted)', textDecoration: 'none', border: '1px solid var(--border)', padding: '6px 12px', transition: 'color .2s, border-color .2s' }}>
                 Share on 𝕏
               </a>
-              <a href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(`https://prostackng.com/blog/${post.slug}`)}&title=${encodeURIComponent(post.title)}`} target="_blank" rel="noreferrer"
+              <a href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(`https://prostackng.com.ng/blog/${post.slug}`)}&title=${encodeURIComponent(post.title)}`} target="_blank" rel="noreferrer"
                 style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted)', textDecoration: 'none', border: '1px solid var(--border)', padding: '6px 12px' }}>
                 Share on LinkedIn
               </a>

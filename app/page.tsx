@@ -106,12 +106,12 @@ const STATS = [
 ];
 
 const PRODUCTS = [
-  { id: 'protrackng', name: 'ProTrackNG',  color: '#06B6D4', icon: '◎', tag: 'Tender Intelligence',     status: 'LIVE'        as const, desc: 'AI-powered tender discovery and tracking for Nigerian businesses.' },
-  { id: 'nightops',   name: 'NightOps',    color: '#A78BFA', icon: '◈', tag: 'Nightlife Operating System', status: 'LIVE'      as const, desc: 'Full operational intelligence for nightclubs and entertainment venues.' },
-  { id: 'autoreport', name: 'AutoReport',  color: '#FF5757', icon: '▦', tag: 'Executive Reporting',      status: 'LIVE'        as const, desc: '8-second pipeline from raw data to board-ready PDF and Excel.' },
-  { id: 'myharriet',  name: 'MyHarriet',   color: '#F5B530', icon: '⬡', tag: 'Commerce & Marketplace',   status: 'BUILDING'    as const, desc: 'Full-featured marketplace for Nigerian commerce with escrow.' },
-  { id: 'swiftride',  name: 'SwiftRide',   color: '#38BDF8', icon: '⟁', tag: 'Mobility Platform',        status: 'ROADMAP'     as const, desc: 'Modern ride-hailing built for Rivers State and beyond.' },
-  { id: 'stakex',     name: 'StakeX',      color: '#FB923C', icon: '◑', tag: 'Digital Staking',          status: 'ROADMAP'     as const, desc: 'Next-generation digital staking for Africa\'s growing economy.' },
+  { id: 'protrackng', name: 'ProTrackNG',  color: '#06B6D4', icon: '◎', tag: 'Tender Intelligence',     status: 'LIVE'        as const, desc: 'Centralised tender tracking for Nigerian procurement teams. Real-time alerts, bid pipeline, deadline management.' },
+  { id: 'nightops',   name: 'NightOps',    color: '#A78BFA', icon: '◈', tag: 'Nightlife Operating System', status: 'LIVE'      as const, desc: 'Full operational platform for nightclubs — table management, bottle tracking, real-time revenue, end-of-night reconciliation.' },
+  { id: 'autoreport', name: 'AutoReport',  color: '#FF5757', icon: '▦', tag: 'Executive Reporting',      status: 'LIVE'        as const, desc: 'Automated pipeline from raw data to branded PDF and Excel report, delivered daily. No manual effort after setup.' },
+  { id: 'myharriet',  name: 'MyHarriet',   color: '#F5B530', icon: '⬡', tag: 'Commerce & Marketplace',   status: 'BUILDING'    as const, desc: 'Marketplace platform for Nigerian commerce with escrow payments, vendor profiles, and campus-first launch.' },
+  { id: 'swiftride',  name: 'SwiftRide',   color: '#38BDF8', icon: '⟁', tag: 'Mobility Platform',        status: 'ROADMAP'     as const, desc: 'Ride-hailing built for Rivers State — GPS tracking, driver earnings dashboards, SOS, Mapbox navigation.' },
+  { id: 'stakex',     name: 'StakeX',      color: '#FB923C', icon: '◑', tag: 'Digital Staking',          status: 'ROADMAP'     as const, desc: 'Digital staking and prediction platform for Africa with auditable infrastructure and responsible gaming controls.' },
 ];
 
 const LIVE = ['protrackng', 'nightops', 'autoreport'];
@@ -132,10 +132,10 @@ const CASES = [
 ];
 
 const TIMELINE = [
-  { phase: 'Phase 1', period: 'Now', status: 'active',  desc: 'ProTrackNG, NightOps & AutoReport live. Consulting revenue. Brand credibility established in Oil & Gas and hospitality.' },
-  { phase: 'Phase 2', period: 'Q3 2025', status: 'next', desc: 'MyHarriet beta — campus marketplace launch in Port Harcourt and Abuja. Escrow payments, vendor onboarding, trust system.' },
-  { phase: 'Phase 3', period: 'Q1 2026', status: 'plan', desc: 'SwiftRide — Rivers State and Bayelsa launch. Shared auth and payment infrastructure fully operational across all products.' },
-  { phase: 'Phase 4', period: 'Q3 2026', status: 'plan', desc: 'StakeX. Full ecosystem complete. Series A fundraise targeting $500K–$2M. Pan-Africa expansion begins.' },
+  { phase: 'Phase 1', period: '2024 – 2025', status: 'active',  desc: 'ProTrackNG, NightOps, and AutoReport launched and live. 20+ paying clients across Port Harcourt, Lagos, and Abuja. Fully bootstrapped.' },
+  { phase: 'Phase 2', period: '2026', status: 'next', desc: 'MyHarriet beta — campus and neighbourhood marketplace launch in Port Harcourt. Escrow payments, vendor onboarding, parcel tracking.' },
+  { phase: 'Phase 3', period: '2026 – 2027', status: 'plan', desc: 'SwiftRide — Rivers State and Bayelsa ride-hailing launch. Shared authentication and payment infrastructure fully operational across all products.' },
+  { phase: 'Phase 4', period: '2027', status: 'plan', desc: 'StakeX launch. Full platform ecosystem complete. Seed / pre-Series A raise targeting ₦75M–₦150M to scale engineering and sales.' },
 ];
 
 export default function HomePage() {
@@ -207,11 +207,13 @@ export default function HomePage() {
             <div className="anim-fadeup d5" style={{ display: 'flex', flexWrap: 'wrap', gap: 0, borderTop: '1px solid var(--border)', paddingTop: 40 }}>
               {STATS.map((s, i) => (
                 <div key={s.label} style={{
-                  paddingRight: 40, marginRight: 40,
+                  paddingRight: 'clamp(20px,3vw,40px)',
+                  marginRight: 'clamp(20px,3vw,40px)',
                   borderRight: i < STATS.length - 1 ? '1px solid var(--border)' : 'none',
-                  marginBottom: 16,
+                  marginBottom: 20,
+                  minWidth: 80,
                 }}>
-                  <div className="f-display" style={{ fontSize: 'clamp(34px,4vw,52px)', fontWeight: 800, lineHeight: 1, letterSpacing: '-.03em', color: 'var(--text)' }}>
+                  <div className="f-display" style={{ fontSize: 'clamp(28px,4vw,52px)', fontWeight: 800, lineHeight: 1, letterSpacing: '-.03em', color: 'var(--text)' }}>
                     {s.n}<span style={{ color: 'var(--blue-hi)' }}>{s.unit}</span>
                   </div>
                   <div className="f-mono" style={{ fontSize: 9.5, letterSpacing: '.14em', color: 'var(--muted)', marginTop: 5, textTransform: 'uppercase' }}>

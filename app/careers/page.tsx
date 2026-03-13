@@ -200,7 +200,7 @@ export default function CareersPage() {
                 We hire for character and capability first. If you&apos;re exceptional at something and believe in what we&apos;re building, reach out anyway.
               </p>
             </div>
-            <a href="mailto:contact@prostackng.com?subject=Open Application" className="btn btn-ghost">Send Open Application →</a>
+            <a href="mailto:contact@prostackng.com.ng?subject=Open Application" className="btn btn-ghost">Send Open Application →</a>
           </div>
         </div>
 
