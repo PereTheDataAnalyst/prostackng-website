@@ -730,7 +730,7 @@ export default function BoardroomPage() {
   //        so main content always takes 100% width
   // ─────────────────────────────────────────────────────
   return (
-    <div style={{ height: '100dvh', width: '100vw', maxWidth: '100vw', display: 'flex', background: BG, fontFamily: 'Instrument Sans, sans-serif', overflow: 'hidden', position: 'fixed', top: 0, left: 0, paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' } as any}>
+    <div style={{ position: 'fixed', inset: 0, display: 'flex', background: BG, fontFamily: 'Instrument Sans, sans-serif', overflow: 'hidden', paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' } as any}>
 
       {/* ── MOBILE SIDEBAR (fixed, outside flex flow) ── */}
       {isMobile && (
@@ -747,7 +747,9 @@ export default function BoardroomPage() {
             transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
             transition: 'transform 0.25s cubic-bezier(.4,0,.2,1)',
             boxShadow: sidebarOpen ? '8px 0 32px rgba(0,0,0,.5)' : 'none',
-          }}>
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+          } as any}>
             <SidebarContent />
           </div>
         </>
@@ -794,11 +796,11 @@ export default function BoardroomPage() {
             <button onClick={() => setSearchOpen(s => !s)}
               style={{ width: 32, height: 32, background: searchOpen ? 'rgba(37,99,235,.07)' : 'transparent', border: `1px solid ${searchOpen ? '#2563EB' : '#1B1E35'}`, color: searchOpen ? '#2563EB' : '#636687', cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🔍</button>
             <button onClick={() => startCall('audio')} disabled={callActive}
-              style={{ height: 32, padding: '0 10px', background: 'transparent', border: '1px solid #1B1E35', color: callActive ? '#131526' : '#2563EB', cursor: callActive ? 'default' : 'pointer', fontWeight: 600, fontSize: 12, fontFamily: 'Instrument Sans, sans-serif', whiteSpace: 'nowrap' }}>
+              style={{ height: 32, padding: isMobile ? '0 8px' : '0 10px', background: 'transparent', border: '1px solid #1B1E35', color: callActive ? '#131526' : '#2563EB', cursor: callActive ? 'default' : 'pointer', fontWeight: 600, fontSize: 12, fontFamily: 'Instrument Sans, sans-serif', flexShrink: 0 }}>
               {isMobile ? '🎙' : '🎙 Audio'}
             </button>
             <button onClick={() => startCall('video')} disabled={callActive}
-              style={{ height: 32, padding: '0 10px', background: callActive ? '#1B1E35' : '#2563EB', color: callActive ? '#131526' : '#000', border: 'none', cursor: callActive ? 'default' : 'pointer', fontWeight: 700, fontSize: 12, fontFamily: 'Instrument Sans, sans-serif', whiteSpace: 'nowrap' }}>
+              style={{ height: 32, padding: isMobile ? '0 8px' : '0 10px', background: callActive ? '#1B1E35' : '#2563EB', color: callActive ? '#131526' : '#000', border: 'none', cursor: callActive ? 'default' : 'pointer', fontWeight: 700, fontSize: 12, fontFamily: 'Instrument Sans, sans-serif', flexShrink: 0 }}>
               {isMobile ? '📹' : '📹 Video'}
             </button>
           </div>
@@ -958,6 +960,7 @@ export default function BoardroomPage() {
             {/* ── MESSAGES with wallpaper directly on container ── */}
             <div ref={scrollContainerRef} style={{
               flex: 1, overflowY: 'auto', overflowX: 'hidden',
+              WebkitOverflowScrolling: 'touch',
               padding: '10px 12px', display: 'flex', flexDirection: 'column',
               position: 'relative',
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Crect width='60' height='60' fill='%23050507'/%3E%3Ccircle cx='30' cy='30' r='1.2' fill='%232563EB' opacity='0.13'/%3E%3Ccircle cx='0' cy='0' r='0.9' fill='%232563EB' opacity='0.09'/%3E%3Ccircle cx='60' cy='0' r='0.9' fill='%232563EB' opacity='0.09'/%3E%3Ccircle cx='0' cy='60' r='0.9' fill='%232563EB' opacity='0.09'/%3E%3Ccircle cx='60' cy='60' r='0.9' fill='%232563EB' opacity='0.09'/%3E%3Ccircle cx='30' cy='0' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='0' cy='30' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='60' cy='30' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3Ccircle cx='30' cy='60' r='0.6' fill='%2300C8FF' opacity='0.07'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='60' height='60' fill='url(%23p)'/%3E%3C/svg%3E")`,
@@ -1223,7 +1226,7 @@ export default function BoardroomPage() {
                 </div>
               )}
 
-              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center', width: '100%', minWidth: 0 }}>
                 {/* Emoji button */}
                 <button data-menu onClick={() => setShowEmojiPicker(p => !p)}
                   style={{ width: 36, height: 36, background: showEmojiPicker ? 'rgba(37,99,235,.07)' : BG3, border: `1px solid ${showEmojiPicker ? '#2563EB' : '#1B1E35'}`, color: showEmojiPicker ? '#2563EB' : '#272A45', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}>😊</button>
@@ -1369,9 +1372,13 @@ export default function BoardroomPage() {
         html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #04050A; }
         input, button { -webkit-tap-highlight-color: transparent; }
         @supports (-webkit-touch-callout: none) {
-          /* iOS Safari specific */
+          /* iOS Safari: fill-available prevents address-bar resize jank */
           body { height: -webkit-fill-available; }
         }
+        /* Prevent iOS rubber-band bounce scrolling leaking outside boardroom */
+        html { overscroll-behavior: none; }
+        /* Prevent text size adjustment on rotation */
+        body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
       `}</style>
     </div>
   );

@@ -1,22 +1,30 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import Analytics from '@/components/Analytics';
 import ChatWidget from '@/components/ChatWidget';
 
+// viewport-fit=cover activates env(safe-area-inset-*) on iPhone —
+// critical for the Boardroom not being cut off on notch/Dynamic Island devices.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://prostackng-website.vercel.app'),
+  metadataBase: new URL('https://www.prostackng.com.ng'),
   title: {
     default: 'ProStack NG — Platform-first technology for African businesses',
     template: '%s — ProStack NG',
   },
   description: 'ProStack NG Technologies builds intelligent digital platforms for Nigerian businesses. AutoReport, ProTrackNG, and NightOps are live. Three more in development.',
   keywords: ['Nigerian software', 'African tech', 'business automation', 'tender intelligence Nigeria', 'nightclub POS Nigeria', 'Port Harcourt tech company', 'SaaS Nigeria'],
-  authors: [{ name: 'ProStack NG Technologies', url: 'https://prostackng-website.vercel.app' }],
+  authors: [{ name: 'ProStack NG Technologies', url: 'https://www.prostackng.com.ng' }],
   creator: 'ProStack NG Technologies',
   openGraph: {
     type: 'website',
     locale: 'en_NG',
-    url: 'https://prostackng-website.vercel.app',
+    url: 'https://www.prostackng.com.ng',
     siteName: 'ProStack NG Technologies',
     title: 'ProStack NG — Platform-first technology for African businesses',
     description: 'ProStack NG Technologies builds intelligent digital platforms for Nigerian businesses. AutoReport, ProTrackNG, and NightOps are live.',
