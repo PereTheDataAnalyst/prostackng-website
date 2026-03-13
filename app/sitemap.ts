@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { POSTS } from '@/lib/blog-data';
 
-const BASE = 'https://prostackng-website.vercel.app';
+const BASE = 'https://www.prostackng.com.ng';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [

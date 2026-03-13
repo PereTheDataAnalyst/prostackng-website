@@ -16,7 +16,7 @@ export default function Analytics() {
       src={scriptSrc}
       data-website-id={websiteId}
       // data-domains restricts tracking to production only
-      data-domains="prostackng-website.vercel.app,prostackng.com.ng"
+      data-domains="prostackng.com.ng,www.prostackng.com.ng"
     />
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import Analytics from '@/components/Analytics';
 import ChatWidgetWrapper from '@/components/ChatWidgetWrapper';
+import JsonLd from '@/components/JsonLd';
 
 // viewport-fit=cover activates env(safe-area-inset-*) on iPhone —
 // critical for the Boardroom not being cut off on notch/Dynamic Island devices.
@@ -63,6 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <Analytics />
+        <JsonLd />
       </head>
       <body>{children}<ChatWidgetWrapper /></body>
     </html>

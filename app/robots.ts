@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/boardroom', '/api/', '/portal'],
       },
     ],
-    sitemap: 'https://prostackng-website.vercel.app/sitemap.xml',
-    host: 'https://prostackng-website.vercel.app',
+    sitemap: 'https://www.prostackng.com.ng/sitemap.xml',
+    host: 'https://www.prostackng.com.ng',
   };
 }
