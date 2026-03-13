@@ -5,37 +5,37 @@ const COLS = [
   {
     title: 'Products',
     links: [
-      { label: 'ProTrackNG',  href: '/products#protrackng'  },
-      { label: 'NightOps',    href: '/products#nightops'    },
-      { label: 'AutoReport',  href: '/products#autoreport'  },
-      { label: 'MyHarriet',   href: '/products#myharriet'   },
-      { label: 'SwiftRide',   href: '/products#swiftride'   },
-      { label: 'StakeX',      href: '/products#stakex'      },
+      { label: 'ProTrackNG',  href: '/products#protrackng',  ready: true  },
+      { label: 'NightOps',    href: '/products#nightops',    ready: true  },
+      { label: 'AutoReport',  href: '/products#autoreport',  ready: true  },
+      { label: 'MyHarriet',   href: '/products#myharriet',   ready: false },
+      { label: 'SwiftRide',   href: '/products#swiftride',   ready: false },
+      { label: 'StakeX',      href: '/products#stakex',      ready: false },
     ],
   },
   {
     title: 'Company',
     links: [
-      { label: 'About Us',           href: '/company'      },
-      { label: 'Technology',         href: '/technology'   },
-      { label: 'Case Studies',       href: '/case-studies' },
-      { label: 'Testimonials',       href: '/testimonials' },
-      { label: 'Blog & Insights',    href: '/blog'         },
-      { label: 'Press & Media',      href: '/press'        },
-      { label: 'Investor Relations', href: '/investor'     },
-      { label: 'Careers',            href: '/careers'      },
+      { label: 'About Us',           href: '/company',      ready: true  },
+      { label: 'Technology',         href: '/technology',   ready: true  },
+      { label: 'Case Studies',       href: '/case-studies', ready: true  },
+      { label: 'Testimonials',       href: '/testimonials', ready: false },
+      { label: 'Blog & Insights',    href: '/blog',         ready: false },
+      { label: 'Press & Media',      href: '/press',        ready: false },
+      { label: 'Investor Relations', href: '/investor',     ready: false },
+      { label: 'Careers',            href: '/careers',      ready: false },
     ],
   },
   {
     title: 'Connect',
     links: [
-      { label: 'contact@prostackng.com.ng',      href: 'mailto:contact@prostackng.com.ng'    },
-      { label: 'WhatsApp: +234 705 944 9360', href: 'https://wa.me/2347059449360'      },
-      { label: 'Book a Free Demo',            href: '/demo'                            },
-      { label: 'Pricing',                     href: '/pricing'                         },
-      { label: 'Client Portal',               href: '/portal'                          },
-      { label: 'Public Metrics',              href: '/metrics'                         },
-      { label: 'Boardroom (Staff)',            href: '/boardroom'                       },
+      { label: 'contact@prostackng.com.ng', href: 'mailto:contact@prostackng.com.ng', ready: true },
+      { label: 'WhatsApp: +234 705 944 9360', href: 'https://wa.me/2347059449360',    ready: true },
+      { label: 'Book a Free Demo',            href: '/demo',                           ready: true },
+      { label: 'Pricing',                     href: '/pricing',                        ready: true },
+      { label: 'Client Portal',               href: '/portal',                         ready: true },
+      { label: 'Public Metrics',              href: '/metrics',                        ready: true },
+      { label: 'Boardroom (Staff)',            href: '/boardroom',                      ready: true },
     ],
   },
 ];
@@ -85,9 +85,31 @@ export default function Footer() {
                 {col.title}
               </div>
               {col.links.map(l => (
-                <Link key={l.label} href={l.href} className="footer-link">
-                  {l.label}
-                </Link>
+                l.ready ? (
+                  <Link key={l.label} href={l.href} className="footer-link">
+                    {l.label}
+                  </Link>
+                ) : (
+                  <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                    <span className="footer-link" style={{ color: 'var(--muted)', cursor: 'default', opacity: 0.5, pointerEvents: 'none' }}>
+                      {l.label}
+                    </span>
+                    <span style={{
+                      fontSize: 8,
+                      fontFamily: 'monospace',
+                      letterSpacing: '.06em',
+                      textTransform: 'uppercase',
+                      color: 'var(--blue-hi)',
+                      border: '1px solid var(--blue-hi)',
+                      borderRadius: 3,
+                      padding: '1px 4px',
+                      opacity: 0.6,
+                      lineHeight: 1.4,
+                    }}>
+                      Soon
+                    </span>
+                  </div>
+                )
               ))}
             </div>
           ))}
@@ -95,7 +117,7 @@ export default function Footer() {
 
         <div style={{ borderTop: '1px solid var(--border)', paddingTop: 28, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
           <p className="f-mono" style={{ fontSize: 10, color: 'var(--muted)', letterSpacing: '.08em' }}>
-            © 2026 ProStack NG Technologies Ltd · Port Harcourt, Nigeria · CAC Registration Pending
+            © 2026 ProStack NG Technologies Ltd · Port Harcourt, Nigeria
           </p>
           <div style={{ display: 'flex', gap: 24 }}>
             {['Privacy Policy', 'Terms of Service'].map(l => (
