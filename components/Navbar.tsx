@@ -121,10 +121,10 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* WhatsApp FAB */}
+      {/* WhatsApp FAB — left side to avoid chat widget conflict */}
       <a href="https://wa.me/2347059449360" target="_blank" rel="noreferrer"
         style={{
-          position: 'fixed', bottom: 24, right: 24, zIndex: 50,
+          position: 'fixed', bottom: 28, left: 28, zIndex: 50,
           width: 52, height: 52, borderRadius: '50%',
           background: '#25D366', color: '#fff',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
