@@ -78,10 +78,13 @@ function LatencyBar({ ms }: { ms: number }) {
 }
 
 export default function StatusPage() {
+  const [mounted, setMounted]   = useState(false);
   const [data, setData]       = useState<StatusData | null>(null);
   const [loading, setLoading] = useState(true);
   const [lastCheck, setLastCheck] = useState<Date | null>(null);
   const [countdown, setCountdown] = useState(60);
+
+  useEffect(() => { setMounted(true); }, []);
 
   const fetchStatus = useCallback(async () => {
     setLoading(true);
@@ -152,7 +155,7 @@ export default function StatusPage() {
             {/* Last checked */}
             <div style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
               <span className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.1em', textTransform: 'uppercase' }}>
-                Auto-refresh in {countdown}s
+                {mounted ? `Auto-refresh in ${countdown}s` : 'Auto-refresh in 60s'}
               </span>
               <button
                 onClick={fetchStatus}
