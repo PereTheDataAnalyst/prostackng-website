@@ -3,6 +3,8 @@ import './globals.css';
 import Analytics from '@/components/Analytics';
 import ChatWidgetWrapper from '@/components/ChatWidgetWrapper';
 import JsonLd from '@/components/JsonLd';
+import NdprBanner from '@/components/NdprBanner';
+import SwRegister from '@/components/SwRegister';
 
 // viewport-fit=cover activates env(safe-area-inset-*) on iPhone —
 // critical for the Boardroom not being cut off on notch/Dynamic Island devices.
@@ -66,7 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <JsonLd />
       </head>
-      <body>{children}<ChatWidgetWrapper /></body>
+      <body>{children}<ChatWidgetWrapper /><NdprBanner /><SwRegister /></body>
     </html>
   );
 }

@@ -37,6 +37,8 @@ const COLS = [
       { label: 'Client Portal',               href: '/portal',                         ready: true },
       { label: 'Public Metrics',              href: '/metrics',                        ready: true },
       { label: 'Boardroom (Staff)',            href: '/boardroom',                      ready: true },
+      { label: 'System Status',                href: '/status',                         ready: true },
+      { label: 'API Docs',                     href: '/docs',                           ready: true },
     ],
   },
 ];

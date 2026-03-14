@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import ScrollProgress from '@/components/ScrollProgress';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { POSTS } from '@/lib/blog-data';
@@ -24,6 +25,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
   return (
     <>
+      <ScrollProgress />
       <Navbar />
       <main style={{ paddingTop: 68 }}>
 
