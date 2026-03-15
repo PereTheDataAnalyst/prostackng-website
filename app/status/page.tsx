@@ -7,7 +7,7 @@ type ServiceStatus = {
   id: string;
   name: string;
   color: string;
-  status: 'operational' | 'degraded' | 'down' | 'loading';
+  status: 'operational' | 'degraded' | 'down' | 'loading' | 'scheduled';
   latencyMs: number;
   httpStatus: number;
   checkedAt: string;
@@ -25,6 +25,7 @@ const STATUS_CONFIG = {
   degraded:    { label: 'Degraded',       color: '#F5B530', bg: 'rgba(245,181,48,.08)',  border: 'rgba(245,181,48,.2)',  dot: '#F5B530' },
   down:        { label: 'Outage',         color: '#FF5757', bg: 'rgba(255,87,87,.08)',   border: 'rgba(255,87,87,.2)',   dot: '#FF5757' },
   loading:     { label: 'Checking…',     color: '#7A7DA0', bg: 'rgba(122,125,160,.05)', border: 'rgba(122,125,160,.1)', dot: '#7A7DA0' },
+  scheduled:   { label: 'Coming Soon',    color: '#32365A', bg: 'rgba(50,54,90,.06)',    border: 'rgba(50,54,90,.15)',   dot: '#32365A' },
   outage:      { label: 'Major Outage',   color: '#FF5757', bg: 'rgba(255,87,87,.08)',   border: 'rgba(255,87,87,.2)',   dot: '#FF5757' },
 };
 

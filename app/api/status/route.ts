@@ -7,25 +7,19 @@
 
 import { NextResponse } from 'next/server';
 
-const SERVICES = [
+// Services with a url are actively pinged.
+// Services with comingSoon: true are skipped and shown as "Scheduled" instead.
+type Service = {
+  id: string; name: string; color: string;
+  url?: string; comingSoon?: boolean;
+};
+
+const SERVICES: Service[] = [
   {
-    id:    'autoreport',
-    name:  'AutoReport',
-    color: '#FF5757',
-    // Replace with your actual platform URL — ideally a /health or /api/ping endpoint
-    url:   'https://autoreport.prostackng.com.ng',
-  },
-  {
-    id:    'protrackng',
-    name:  'ProTrackNG',
-    color: '#06B6D4',
-    url:   'https://protrackng.prostackng.com.ng',
-  },
-  {
-    id:    'nightops',
-    name:  'NightOps',
+    id:    'clubops',
+    name:  'ClubOps (NightOps)',
     color: '#A78BFA',
-    url:   'https://nightops.prostackng.com.ng',
+    url:   'https://clubops-b6zl.onrender.com/',
   },
   {
     id:    'website',
@@ -37,17 +31,39 @@ const SERVICES = [
     id:    'database',
     name:  'Database (Supabase)',
     color: '#22C55E',
-    // Your Supabase project REST URL — this endpoint always returns 200 if Supabase is up
     url:   `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/`,
+  },
+  {
+    id:         'autoreport',
+    name:       'AutoReport',
+    color:      '#FF5757',
+    comingSoon: true,
+  },
+  {
+    id:         'protrackng',
+    name:       'ProTrackNG',
+    color:      '#06B6D4',
+    comingSoon: true,
   },
 ];
 
-async function pingService(service: typeof SERVICES[0]) {
+async function pingService(service: Service) {
+  // Coming soon — skip ping, return scheduled status
+  if (service.comingSoon) {
+    return {
+      ...service,
+      status: 'scheduled',
+      latencyMs: 0,
+      httpStatus: 0,
+      checkedAt: new Date().toISOString(),
+    };
+  }
+
   const start = Date.now();
   try {
-    const res = await fetch(service.url, {
+    const res = await fetch(service.url!, {
       method: 'GET',
-      signal: AbortSignal.timeout(8000), // 8s timeout
+      signal: AbortSignal.timeout(8000),
       headers: { 'User-Agent': 'ProStack-Status-Monitor/1.0' },
     });
     const ms = Date.now() - start;
@@ -73,9 +89,11 @@ async function pingService(service: typeof SERVICES[0]) {
 export async function GET() {
   const results = await Promise.all(SERVICES.map(pingService));
 
-  const overall = results.every(r => r.status === 'operational')
+  // Only count active (non-scheduled) services for overall status
+  const active = results.filter(r => r.status !== 'scheduled');
+  const overall = active.every(r => r.status === 'operational')
     ? 'operational'
-    : results.some(r => r.status === 'down')
+    : active.some(r => r.status === 'down')
     ? 'outage'
     : 'degraded';
 
