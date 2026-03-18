@@ -340,3 +340,9 @@ body {
   color: var(--blue-hi);
   text-decoration: underline;
 }
+
+/* Social icon buttons in footer */
+.social-icon-btn:hover {
+  border-color: var(--blue) !important;
+  color: var(--blue-hi) !important;
+}

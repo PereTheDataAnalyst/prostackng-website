@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import PwaInstallButton from './PwaInstallButton';
 import StackLogo from './StackLogo';
@@ -68,11 +69,12 @@ export default function Footer() {
             </p>
             <div style={{ display: 'flex', gap: 8 }}>
               {[
-                { label: '𝕏',  href: 'https://x.com/ProStackNG',                          title: 'Follow us on X' },
-                { label: 'in', href: 'https://www.linkedin.com/company/prostackng',        title: 'Connect on LinkedIn' },
-                { label: '▶',  href: 'https://www.youtube.com/@ProStackNG',                title: 'Subscribe on YouTube' },
+                { label: '𝕏',  href: 'https://x.com/ProStackNG',                   title: 'Follow us on X' },
+                { label: 'in', href: 'https://www.linkedin.com/company/prostackng', title: 'Connect on LinkedIn' },
+                { label: '▶',  href: 'https://www.youtube.com/@ProStackNG',         title: 'Subscribe on YouTube' },
               ].map(s => (
                 <a key={s.label} href={s.href} target="_blank" rel="noreferrer" title={s.title}
+                  className="social-icon-btn"
                   style={{
                     width: 32, height: 32,
                     border: '1px solid var(--border)',
@@ -80,14 +82,6 @@ export default function Footer() {
                     fontSize: 12, color: 'var(--muted)',
                     textDecoration: 'none',
                     transition: 'border-color .2s, color .2s',
-                  }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = 'var(--blue)';
-                    (e.currentTarget as HTMLElement).style.color = 'var(--blue-hi)';
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)';
-                    (e.currentTarget as HTMLElement).style.color = 'var(--muted)';
                   }}
                 >
                   {s.label}
