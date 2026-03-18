@@ -67,17 +67,31 @@ export default function Footer() {
               Building intelligent platforms that power Africa's commerce, mobility, and digital infrastructure.
             </p>
             <div style={{ display: 'flex', gap: 8 }}>
-              {['𝕏', 'in', 'ig', 'gh'].map(s => (
-                <div key={s} style={{
-                  width: 30, height: 30,
-                  border: '1px solid var(--border)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 11, color: 'var(--muted)',
-                  cursor: 'pointer',
-                  transition: 'border-color .2s, color .2s',
-                }}>
-                  {s}
-                </div>
+              {[
+                { label: '𝕏',  href: 'https://x.com/ProStackNG',                          title: 'Follow us on X' },
+                { label: 'in', href: 'https://www.linkedin.com/company/prostackng',        title: 'Connect on LinkedIn' },
+                { label: '▶',  href: 'https://www.youtube.com/@ProStackNG',                title: 'Subscribe on YouTube' },
+              ].map(s => (
+                <a key={s.label} href={s.href} target="_blank" rel="noreferrer" title={s.title}
+                  style={{
+                    width: 32, height: 32,
+                    border: '1px solid var(--border)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 12, color: 'var(--muted)',
+                    textDecoration: 'none',
+                    transition: 'border-color .2s, color .2s',
+                  }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.borderColor = 'var(--blue)';
+                    (e.currentTarget as HTMLElement).style.color = 'var(--blue-hi)';
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)';
+                    (e.currentTarget as HTMLElement).style.color = 'var(--muted)';
+                  }}
+                >
+                  {s.label}
+                </a>
               ))}
             </div>
           </div>
