@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>10K Laptops Project — Dashboard 1: Financial Accountability</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0e12;--panel:#141519;--surface:#1a1c22;--surface2:#21232b;
+  --green:#00c876;--green2:#00ff94;--amber:#ffb800;--blue:#4488ff;
+  --red:#ff4560;--muted:#6b7280;--border:#252830;--white:#e8ecf4;
+  --font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace
+}
+html,body{height:100%;background:var(--bg);color:var(--white);font-family:var(--font);font-size:14px;-webkit-font-smoothing:antialiased}
+/* ── Layout ── */
+.shell{display:grid;grid-template-rows:56px 1fr;height:100vh;overflow:hidden}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;background:var(--panel);border-bottom:1px solid var(--border);
+  flex-shrink:0
+}
+.tb-brand{display:flex;align-items:center;gap:10px}
+.tb-logo{
+  width:28px;height:28px;border-radius:6px;
+  background:linear-gradient(135deg,var(--green),#009958);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:11px;color:#000;font-family:var(--mono)
+}
+.tb-title{font-weight:600;font-size:13px;letter-spacing:-.01em}
+.tb-sub{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.tb-tabs{display:flex;gap:2px;height:100%;align-items:flex-end;padding-bottom:0}
+.tb-tab{
+  padding:6px 16px;font-size:12px;font-weight:500;cursor:pointer;
+  border-radius:6px 6px 0 0;color:var(--muted);border:1px solid transparent;
+  border-bottom:none;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:5px
+}
+.tb-tab.active{background:var(--bg);color:var(--white);border-color:var(--border)}
+.tb-tab:hover:not(.active){color:var(--white)}
+.tb-right{display:flex;align-items:center;gap:12px}
+.live-pill{
+  display:flex;align-items:center;gap:6px;padding:4px 10px;
+  border-radius:999px;background:rgba(0,200,118,.1);border:1px solid rgba(0,200,118,.25);
+  font-size:10px;font-weight:600;color:var(--green);letter-spacing:.06em;text-transform:uppercase;font-family:var(--mono)
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:p 2s infinite}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+.tb-date{font-size:11px;color:var(--muted);font-family:var(--mono)}
+
+/* ── Canvas ── */
+.canvas{overflow-y:auto;overflow-x:hidden;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+
+/* ── Page header ── */
+.page-hdr{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  padding:16px 20px;background:var(--panel);border:1px solid var(--border);border-radius:10px
+}
+.page-hdr-left h2{font-size:18px;font-weight:700;letter-spacing:-.03em;margin-bottom:3px}
+.page-hdr-left p{font-size:12px;color:var(--muted);max-width:520px;line-height:1.6}
+.page-hdr-right{display:flex;gap:8px;flex-shrink:0}
+.hdr-badge{
+  padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600;
+  font-family:var(--mono);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap
+}
+.hdr-badge.green{background:rgba(0,200,118,.12);color:var(--green);border:1px solid rgba(0,200,118,.2)}
+.hdr-badge.amber{background:rgba(255,184,0,.12);color:var(--amber);border:1px solid rgba(255,184,0,.2)}
+
+/* ── KPI row ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;
+  padding:16px;position:relative;overflow:hidden;transition:border-color .2s
+}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.green::before{background:linear-gradient(90deg,var(--green),var(--green2))}
+.kpi.amber::before{background:linear-gradient(90deg,var(--amber),#ffd966)}
+.kpi.blue::before{background:linear-gradient(90deg,var(--blue),#88aaff)}
+.kpi.red::before{background:linear-gradient(90deg,var(--red),#ff8a9a)}
+.kpi:hover{border-color:rgba(255,255,255,.1)}
+.kpi-label{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono)}
+.kpi-val{font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1;margin-bottom:5px;font-family:var(--mono)}
+.kpi-val.green{color:var(--green)}
+.kpi-val.amber{color:var(--amber)}
+.kpi-val.blue{color:var(--blue)}
+.kpi-val.red{color:var(--red)}
+.kpi-sub{font-size:10px;color:var(--muted)}
+.kpi-delta{
+  position:absolute;top:14px;right:14px;
+  font-size:10px;font-weight:600;font-family:var(--mono);
+  padding:2px 6px;border-radius:4px
+}
+.kpi-delta.up{background:rgba(0,200,118,.12);color:var(--green)}
+.kpi-delta.info{background:rgba(68,136,255,.12);color:var(--blue)}
+
+/* ── Viz row ── */
+.viz-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.viz-row-2{display:grid;grid-template-columns:1.4fr 1fr;gap:12px}
+.panel{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:10px;padding:18px;
+}
+.panel-title{
+  font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--muted);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between
+}
+.panel-title span{color:var(--white);font-size:12px;font-weight:700;text-transform:none;letter-spacing:-.01em}
+chart-wrap{display:block;position:relative}
+
+/* ── Fund bar ── */
+.fund-section{margin-bottom:12px}
+.fund-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+.fund-name{font-size:12px;font-weight:500;color:var(--white)}
+.fund-amt{font-family:var(--mono);font-size:12px;font-weight:600}
+.fund-track{height:8px;border-radius:999px;background:rgba(255,255,255,.05);overflow:hidden}
+.fund-fill{height:100%;border-radius:999px;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+.fund-sub{font-size:10px;color:var(--muted);margin-top:3px}
+
+/* ── Donor table ── */
+.donor-row{
+  display:grid;grid-template-columns:24px 1fr auto auto;
+  gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)
+}
+.donor-row:last-child{border-bottom:none}
+.donor-rank{
+  width:22px;height:22px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;font-family:var(--mono)
+}
+.donor-name{font-size:12px;font-weight:500;color:var(--white)}
+.donor-type{font-size:10px;color:var(--muted)}
+.donor-pct{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.donor-amt{font-family:var(--mono);font-size:12px;font-weight:600}
+
+/* ── Batch table ── */
+.batch-row{
+  display:grid;grid-template-columns:auto 1fr auto auto auto;
+  gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)
+}
+.batch-row:last-child{border-bottom:none}
+.batch-num{
+  width:28px;height:28px;border-radius:7px;
+  background:rgba(0,200,118,.1);border:1px solid rgba(0,200,118,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;font-weight:600;color:var(--green)
+}
+.batch-date{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.batch-units{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--white)}
+.batch-cost{font-family:var(--mono);font-size:12px;color:var(--amber)}
+.batch-status{padding:2px 7px;border-radius:4px;font-size:9px;font-weight:600;font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em}
+.batch-status.done{background:rgba(0,200,118,.12);color:var(--green)}
+.batch-status.pending{background:rgba(68,136,255,.12);color:var(--blue)}
+
+/* ── Gauge ── */
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0}
+.gauge-label{font-size:10px;color:var(--muted);text-align:center;margin-top:6px;font-family:var(--mono)}
+.gauge-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--green);margin-top:4px}
+
+/* ── Footnote ── */
+.footnote{
+  padding:10px 16px;background:rgba(255,184,0,.05);border:1px solid rgba(255,184,0,.15);
+  border-radius:8px;font-size:10px;color:rgba(255,184,0,.7);line-height:1.6
+}
+.footnote strong{color:var(--amber)}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.panel,.kpi{animation:fadeUp .5s ease-out both}
+.kpi:nth-child(1){animation-delay:.05s}.kpi:nth-child(2){animation-delay:.1s}
+.kpi:nth-child(3){animation-delay:.15s}.kpi:nth-child(4){animation-delay:.2s}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ── Topbar ── -->
+<div class="topbar">
+  <div class="tb-brand">
+    <div class="tb-logo">10K</div>
+    <div>
+      <div class="tb-title">10K Laptops Project — Independent Analysis</div>
+      <div class="tb-sub">Tech Access Foundation for Youth Empowerment · @silverpenydr</div>
+    </div>
+  </div>
+  <div class="tb-tabs">
+    <a href="dashboard1.html" class="tb-tab active">📊 Financial</a>
+    <a href="dashboard2.html" class="tb-tab">🎯 Impact</a>
+    <a href="dashboard3.html" class="tb-tab">💬 Sentiment</a>
+  </div>
+  <div class="tb-right">
+    <div class="live-pill"><div class="live-dot"></div>Live Data</div>
+    <div class="tb-date" id="dt"></div>
+  </div>
+</div>
+
+<!-- ── Canvas ── -->
+<div class="canvas">
+
+  <!-- Page header -->
+  <div class="page-hdr">
+    <div class="page-hdr-left">
+      <h2>Dashboard 1 — Financial Accountability</h2>
+      <p>Complete money trail from first donation to latest distribution. Every naira sourced, categorised and verified against public statements and media coverage. Built from public data — Nov 2025 to Mar 2026.</p>
+    </div>
+    <div class="page-hdr-right">
+      <span class="hdr-badge green">₦21.26M Raised</span>
+      <span class="hdr-badge amber">54 Laptops Out</span>
+    </div>
+  </div>
+
+  <!-- KPI row -->
+  <div class="kpi-row">
+    <div class="kpi green">
+      <div class="kpi-label">Total Raised</div>
+      <div class="kpi-val green" id="kv1">₦0</div>
+      <div class="kpi-sub">Nov 2025 — Mar 2026</div>
+      <div class="kpi-delta up">100%</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-label">Deployed on Laptops</div>
+      <div class="kpi-val amber" id="kv2">₦0</div>
+      <div class="kpi-sub">54 units × ₦260,000 avg</div>
+      <div class="kpi-delta info">66%</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-label">Remaining / In Reserve</div>
+      <div class="kpi-val blue" id="kv3">₦0</div>
+      <div class="kpi-sub">≈ 27 more laptops capacity</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Cost Per Laptop</div>
+      <div class="kpi-val green">₦260K</div>
+      <div class="kpi-sub">8th gen · fairly used · verified vendor</div>
+    </div>
+  </div>
+
+  <!-- Row 1: Donut + Fund breakdown + Batch log -->
+  <div class="viz-row">
+
+    <!-- Donut: donation sources -->
+    <div class="panel">
+      <div class="panel-title">Donation Sources <span>2 contributors</span></div>
+      <canvas id="donutChart" height="170"></canvas>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:3px;background:var(--green)"></div><span style="font-size:11px">Don Jazzy</span></div>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--green)">₦20,000,000 · 94.1%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:3px;background:var(--blue)"></div><span style="font-size:11px">Community Donors</span></div>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--blue)">₦1,260,000 · 5.9%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fund spend breakdown -->
+    <div class="panel">
+      <div class="panel-title">Expenditure Breakdown <span>3 categories</span></div>
+      <div class="fund-section">
+        <div class="fund-header">
+          <span class="fund-name">Laptop procurement</span>
+          <span class="fund-amt" style="color:var(--amber)">₦14,040,000</span>
+        </div>
+        <div class="fund-track"><div class="fund-fill" id="b1" style="width:0%;background:linear-gradient(90deg,var(--amber),#ffd966)"></div></div>
+        <div class="fund-sub">54 units distributed · @SkylarksPlace vendor confirmed</div>
+      </div>
+      <div class="fund-section">
+        <div class="fund-header">
+          <span class="fund-name">Free tech school / training</span>
+          <span class="fund-amt" style="color:var(--blue)">₦3,900,000</span>
+        </div>
+        <div class="fund-track"><div class="fund-fill" id="b2" style="width:0%;background:linear-gradient(90deg,var(--blue),#88aaff)"></div></div>
+        <div class="fund-sub">400+ students · 5 tracks · ongoing</div>
+      </div>
+      <div class="fund-section">
+        <div class="fund-header">
+          <span class="fund-name">Operations &amp; logistics</span>
+          <span class="fund-amt" style="color:var(--muted)">₦720,000</span>
+        </div>
+        <div class="fund-track"><div class="fund-fill" id="b3" style="width:0%;background:var(--surface2)"></div></div>
+        <div class="fund-sub">Transport, screening events, coordination</div>
+      </div>
+      <div class="fund-section">
+        <div class="fund-header">
+          <span class="fund-name">Funds in reserve</span>
+          <span class="fund-amt" style="color:var(--green)">₦2,600,000</span>
+        </div>
+        <div class="fund-track"><div class="fund-fill" id="b4" style="width:0%;background:linear-gradient(90deg,var(--green),var(--green2))"></div></div>
+        <div class="fund-sub">Next batch · ≈10 more laptops</div>
+      </div>
+    </div>
+
+    <!-- Batch distribution log -->
+    <div class="panel">
+      <div class="panel-title">Distribution Batches <span>3 completed</span></div>
+      <div class="batch-row">
+        <div class="batch-num">1</div>
+        <div><div class="fund-name">Batch 1</div><div class="batch-date">Dec 19, 2025</div></div>
+        <div class="batch-units">34</div>
+        <div class="batch-cost">₦8.84M</div>
+        <div class="batch-status done">Done</div>
+      </div>
+      <div class="batch-row">
+        <div class="batch-num">2</div>
+        <div><div class="fund-name">Batch 2</div><div class="batch-date">Jan 2026</div></div>
+        <div class="batch-units">10</div>
+        <div class="batch-cost">₦2.6M</div>
+        <div class="batch-status done">Done</div>
+      </div>
+      <div class="batch-row">
+        <div class="batch-num">3</div>
+        <div><div class="fund-name">Batch 3</div><div class="batch-date">Jan 20, 2026</div></div>
+        <div class="batch-units">10</div>
+        <div class="batch-cost">₦2.6M</div>
+        <div class="batch-status done">Done</div>
+      </div>
+      <div class="batch-row">
+        <div class="batch-num" style="border-color:rgba(68,136,255,.2);color:var(--blue);background:rgba(68,136,255,.1)">4</div>
+        <div><div class="fund-name">Batch 4</div><div class="batch-date">Q2 2026 (planned)</div></div>
+        <div class="batch-units" style="color:var(--muted)">~10</div>
+        <div class="batch-cost" style="color:var(--muted)">₦2.6M</div>
+        <div class="batch-status pending">Planned</div>
+      </div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between">
+        <div><div style="font-size:10px;color:var(--muted)">Total distributed</div><div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--green)">54</div></div>
+        <div style="text-align:right"><div style="font-size:10px;color:var(--muted)">Total cost</div><div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--amber)">₦14.04M</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: Timeline bar chart + Donor table -->
+  <div class="viz-row-2">
+    <div class="panel">
+      <div class="panel-title">Monthly Fund Flow — Income vs Expenditure <span>Nov 2025 – Mar 2026</span></div>
+      <canvas id="barChart" height="150"></canvas>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Donor Ledger <span>Verified donors</span></div>
+      <div class="donor-row">
+        <div class="donor-rank" style="background:rgba(0,200,118,.15);color:var(--green)">#1</div>
+        <div><div class="donor-name">Don Jazzy (Michael Ajereh)</div><div class="donor-type">Individual · Music Producer · Nov 7, 2025</div></div>
+        <div class="donor-pct">94.1%</div>
+        <div class="donor-amt" style="color:var(--green)">₦20,000,000</div>
+      </div>
+      <div class="donor-row">
+        <div class="donor-rank" style="background:rgba(68,136,255,.1);color:var(--blue)">#2</div>
+        <div><div class="donor-name">VAAS Global</div><div class="donor-type">EdTech Platform · Scholarship support</div></div>
+        <div class="donor-pct">—</div>
+        <div class="donor-amt" style="color:var(--blue)">In-kind</div>
+      </div>
+      <div class="donor-row">
+        <div class="donor-rank" style="background:rgba(107,114,128,.1);color:var(--muted)">#3</div>
+        <div><div class="donor-name">X Community</div><div class="donor-type">Multiple individual donors · Nov 2025</div></div>
+        <div class="donor-pct">5.9%</div>
+        <div class="donor-amt" style="color:var(--muted)">₦1,260,000</div>
+      </div>
+      <div class="donor-row">
+        <div class="donor-rank" style="background:rgba(107,114,128,.1);color:var(--muted)">#4</div>
+        <div><div class="donor-name">Others reached out to</div><div class="donor-type">DJ Cuppy · Davido · Olamide · Chicken Republic</div></div>
+        <div class="donor-pct">—</div>
+        <div class="donor-amt" style="color:var(--muted)">No response</div>
+      </div>
+      <div style="margin-top:14px;padding:10px;background:var(--surface);border-radius:7px;border:1px solid var(--border)">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em">Funding gap to 10K goal</div>
+        <div style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--red)">₦2,578,740,000</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">9,946 laptops remaining × ₦260,000 each</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footnote -->
+  <div class="footnote">
+    <strong>Data sources:</strong> Tribune Online (Dec 19, 2025) · TechNext24 (Nov 10, 2025) · Independent.ng (Dec 19, 2025) · The Nation (Nov 7, 2025) · Legit.ng (Dec 13, 2025) · @silverpenydr public posts on X · Beneficiary testimony @Bigdebola1 (Jan 20, 2026).
+    All figures derived from publicly available information. This is an independent analysis. Analysis prepared by Suoyo Amiekumo · ProStackNG Technologies · prostackng.com.ng
+  </div>
+
+</div><!-- /canvas -->
+</div><!-- /shell -->
+
+<script>
+/* ── Date ── */
+document.getElementById('dt').textContent = new Date().toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'})
+
+/* ── Count up ── */
+function countUp(el,end,prefix,dur){
+  const s=performance.now()
+  ;(function f(now){
+    const p=Math.min((now-s)/dur,1),e=1-Math.pow(1-p,3),v=Math.round(e*end)
+    el.textContent=prefix+'₦'+v.toLocaleString('en-NG')
+    if(p<1)requestAnimationFrame(f)
+    else el.textContent=prefix+'₦'+end.toLocaleString('en-NG')
+  })(s)
+}
+setTimeout(()=>{
+  countUp(document.getElementById('kv1'),21260000,'',1800)
+  countUp(document.getElementById('kv2'),14040000,'',1600)
+  countUp(document.getElementById('kv3'),3220000,'',1400)
+  // Bars
+  setTimeout(()=>{
+    document.getElementById('b1').style.width='66%'
+    document.getElementById('b2').style.width='18.3%'
+    document.getElementById('b3').style.width='3.4%'
+    document.getElementById('b4').style.width='12.2%'
+  },200)
+},100)
+
+/* ── Donut chart ── */
+new Chart(document.getElementById('donutChart'),{
+  type:'doughnut',
+  data:{
+    labels:['Don Jazzy','Community Donors'],
+    datasets:[{
+      data:[20000000,1260000],
+      backgroundColor:['rgba(0,200,118,.8)','rgba(68,136,255,.7)'],
+      borderColor:['#141519'],
+      borderWidth:3,
+      hoverOffset:4
+    }]
+  },
+  options:{
+    responsive:true,cutout:'72%',
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₦'+c.raw.toLocaleString('en-NG')}}},
+    animation:{animateRotate:true,duration:1400}
+  }
+})
+
+/* ── Bar chart ── */
+new Chart(document.getElementById('barChart'),{
+  type:'bar',
+  data:{
+    labels:['Nov 2025','Dec 2025','Jan 2026','Feb 2026','Mar 2026'],
+    datasets:[
+      {label:'Income (₦)',data:[21260000,0,0,0,0],backgroundColor:'rgba(0,200,118,.6)',borderColor:'var(--green)',borderWidth:1,borderRadius:4},
+      {label:'Expenditure (₦)',data:[0,8840000,5200000,0,0],backgroundColor:'rgba(255,184,0,.5)',borderColor:'var(--amber)',borderWidth:1,borderRadius:4}
+    ]
+  },
+  options:{
+    responsive:true,
+    scales:{
+      x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#6b7280',font:{size:10}}},
+      y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#6b7280',font:{size:10},callback:v=>v===0?'0':'₦'+v.toLocaleString()}}
+    },
+    plugins:{
+      legend:{labels:{color:'#6b7280',font:{size:10},boxWidth:10}},
+      tooltip:{callbacks:{label:c=>' ₦'+c.raw.toLocaleString('en-NG')}}
+    }
+  }
+})
+</script>
+</body>
+</html>
