@@ -30,7 +30,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);font-size:1
 .tnav-tab{flex-shrink:0;padding:10px 16px;font-size:12px;font-weight:500;color:var(--muted);text-decoration:none;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
 .tnav-tab.active{color:var(--white);border-bottom-color:var(--green)}
 .tnav-tab:hover:not(.active){color:var(--white)}
-.body{padding:14px 14px 40px;display:flex;flex-direction:column;gap:12px;max-width:1200px;margin:0 auto}
+.body{padding:10px 10px 40px;display:flex;flex-direction:column;gap:12px;width:100%}
 .page-hdr{padding:14px 16px;background:var(--panel);border:1px solid var(--border);border-radius:10px}
 .page-hdr h2{font-size:16px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
 .page-hdr p{font-size:11px;color:var(--muted);line-height:1.6}
@@ -97,7 +97,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);font-size:1
 .footnote strong{color:var(--amber)}
 
 @media(min-width:640px){
-  .body{padding:16px 20px 40px}
+  .body{padding:16px 20px 40px;max-width:1200px;margin:0 auto}
   .kpi-row{grid-template-columns:repeat(4,1fr)}
   .kpi-val{font-size:26px;word-break:normal}
   .cols-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -249,7 +249,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);font-size:1
 
   <div class="footnote">
     <strong>Sources:</strong> Tribune Online · TechNext24 · Independent.ng · The Nation · Legit.ng · @silverpenydr · @boye4christ2006 · @Bigdebola1 (Jan 20, 2026).
-    Analysis by Precious Amiekumo · ProStackNG Technologies · prostackng.com.ng
+    Analysis by Suoyo Amiekumo · ProStackNG Technologies · prostackng.com.ng
   </div>
 
 </div>
@@ -275,8 +275,7 @@ milestones.forEach((m,i)=>{
   msList.appendChild(div)
 })
 
-window.addEventListener('load',()=>{
-  setTimeout(()=>{
+setTimeout(()=>{
     ['t1','t2','t3','t4','t5'].forEach((id,i)=>{
       document.getElementById(id).style.width=['29%','23%','18.6%','16.7%','12.7%'][i]
     })
@@ -303,7 +302,6 @@ window.addEventListener('load',()=>{
       plugins:{legend:{display:false}}
     }
   })
-})
 </script>
 </body>
 </html>

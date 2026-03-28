@@ -51,7 +51,8 @@ body{
 ::-webkit-scrollbar-thumb:hover{background:var(--green-d)}
 
 /* ── Utilities ───────────────────────────────────────── */
-.container{max-width:960px;margin:0 auto;padding:0 20px}
+.container{width:100%;padding:0 10px}
+@media(min-width:640px){.container{max-width:960px;margin:0 auto;padding:0 20px}}
 .badge{
   display:inline-flex;align-items:center;gap:5px;
   padding:3px 10px;border-radius:999px;
@@ -125,7 +126,7 @@ nav{
 }
 .hero p{
   font-size:clamp(14px,2.5vw,17px);color:var(--muted);
-  max-width:580px;margin:0 auto 32px;line-height:1.75
+  max-width:580px;width:100%;margin:0 auto 32px;line-height:1.75
 }
 .hero-meta{
   display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
@@ -587,7 +588,7 @@ footer a:hover{text-decoration:underline}
       </div>
       <div class="cta-title">This dashboard was built for the 10K Laptops Project</div>
       <p class="cta-sub">
-        LaptopLedger is a demo concept built by Precious Amiekumo — founder of ProStackNG Technologies,
+        LaptopLedger is a concept demo built by Suoyo Amiekumo — founder of ProStackNG Technologies,
         Port Harcourt. The full platform includes donor management, beneficiary screening,
         training integration, and public accountability reporting. Built so no good project
         ever has to defend itself with screenshots again.

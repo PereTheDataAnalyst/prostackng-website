@@ -49,7 +49,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);font-size:1
 .tnav-tab:hover:not(.active){color:var(--white)}
 
 /* ── Page body ── */
-.body{padding:14px 14px 40px;display:flex;flex-direction:column;gap:12px;max-width:1200px;margin:0 auto}
+.body{padding:10px 10px 40px;display:flex;flex-direction:column;gap:12px;width:100%}
 
 /* ── Page header ── */
 .page-hdr{padding:14px 16px;background:var(--panel);border:1px solid var(--border);border-radius:10px}
@@ -124,7 +124,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);font-size:1
 
 /* ── Desktop overrides ── */
 @media(min-width:640px){
-  .body{padding:16px 20px 40px}
+  .body{padding:16px 20px 40px;max-width:1200px;margin:0 auto}
   .kpi-row{grid-template-columns:repeat(4,1fr)}
   .kpi-val{font-size:24px;word-break:normal}
   .cols-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -320,7 +320,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);font-size:1
   <!-- Footnote -->
   <div class="footnote">
     <strong>Sources:</strong> Tribune Online · TechNext24 · Independent.ng · The Nation · Legit.ng · @silverpenydr public X posts · @Bigdebola1 (Jan 20, 2026).
-    Independent analysis by Precious Amiekumo · ProStackNG Technologies · prostackng.com.ng
+    Independent analysis by Suoyo Amiekumo · ProStackNG Technologies · prostackng.com.ng
   </div>
 
 </div>
@@ -336,7 +336,7 @@ function countUp(el,end,dur){
     else el.textContent='₦'+end.toLocaleString('en-NG')
   })(s)
 }
-window.addEventListener('load',()=>{
+setTimeout(()=>{
   countUp(document.getElementById('kv1'),21260000,1800)
   countUp(document.getElementById('kv2'),14040000,1600)
   countUp(document.getElementById('kv3'),2600000,1400)
@@ -376,7 +376,7 @@ window.addEventListener('load',()=>{
       plugins:{legend:{labels:{color:'#6b7280',font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:c=>' ₦'+c.raw.toLocaleString('en-NG')}}}
     }
   })
-})
+},150)
 </script>
 </body>
 </html>
