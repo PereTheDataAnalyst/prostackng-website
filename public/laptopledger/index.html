@@ -157,8 +157,9 @@ nav{
 
 .stat-val{
   font-family:var(--font-h);
-  font-size:clamp(26px,5vw,38px);
-  font-weight:700;line-height:1;margin-bottom:5px
+  font-size:clamp(16px,5vw,36px);
+  font-weight:700;line-height:1.1;margin-bottom:5px;
+  word-break:break-all
 }
 .stat-val.green{color:var(--green)}
 .stat-val.blue{color:#7ea8ff}
@@ -294,11 +295,20 @@ footer a:hover{text-decoration:underline}
 .d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}
 .d4{animation-delay:.2s}.d5{animation-delay:.25s}.d6{animation-delay:.3s}
 
-/* ── Responsive ───────────────────────────────────────── */
+/* ── Mobile overrides ─────────────────────────────────── */
 @media(max-width:540px){
-  .bene-row{grid-template-columns:32px 1fr}
+  .stat-card{padding:14px 12px}
+  .stat-val{font-size:clamp(15px,5vw,22px)}
+  .stat-label{font-size:11px}
+  .fund-fill-wrap{max-width:100%}
   .bene-right{display:none}
+  .training-card{padding:12px}
+  .training-count{font-size:18px}
+  .cta-card{padding:20px 16px}
+  nav{padding:0 12px}
+  .nav-name{font-size:15px}
 }
+
 </style>
 </head>
 <body>
@@ -577,7 +587,7 @@ footer a:hover{text-decoration:underline}
       </div>
       <div class="cta-title">This dashboard was built for the 10K Laptops Project</div>
       <p class="cta-sub">
-        LaptopLedger is a concept demo built by Suoyo Amiekumo — founder of ProStackNG Technologies,
+        LaptopLedger is a demo concept built by Precious Amiekumo — founder of ProStackNG Technologies,
         Port Harcourt. The full platform includes donor management, beneficiary screening,
         training integration, and public accountability reporting. Built so no good project
         ever has to defend itself with screenshots again.
