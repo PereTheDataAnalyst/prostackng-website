@@ -346,3 +346,45 @@ body {
   border-color: var(--blue) !important;
   color: var(--blue-hi) !important;
 }
+
+/* ─── CARD HOVER VARIANTS ─────────────────────────────────────── */
+.card-hover-blue {
+  transition: border-color .2s;
+}
+.card-hover-blue:hover {
+  border-color: var(--blue-dim) !important;
+}
+
+/* ─── OUTLINE BUTTON VARIANTS ─────────────────────────────────── */
+.btn-outline-blue {
+  display: block;
+  text-align: center;
+  border: 1px solid var(--blue);
+  color: var(--blue-hi);
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 11px;
+  transition: background .2s;
+}
+.btn-outline-blue:hover { background: var(--blue-lo); }
+
+.btn-outline-border {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  color: var(--sub);
+  padding: 14px 36px;
+  transition: border-color .2s, color .2s;
+}
+.btn-outline-border:hover { border-color: var(--blue); color: var(--blue-hi); }

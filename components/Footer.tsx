@@ -27,6 +27,7 @@ const COLS = [
       { label: 'Investor Relations', href: '/investor',     ready: true  },
       { label: 'Careers',            href: '/careers',      ready: true  },
       { label: 'Academy',            href: '/academy',      ready: true  },
+      { label: 'Managed Services',    href: '/managed-services', ready: true  },
     ],
   },
   {

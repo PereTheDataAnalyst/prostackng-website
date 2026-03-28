@@ -22,7 +22,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/metrics`,       lastModified: new Date(), changeFrequency: 'weekly',  priority: 0.7  },
     { url: `${BASE}/portal`,        lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5  },
     { url: `${BASE}/academy`,       lastModified: new Date(), changeFrequency: 'weekly',  priority: 0.9  },
-    { url: `${BASE}/academy/verify`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5  },
+    { url: `${BASE}/academy/verify`,    lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5  },
+    { url: `${BASE}/managed-services`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9  },
   ];
 
   const blogRoutes: MetadataRoute.Sitemap = POSTS.map(post => ({
