@@ -12,6 +12,7 @@ const LINKS = [
   { href: '/pricing',      label: 'Pricing'      },
   { href: '/company',      label: 'Company'      },
   { href: '/contact',      label: 'Contact'      },
+  { href: '/academy',      label: 'Our Programmes' },
 ];
 
 export default function Navbar() {

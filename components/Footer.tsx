@@ -26,6 +26,7 @@ const COLS = [
       { label: 'Press & Media',      href: '/press',        ready: true  },
       { label: 'Investor Relations', href: '/investor',     ready: true  },
       { label: 'Careers',            href: '/careers',      ready: true  },
+      { label: 'Academy',            href: '/academy',      ready: true  },
     ],
   },
   {
@@ -39,7 +40,8 @@ const COLS = [
       { label: 'Public Metrics',              href: '/metrics',                        ready: true },
       { label: 'Boardroom (Staff)',            href: '/boardroom',                      ready: true },
       { label: 'System Status',                href: '/status',                         ready: true },
-      { label: 'API Docs',                     href: '/docs',                           ready: true },
+      { label: 'API Docs',                     href: '/docs',                           ready: true  },
+      { label: 'Verify Certificate',             href: '/academy/verify',                 ready: true  },
     ],
   },
 ];
