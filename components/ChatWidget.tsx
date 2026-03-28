@@ -88,6 +88,15 @@ export default function ChatWidget() {
     if (step === 'chat') setUnread(0);
   }, [step]);
 
+  // External trigger — dispatch window event 'psng:open-chat' to open from anywhere
+  useEffect(() => {
+    const handler = () => {
+      setStep(prev => prev === 'bubble' ? (sessionId ? 'chat' : 'intro') : prev);
+    };
+    window.addEventListener('psng:open-chat', handler);
+    return () => window.removeEventListener('psng:open-chat', handler);
+  }, [sessionId]);
+
   async function loadMessages(sid: string) {
     const { data } = await supabase
       .from('chat_messages')

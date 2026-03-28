@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ScholarshipForm from '@/components/ScholarshipForm';
+import OpenChatButton from '@/components/OpenChatButton';
 
 export const metadata: Metadata = {
   title: 'ProStack NG Academy — Practical Tech Education for Nigerian Builders',
@@ -10,10 +12,11 @@ export const metadata: Metadata = {
   keywords: [
     'tech courses Nigeria', 'SaaS development Nigeria', 'digital transformation Nigeria',
     'Next.js course Nigeria', 'Nigerian government contracts', 'ProStack NG Academy',
+    'tech scholarships Nigeria', 'university tech partnership Nigeria',
   ],
   openGraph: {
     title: 'ProStack NG Academy',
-    description: 'Practical tech education built for the Nigerian market. Courses, bundles, and corporate cohorts.',
+    description: 'Practical tech education built for the Nigerian market. Courses, bundles, corporate cohorts, and scholarships.',
     url: 'https://www.prostackng.com.ng/academy',
     siteName: 'ProStack NG Technologies',
     type: 'website',
@@ -102,26 +105,22 @@ const BUNDLES = [
   {
     name: 'SaaS Builder Bundle',
     includes: ['Building SaaS with Next.js + Supabase', 'Launching a Tech Startup in Nigeria'],
-    price: 22000, originalPrice: 25000,
-    selarUrl: 'https://selar.co/prostackng-bundle-saas',
+    price: 22000, originalPrice: 25000, selarUrl: 'https://selar.co/prostackng-bundle-saas',
   },
   {
     name: 'Digital Business Bundle',
     includes: ['Process Automation for Nigerian Businesses', 'Digital Transformation for Nigerian SMEs'],
-    price: 16000, originalPrice: 18000,
-    selarUrl: 'https://selar.co/prostackng-bundle-digital',
+    price: 16000, originalPrice: 18000, selarUrl: 'https://selar.co/prostackng-bundle-digital',
   },
   {
     name: 'Government & Enterprise Bundle',
     includes: ['Tender Intelligence', 'Digital Transformation for SMEs', 'Process Automation'],
-    price: 28000, originalPrice: 30000,
-    selarUrl: 'https://selar.co/prostackng-bundle-gov',
+    price: 28000, originalPrice: 30000, selarUrl: 'https://selar.co/prostackng-bundle-gov',
   },
   {
     name: "Complete Founder's Pack",
     includes: ['All 5 courses included'],
-    price: 45000, originalPrice: 55000,
-    selarUrl: 'https://selar.co/prostackng-bundle-all',
+    price: 45000, originalPrice: 55000, selarUrl: 'https://selar.co/prostackng-bundle-all',
   },
 ];
 
@@ -158,38 +157,10 @@ const PRICING = [
   },
 ];
 
-const SCHOLARSHIPS = [
-  {
-    icon: '🎓',
-    title: 'Merit Scholarship',
-    description: 'Full tuition waiver for exceptional candidates who demonstrate outstanding potential but lack financial means. Apply with a short essay and recommendation.',
-    coverage: '100% tuition covered',
-    slots: '2 slots per cohort',
-    target: 'Open to all Nigerians',
-  },
-  {
-    icon: '🌍',
-    title: 'Rivers State Youth Grant',
-    description: 'Subsidised access for youth (18–30) based in Rivers State. Aligned with the Rivers State government digital skills agenda for young professionals.',
-    coverage: '70% subsidy',
-    slots: '5 slots per cohort',
-    target: 'Rivers State residents',
-  },
-  {
-    icon: '👩‍💻',
-    title: 'Women in Tech Bursary',
-    description: 'Dedicated bursary for women entering or advancing in the Nigerian tech sector. Includes mentorship pairing with a ProStack NG team member.',
-    coverage: '50% subsidy + mentorship',
-    slots: '4 slots per cohort',
-    target: 'Women in Nigeria',
-  },
-];
-
 const PARTNERS = [
   {
-    type: 'Universities & Polytechnics',
-    icon: '🏫',
-    description: 'We partner with Nigerian universities and polytechnics to deliver accredited skill modules as part of their curriculum or as extracurricular enrichment programmes. Students graduate with both an institutional certificate and a ProStack NG Academy certificate.',
+    type: 'Universities & Polytechnics', icon: '🏫',
+    description: 'We partner with Nigerian universities and polytechnics to deliver practical tech modules as part of their curriculum or extracurricular enrichment. Students graduate with both an institutional record and a verified ProStack NG Academy certificate.',
     benefits: [
       'Custom curriculum aligned to your department',
       'Guest lectures from ProStack NG engineers',
@@ -197,13 +168,11 @@ const PARTNERS = [
       'Joint certificate issuance',
       'Internship pipeline to ProStack NG clients',
     ],
-    cta: 'Enquire — Universities',
-    ctaHref: 'mailto:academy@prostackng.com.ng?subject=University%20Partnership%20Enquiry',
+    chatMessage: 'Hi, I am enquiring about a University Partnership with ProStack NG Academy.',
   },
   {
-    type: 'Corporate Training Partners',
-    icon: '🏢',
-    description: 'Companies that want to upskill their workforce in bulk can white-label our curriculum or co-brand our delivery. We handle all training logistics — you focus on your team\'s growth.',
+    type: 'Corporate Training Partners', icon: '🏢',
+    description: "Companies that want to upskill their workforce can co-brand our delivery or customise our curriculum entirely. We handle all training logistics — you focus on your team's growth.",
     benefits: [
       'Branded training portal for your company',
       'Custom course content for your industry',
@@ -212,8 +181,7 @@ const PARTNERS = [
       'Post-training competency assessments',
       'Volume pricing from ₦150,000 per cohort',
     ],
-    cta: 'Enquire — Corporates',
-    ctaHref: 'mailto:academy@prostackng.com.ng?subject=Corporate%20Training%20Partnership%20Enquiry',
+    chatMessage: 'Hi, I am enquiring about a Corporate Training Partnership with ProStack NG Academy.',
   },
 ];
 
@@ -233,31 +201,24 @@ export default function AcademyPage() {
             background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(37,99,235,.18) 0%, transparent 65%)',
           }} />
           <div style={{ maxWidth: 880, margin: '0 auto', padding: '0 clamp(16px,4vw,56px)', textAlign: 'center', position: 'relative' }}>
-            <div className="eyebrow" style={{ marginBottom: 24, justifyContent: 'center' }}>
-              ProStack NG Academy
-            </div>
-            <h1 className="f-display" style={{
-              fontSize: 'clamp(36px,6vw,72px)', fontWeight: 800,
-              letterSpacing: '-.04em', lineHeight: 1.0, marginBottom: 24,
-            }}>
+            <div className="eyebrow" style={{ marginBottom: 24, justifyContent: 'center' }}>ProStack NG Academy</div>
+            <h1 className="f-display" style={{ fontSize: 'clamp(36px,6vw,72px)', fontWeight: 800, letterSpacing: '-.04em', lineHeight: 1.0, marginBottom: 24 }}>
               Practical Tech Education<br />
               <span style={{ color: 'var(--blue-hi)' }}>Built for Nigeria.</span>
             </h1>
-            <p className="f-body" style={{
-              fontSize: 'clamp(15px,2vw,18px)', color: 'var(--sub)',
-              maxWidth: 600, margin: '0 auto 40px', lineHeight: 1.75,
-            }}>
+            <p className="f-body" style={{ fontSize: 'clamp(15px,2vw,18px)', color: 'var(--sub)', maxWidth: 600, margin: '0 auto 40px', lineHeight: 1.75 }}>
               No fluff. No theory for theory&apos;s sake. Every course is taught by the team that built
               AutoReport, ProTrackNG, and ClubOps — real products, serving real Nigerian clients.
             </p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
               <a href="#courses" className="btn btn-primary" style={{ fontSize: 12 }}>Browse Courses →</a>
-              <a href="#pricing" className="btn-outline-border">See Pricing</a>
+              <a href="#scholarships" className="btn-outline-border">Apply for Scholarship</a>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', gap: 48, marginTop: 56, flexWrap: 'wrap' }}>
               {[
                 { label: 'Live Courses', value: '5' },
                 { label: 'Naira Pricing', value: '₦ Only' },
+                { label: 'Scholarships Available', value: '✓' },
                 { label: 'Certificate on Completion', value: '✓ Verified' },
               ].map(s => (
                 <div key={s.label} style={{ textAlign: 'center' }}>
@@ -290,24 +251,17 @@ export default function AcademyPage() {
                     </span>
                   )}
                   <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', marginBottom: 16 }}>
-                    <div style={{
-                      width: 44, height: 44, background: 'var(--blue-lo)', border: '1px solid var(--border)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0,
-                    }}>{course.icon}</div>
+                    <div style={{ width: 44, height: 44, background: 'var(--blue-lo)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>
+                      {course.icon}
+                    </div>
                     <div>
-                      <h3 className="f-display" style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', marginBottom: 4, lineHeight: 1.2 }}>
-                        {course.title}
-                      </h3>
+                      <h3 className="f-display" style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', marginBottom: 4, lineHeight: 1.2 }}>{course.title}</h3>
                       <p style={{ fontSize: 13, color: 'var(--blue-hi)', fontWeight: 500 }}>{course.tagline}</p>
                     </div>
                   </div>
-                  <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.75, marginBottom: 20 }}>
-                    {course.description}
-                  </p>
+                  <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.75, marginBottom: 20 }}>{course.description}</p>
                   <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
-                    <span className="badge" style={{ background: `${course.levelColor}18`, color: course.levelColor, border: `1px solid ${course.levelColor}40` }}>
-                      {course.level}
-                    </span>
+                    <span className="badge" style={{ background: `${course.levelColor}18`, color: course.levelColor, border: `1px solid ${course.levelColor}40` }}>{course.level}</span>
                     <span className="f-mono" style={{ fontSize: 10, color: 'var(--muted)', letterSpacing: '.1em' }}>{course.duration}</span>
                     <span className="f-mono" style={{ fontSize: 10, color: 'var(--muted)', letterSpacing: '.1em' }}>{course.lessons} LESSONS</span>
                   </div>
@@ -320,11 +274,8 @@ export default function AcademyPage() {
                     ))}
                   </ul>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: 20 }}>
-                    <span className="f-display" style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-.03em' }}>
-                      ₦{course.price.toLocaleString()}
-                    </span>
-                    <a href={course.selarUrl} target="_blank" rel="noopener noreferrer"
-                      className="btn btn-primary" style={{ fontSize: 11, padding: '11px 24px' }}>
+                    <span className="f-display" style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-.03em' }}>₦{course.price.toLocaleString()}</span>
+                    <a href={course.selarUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ fontSize: 11, padding: '11px 24px' }}>
                       Enrol on Selar ↗
                     </a>
                   </div>
@@ -335,30 +286,21 @@ export default function AcademyPage() {
         </section>
 
         {/* ─── BUNDLES ─────────────────────────────────────────────── */}
-        <section id="bundles" style={{
-          background: 'var(--s1)', padding: 'clamp(64px,8vw,96px) clamp(16px,4vw,56px)',
-          borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)',
-        }}>
+        <section id="bundles" style={{ background: 'var(--s1)', padding: 'clamp(64px,8vw,96px) clamp(16px,4vw,56px)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
             <div style={{ marginBottom: 48 }}>
               <div className="eyebrow" style={{ marginBottom: 16 }}>Save More</div>
               <h2 className="f-display" style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, letterSpacing: '-.03em' }}>Course Bundles</h2>
-              <p className="f-body" style={{ fontSize: 14, color: 'var(--sub)', marginTop: 8 }}>
-                Curated learning paths for specific goals. Better value, deeper expertise.
-              </p>
+              <p className="f-body" style={{ fontSize: 14, color: 'var(--sub)', marginTop: 8 }}>Curated learning paths for specific goals. Better value, deeper expertise.</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
               {BUNDLES.map(bundle => (
-                <div key={bundle.name} className="card-hover-blue" style={{
-                  background: 'var(--card)', border: '1px solid var(--border)',
-                  padding: '24px', display: 'flex', flexDirection: 'column',
-                }}>
+                <div key={bundle.name} className="card-hover-blue" style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: '24px', display: 'flex', flexDirection: 'column' }}>
                   <h3 className="f-display" style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>{bundle.name}</h3>
                   <ul style={{ listStyle: 'none', marginBottom: 20, flex: 1 }}>
                     {bundle.includes.map(c => (
                       <li key={c} className="f-body" style={{ fontSize: 12, color: 'var(--sub)', paddingLeft: 14, position: 'relative', marginBottom: 8, lineHeight: 1.5 }}>
-                        <span style={{ position: 'absolute', left: 0, top: 5, color: 'var(--blue)', fontSize: 6 }}>◆</span>
-                        {c}
+                        <span style={{ position: 'absolute', left: 0, top: 5, color: 'var(--blue)', fontSize: 6 }}>◆</span>{c}
                       </li>
                     ))}
                   </ul>
@@ -366,9 +308,7 @@ export default function AcademyPage() {
                     <span className="f-display" style={{ fontSize: 20, fontWeight: 800 }}>₦{bundle.price.toLocaleString()}</span>
                     <span className="f-mono" style={{ fontSize: 10, color: 'var(--muted)', textDecoration: 'line-through' }}>₦{bundle.originalPrice.toLocaleString()}</span>
                   </div>
-                  <a href={bundle.selarUrl} target="_blank" rel="noopener noreferrer" className="btn-outline-blue">
-                    Get Bundle →
-                  </a>
+                  <a href={bundle.selarUrl} target="_blank" rel="noopener noreferrer" className="btn-outline-blue">Get Bundle →</a>
                 </div>
               ))}
             </div>
@@ -380,9 +320,7 @@ export default function AcademyPage() {
           <div style={{ maxWidth: 1100, margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 56 }}>
               <div className="eyebrow" style={{ marginBottom: 16, justifyContent: 'center' }}>Pricing</div>
-              <h2 className="f-display" style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, letterSpacing: '-.03em' }}>
-                Every Budget. Every Team Size.
-              </h2>
+              <h2 className="f-display" style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, letterSpacing: '-.03em' }}>Every Budget. Every Team Size.</h2>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
               {PRICING.map(tier => (
@@ -392,23 +330,17 @@ export default function AcademyPage() {
                   padding: '32px 28px', display: 'flex', flexDirection: 'column', position: 'relative',
                 }}>
                   {tier.highlight && (
-                    <div className="f-mono" style={{
-                      position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)',
-                      background: 'var(--blue)', color: '#fff',
-                      fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase',
-                      padding: '4px 14px', whiteSpace: 'nowrap',
-                    }}>Most Popular</div>
+                    <div className="f-mono" style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: 'var(--blue)', color: '#fff', fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', padding: '4px 14px', whiteSpace: 'nowrap' }}>
+                      Most Popular
+                    </div>
                   )}
                   <h3 className="f-display" style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>{tier.tier}</h3>
-                  <p className="f-display" style={{ fontSize: 26, fontWeight: 800, color: 'var(--blue-hi)', letterSpacing: '-.03em', marginBottom: 12 }}>
-                    {tier.price}
-                  </p>
+                  <p className="f-display" style={{ fontSize: 26, fontWeight: 800, color: 'var(--blue-hi)', letterSpacing: '-.03em', marginBottom: 12 }}>{tier.price}</p>
                   <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7, marginBottom: 24 }}>{tier.description}</p>
                   <ul style={{ listStyle: 'none', flex: 1, marginBottom: 28 }}>
                     {tier.features.map(f => (
                       <li key={f} className="f-body" style={{ fontSize: 13, color: 'var(--sub)', paddingLeft: 18, position: 'relative', marginBottom: 10, lineHeight: 1.5 }}>
-                        <span style={{ position: 'absolute', left: 0, top: 5, color: 'var(--blue)', fontSize: 7 }}>◆</span>
-                        {f}
+                        <span style={{ position: 'absolute', left: 0, top: 5, color: 'var(--blue)', fontSize: 7 }}>◆</span>{f}
                       </li>
                     ))}
                   </ul>
@@ -426,71 +358,41 @@ export default function AcademyPage() {
         </section>
 
         {/* ─── SCHOLARSHIPS ────────────────────────────────────────── */}
-        <section id="scholarships" style={{
-          background: 'var(--s1)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)',
-          padding: 'clamp(64px,8vw,96px) clamp(16px,4vw,56px)',
-        }}>
-          <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-            <div style={{ marginBottom: 56 }}>
+        <section id="scholarships" style={{ background: 'var(--s1)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: 'clamp(64px,8vw,96px) clamp(16px,4vw,56px)' }}>
+          <div style={{ maxWidth: 860, margin: '0 auto' }}>
+
+            <div style={{ marginBottom: 48 }}>
               <div className="eyebrow" style={{ marginBottom: 16 }}>Scholarships</div>
               <h2 className="f-display" style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, letterSpacing: '-.03em' }}>
-                Financial Aid & Scholarships
+                Apply for a Scholarship
               </h2>
               <p className="f-body" style={{ fontSize: 14, color: 'var(--sub)', marginTop: 10, maxWidth: 600, lineHeight: 1.8 }}>
                 We believe cost should never stop a talented Nigerian from accessing quality tech education.
-                Three scholarship pathways are available every cohort.
+                Fill in the form below — we review all applications 4 weeks before each cohort and
+                respond to every applicant directly.
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, marginBottom: 40 }}>
-              {SCHOLARSHIPS.map(s => (
-                <div key={s.title} className="card-hover-blue" style={{
-                  background: 'var(--card)', border: '1px solid var(--border)', padding: '28px',
-                }}>
-                  <div style={{ fontSize: 28, marginBottom: 16 }}>{s.icon}</div>
-                  <h3 className="f-display" style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', marginBottom: 8 }}>
-                    {s.title}
-                  </h3>
-                  <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.75, marginBottom: 20 }}>
-                    {s.description}
-                  </p>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, borderTop: '1px solid var(--border)', paddingTop: 16 }}>
-                    {[
-                      { label: 'Coverage', value: s.coverage },
-                      { label: 'Available slots', value: s.slots },
-                      { label: 'Eligibility', value: s.target },
-                    ].map(row => (
-                      <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-                        <span className="f-mono" style={{ fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted)' }}>{row.label}</span>
-                        <span className="f-body" style={{ fontSize: 12, color: 'var(--blue-hi)', fontWeight: 600, textAlign: 'right' }}>{row.value}</span>
-                      </div>
-                    ))}
-                  </div>
+            {/* Info strip */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px,1fr))', gap: 12, marginBottom: 40 }}>
+              {[
+                { label: 'Application', value: 'Free' },
+                { label: 'Aid Available', value: 'Up to 100%' },
+                { label: 'Response Time', value: 'Before each cohort' },
+                { label: 'Open To', value: 'All Nigerians' },
+              ].map(s => (
+                <div key={s.label} style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: '16px 20px' }}>
+                  <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 6 }}>{s.label}</div>
+                  <div className="f-display" style={{ fontSize: 16, fontWeight: 700, color: 'var(--blue-hi)' }}>{s.value}</div>
                 </div>
               ))}
             </div>
 
-            {/* Apply CTA */}
-            <div style={{
-              background: 'rgba(37,99,235,.06)', border: '1px solid var(--blue-dim)',
-              padding: '28px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20,
-            }}>
-              <div>
-                <h3 className="f-display" style={{ fontSize: 16, fontWeight: 700, marginBottom: 6 }}>
-                  Ready to Apply for a Scholarship?
-                </h3>
-                <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.6 }}>
-                  Applications open 4 weeks before each cohort. Send your details and a brief statement of intent.
-                </p>
-              </div>
-              <a
-                href="mailto:academy@prostackng.com.ng?subject=Scholarship%20Application"
-                className="btn btn-primary"
-                style={{ fontSize: 11, whiteSpace: 'nowrap' }}
-              >
-                Apply for Scholarship →
-              </a>
+            {/* The form — client component */}
+            <div style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: 'clamp(28px,4vw,40px)' }}>
+              <ScholarshipForm />
             </div>
+
           </div>
         </section>
 
@@ -504,37 +406,33 @@ export default function AcademyPage() {
               </h2>
               <p className="f-body" style={{ fontSize: 14, color: 'var(--sub)', marginTop: 10, maxWidth: 600, lineHeight: 1.8 }}>
                 ProStack NG Academy partners with institutions and companies to deliver specialised
-                tech training at scale — fully customised to your context.
+                tech training at scale — fully customised to your context. Click Enquire to chat with us directly.
               </p>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(460px, 1fr))', gap: 20 }}>
               {PARTNERS.map(partner => (
-                <div key={partner.type} style={{
-                  background: 'var(--card)', border: '1px solid var(--border)', padding: '36px',
-                }}>
+                <div key={partner.type} style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: '36px' }}>
                   <div style={{ fontSize: 32, marginBottom: 16 }}>{partner.icon}</div>
-                  <h3 className="f-display" style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-.02em', marginBottom: 12 }}>
-                    {partner.type}
-                  </h3>
-                  <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.8, marginBottom: 24 }}>
-                    {partner.description}
-                  </p>
+                  <h3 className="f-display" style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-.02em', marginBottom: 12 }}>{partner.type}</h3>
+                  <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.8, marginBottom: 24 }}>{partner.description}</p>
                   <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 14 }}>
                     What&apos;s Included
                   </div>
                   <ul style={{ listStyle: 'none', marginBottom: 28 }}>
                     {partner.benefits.map(b => (
                       <li key={b} className="f-body" style={{ fontSize: 13, color: 'var(--sub)', paddingLeft: 18, position: 'relative', marginBottom: 10, lineHeight: 1.5 }}>
-                        <span style={{ position: 'absolute', left: 0, top: 5, color: 'var(--blue)', fontSize: 7 }}>◆</span>
-                        {b}
+                        <span style={{ position: 'absolute', left: 0, top: 5, color: 'var(--blue)', fontSize: 7 }}>◆</span>{b}
                       </li>
                     ))}
                   </ul>
-                  <a href={partner.ctaHref} target="_blank" rel="noopener noreferrer"
-                    className="btn btn-primary" style={{ fontSize: 11 }}>
-                    {partner.cta} →
-                  </a>
+                  {/* ✅ OpenChatButton — opens the live chat widget in-app */}
+                  <OpenChatButton
+                    className="btn btn-primary"
+                    style={{ fontSize: 11, cursor: 'pointer', border: 'none' }}
+                  >
+                    Enquire via Live Chat →
+                  </OpenChatButton>
                 </div>
               ))}
             </div>
@@ -542,15 +440,8 @@ export default function AcademyPage() {
         </section>
 
         {/* ─── CERTIFICATES ────────────────────────────────────────── */}
-        <section style={{
-          background: 'var(--s1)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)',
-          padding: 'clamp(64px,8vw,96px) clamp(16px,4vw,56px)',
-        }}>
-          <div style={{
-            maxWidth: 1100, margin: '0 auto',
-            display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))',
-            gap: 56, alignItems: 'center',
-          }}>
+        <section style={{ background: 'var(--s1)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: 'clamp(64px,8vw,96px) clamp(16px,4vw,56px)' }}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: 56, alignItems: 'center' }}>
             <div>
               <div className="eyebrow" style={{ marginBottom: 20 }}>Certificates</div>
               <h2 className="f-display" style={{ fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 800, letterSpacing: '-.03em', marginBottom: 16 }}>
@@ -570,35 +461,23 @@ export default function AcademyPage() {
                   'Issued under ProStack NG Technologies seal',
                 ].map(item => (
                   <li key={item} className="f-body" style={{ fontSize: 13, color: 'var(--sub)', paddingLeft: 18, position: 'relative', marginBottom: 10 }}>
-                    <span style={{ position: 'absolute', left: 0, top: 5, color: 'var(--blue)', fontSize: 7 }}>◆</span>
-                    {item}
+                    <span style={{ position: 'absolute', left: 0, top: 5, color: 'var(--blue)', fontSize: 7 }}>◆</span>{item}
                   </li>
                 ))}
               </ul>
-              <Link href="/academy/verify" className="f-display" style={{
-                fontSize: 12, fontWeight: 700, letterSpacing: '.08em',
-                textTransform: 'uppercase', color: 'var(--blue-hi)', textDecoration: 'none',
-              }}>
+              <Link href="/academy/verify" className="f-display" style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--blue-hi)', textDecoration: 'none' }}>
                 Verify a Certificate →
               </Link>
             </div>
 
-            {/* Certificate mock-up — John Doe + Mr Fubara */}
+            {/* Certificate mock-up */}
             <div style={{ background: 'var(--card)', border: '1px solid var(--blue-dim)', padding: '36px', position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', top: -40, right: -40, width: 180, height: 180, borderRadius: '50%', background: 'var(--blue-lo)', filter: 'blur(40px)' }} />
               <div style={{ position: 'relative', textAlign: 'center' }}>
-                <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--blue-hi)', marginBottom: 4 }}>
-                  PROSTACK NG ACADEMY
-                </div>
-                <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', marginBottom: 28, letterSpacing: '.1em' }}>
-                  Certificate of Completion
-                </div>
-                <div className="f-display" style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-.02em', marginBottom: 8 }}>
-                  John Doe
-                </div>
-                <div className="f-body" style={{ fontSize: 13, color: 'var(--sub)', marginBottom: 20 }}>
-                  has successfully completed
-                </div>
+                <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--blue-hi)', marginBottom: 4 }}>PROSTACK NG ACADEMY</div>
+                <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', marginBottom: 28, letterSpacing: '.1em' }}>Certificate of Completion</div>
+                <div className="f-display" style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-.02em', marginBottom: 8 }}>John Doe</div>
+                <div className="f-body" style={{ fontSize: 13, color: 'var(--sub)', marginBottom: 20 }}>has successfully completed</div>
                 <div className="f-display" style={{ fontSize: 16, fontWeight: 700, color: 'var(--blue-hi)', marginBottom: 28, lineHeight: 1.3 }}>
                   Building SaaS with Next.js + Supabase
                 </div>
@@ -622,16 +501,13 @@ export default function AcademyPage() {
           <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
             <div style={{ background: 'var(--s1)', border: '1px solid var(--border)', padding: 'clamp(40px,5vw,64px)' }}>
               <div className="eyebrow" style={{ marginBottom: 20, justifyContent: 'center' }}>Get Started Today</div>
-              <h2 className="f-display" style={{ fontSize: 'clamp(26px,4vw,40px)', fontWeight: 800, letterSpacing: '-.03em', marginBottom: 16 }}>
-                Ready to Level Up?
-              </h2>
+              <h2 className="f-display" style={{ fontSize: 'clamp(26px,4vw,40px)', fontWeight: 800, letterSpacing: '-.03em', marginBottom: 16 }}>Ready to Level Up?</h2>
               <p className="f-body" style={{ fontSize: 14, color: 'var(--sub)', lineHeight: 1.8, marginBottom: 32, maxWidth: 520, margin: '0 auto 32px' }}>
-                All payments are processed securely in Nigerian Naira via Selar.co.
-                No hidden fees, no dollar-rate surprises.
+                All payments are processed securely in Nigerian Naira via Selar.co. No hidden fees, no dollar-rate surprises.
               </p>
               <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
                 <a href="#courses" className="btn btn-primary" style={{ fontSize: 12 }}>Browse Courses →</a>
-                <a href="mailto:academy@prostackng.com.ng" className="btn-outline-border">Corporate Enquiry</a>
+                <a href="#scholarships" className="btn-outline-border">Apply for Scholarship</a>
               </div>
             </div>
           </div>
