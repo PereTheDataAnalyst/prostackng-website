@@ -14,6 +14,7 @@ const LINKS = [
   { href: '/contact',      label: 'Contact'      },
   { href: '/academy',      label: 'Our Programmes' },
   { href: '/build-with-us', label: 'Build With Us'  },
+  { href: '/consulting',    label: 'Consulting'     },
 ];
 
 export default function Navbar() {

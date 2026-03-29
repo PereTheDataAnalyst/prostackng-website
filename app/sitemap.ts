@@ -25,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/academy/verify`,    lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5  },
     { url: `${BASE}/managed-services`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9  },
     { url: `${BASE}/build-with-us`,    lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9  },
+    { url: `${BASE}/consulting`,        lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9  },
   ];
 
   const blogRoutes: MetadataRoute.Sitemap = POSTS.map(post => ({
