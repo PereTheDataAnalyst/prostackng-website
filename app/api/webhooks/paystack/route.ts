@@ -23,12 +23,12 @@ const PRODUCTS = [
   {
     name: 'ClubOps',
     urlEnvKey: 'CLUBOPS_WEBHOOK_URL',
-    // e.g. https://clubops.up.railway.app/webhook/paystack
+    // https://clubops-b6zl.onrender.com/billing/webhook
   },
   {
     name: 'LodgeIQ',
     urlEnvKey: 'LODGEIQ_WEBHOOK_URL',
-    // e.g. https://web-production-0fd1b.up.railway.app/webhook/paystack (your current one)
+    // https://web-production-0fd1b.up.railway.app/webhook/paystack
   },
   {
     name: 'AutoReport',
