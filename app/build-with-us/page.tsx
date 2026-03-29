@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import ProjectIntakeForm from '@/components/ProjectIntakeForm';
+import BuildWithUsSection from '@/components/BuildWithUsSection';
 
 export const metadata: Metadata = {
   title: 'Build With Us — Custom SaaS Development | ProStack NG',
@@ -367,14 +367,8 @@ export default function BuildWithUsPage() {
             <div style={{ marginBottom: 48 }}>
               <div className="eyebrow" style={{ marginBottom: 16 }}>Project Brief</div>
               <h2 className="f-display" style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, letterSpacing: '-.03em' }}>Start Your Build</h2>
-              <p className="f-body" style={{ fontSize: 14, color: 'var(--sub)', marginTop: 10, maxWidth: 560, lineHeight: 1.8 }}>
-                Fill in the brief below. We review every submission and respond within 48 hours with a scoping call invitation.
-                All briefs are treated as confidential.
-              </p>
             </div>
-            <div style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: 'clamp(28px,4vw,40px)' }}>
-              <ProjectIntakeForm />
-            </div>
+            <BuildWithUsSection />
           </div>
         </section>
 
