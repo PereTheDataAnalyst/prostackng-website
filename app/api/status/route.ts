@@ -34,16 +34,16 @@ const SERVICES: Service[] = [
     url:   `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/`,
   },
   {
-    id:         'autoreport',
-    name:       'AutoReport',
-    color:      '#FF5757',
-    comingSoon: true,
+    id:    'autoreport',
+    name:  'AutoReport',
+    color: '#FF5757',
+    url:   'https://autoreport.prostackng.com.ng/',
   },
   {
-    id:         'protrackng',
-    name:       'ProTrackNG',
-    color:      '#06B6D4',
-    comingSoon: true,
+    id:    'protrackng',
+    name:  'ProTrackNG',
+    color: '#06B6D4',
+    url:   'https://www.protrackng.com.ng/',
   },
 ];
 
@@ -63,7 +63,7 @@ async function pingService(service: Service) {
   try {
     const res = await fetch(service.url!, {
       method: 'GET',
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(15000), // 15s — Render services need extra time on cold start
       headers: { 'User-Agent': 'ProStack-Status-Monitor/1.0' },
     });
     const ms = Date.now() - start;

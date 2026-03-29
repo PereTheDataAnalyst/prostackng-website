@@ -26,7 +26,7 @@ const PORTALS = [
     color: '#A78BFA',
     icon: '◈',
     desc: 'Access your venue dashboard, reconciliation history, and staff reports.',
-    loginUrl: '#',  // Migrating from Render to Railway — URL updating soon
+    loginUrl: 'https://clubops-b6zl.onrender.com/',
     status: 'live' as const,
   },
   {
@@ -132,7 +132,7 @@ export default function ClientPortalPage() {
               {[
                 { icon: '📄', label: 'AutoReport User Guide',    href: 'https://autoreport.prostackng.com.ng/docs/user-guide', tag: 'Guide'  },
                 { icon: '📄', label: 'ProTrackNG Setup Guide',   href: 'https://www.protrackng.com.ng/docs', tag: 'Guide'  },
-                { icon: '📄', label: 'ClubOps Onboarding',       href: '/docs#clubops', tag: 'Guide' },
+                { icon: '📄', label: 'ClubOps Onboarding',       href: 'https://clubops-b6zl.onrender.com/docs', tag: 'Guide' },
                 { icon: '🎥', label: 'Video Walkthroughs',        href: '/media', tag: 'Media' },
                 { icon: '💰', label: 'Billing & Invoices',        href: 'mailto:contact@prostackng.com.ng?subject=Billing enquiry', tag: 'Email' },
                 { icon: '🔄', label: 'Upgrade or Change Plan',    href: '/pricing', tag: 'Pricing' },
