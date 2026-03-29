@@ -1,10 +1,11 @@
 import Navbar from '@/components/Navbar';
+import ApiWaitlistSection from '@/components/ApiWaitlistSection';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 
 export const metadata = {
   title: 'API Documentation — ProStack NG',
-  description: 'Developer documentation for ProStack NG platform APIs. Integrate AutoReport, ProTrackNG, and NightOps into your workflow.',
+  description: 'Developer documentation and API pricing for ProStack NG. Free tier available. Paid plans from ₦25,000/month. Join the waitlist for early access.',
 };
 
 // ── Code block styles ────────────────────────────────────────────────────────
@@ -119,10 +120,12 @@ export default function DocsPage() {
           <div style={{ background: 'rgba(37,99,235,.06)', border: '1px solid rgba(37,99,235,.18)', padding: '16px 22px', marginBottom: 48, display: 'flex', gap: 14, alignItems: 'flex-start' }}>
             <span style={{ fontSize: 18, flexShrink: 0 }}>ℹ️</span>
             <div>
-              <div style={{ fontSize: 13.5, color: 'var(--text)', fontWeight: 600, marginBottom: 4 }}>API Access is invite-only during beta</div>
+              <div style={{ fontSize: 13.5, color: 'var(--text)', fontWeight: 600, marginBottom: 4 }}>API in beta — public launch Q3 2026</div>
               <p style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7, margin: 0 }}>
-                The ProStack NG API is currently available to existing clients and approved integration partners.
-                Email <a href="mailto:contact@prostackng.com.ng" style={{ color: 'var(--blue-hi)', textDecoration: 'none' }}>contact@prostackng.com.ng</a> to request access. Public API opening Q3 2026.
+                Currently available to existing clients and approved partners. A free tier (100 req/month)
+                and paid plans open to all from Q3 2026.{' '}
+                <a href="#api-pricing" style={{ color: 'var(--blue-hi)', textDecoration: 'none' }}>See pricing ↓</a>{' '}or{' '}
+                <a href="#waitlist" style={{ color: 'var(--blue-hi)', textDecoration: 'none' }}>join the waitlist</a>.
               </p>
             </div>
           </div>
@@ -211,7 +214,7 @@ export default function DocsPage() {
           </section>
 
           {/* ── SDK NOTE ── */}
-          <div style={{ background: 'var(--s1)', border: '1px solid var(--border)', padding: '24px 28px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+          <div style={{ background: 'var(--s1)', border: '1px solid var(--border)', padding: '24px 28px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 64 }}>
             <div>
               <div className="f-display" style={{ fontWeight: 700, fontSize: 16, color: 'var(--text)', marginBottom: 6 }}>
                 SDKs coming Q3 2026
@@ -220,10 +223,108 @@ export default function DocsPage() {
                 Official TypeScript/Node.js and Python SDKs are in development. Early access available to partner integrators.
               </p>
             </div>
-            <a href="mailto:contact@prostackng.com.ng?subject=SDK Early Access" className="btn btn-ghost">
+            <a href="#waitlist" className="btn btn-ghost">
               Join Waitlist →
             </a>
           </div>
+
+          {/* ── API PRICING ── */}
+          <section id="api-pricing" style={{ marginBottom: 64 }}>
+            <div className="eyebrow" style={{ marginBottom: 16 }}>API Pricing</div>
+            <h2 className="f-display" style={{ fontWeight: 800, fontSize: 28, color: 'var(--text)', letterSpacing: '-.03em', marginBottom: 12 }}>
+              Paid Tier Access
+            </h2>
+            <p style={{ fontSize: 14, color: 'var(--sub)', lineHeight: 1.8, marginBottom: 32 }}>
+              A generous free tier for developers and small teams. Paid tiers for production workloads.
+              All plans include full API documentation, webhook support, and email assistance.
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 2, background: 'var(--border)', border: '1px solid var(--border)', marginBottom: 32 }}>
+              {[
+                {
+                  tier: 'Free',
+                  price: '₦0',
+                  period: 'forever',
+                  requests: '100 req / month',
+                  highlight: false,
+                  features: ['All API endpoints', 'Standard rate limit', 'Community support', 'Webhook events'],
+                },
+                {
+                  tier: 'Starter',
+                  price: '₦25,000',
+                  period: '/month',
+                  requests: '10,000 req / month',
+                  highlight: false,
+                  features: ['All API endpoints', 'Higher rate limits', 'Email support (48hr)', 'Webhook events', 'Usage dashboard'],
+                },
+                {
+                  tier: 'Growth',
+                  price: '₦75,000',
+                  period: '/month',
+                  requests: '100,000 req / month',
+                  highlight: true,
+                  features: ['All API endpoints', 'Priority rate limits', 'Email support (24hr)', 'Webhook events', 'Usage dashboard', 'Dedicated Slack channel'],
+                },
+                {
+                  tier: 'Enterprise',
+                  price: 'Custom',
+                  period: 'pricing',
+                  requests: 'Unlimited',
+                  highlight: false,
+                  features: ['All API endpoints', 'Custom rate limits', 'SLA-backed support', 'Custom webhooks', 'Dedicated account manager', 'On-premise option'],
+                },
+              ].map(plan => (
+                <div key={plan.tier} style={{
+                  background: plan.highlight ? 'rgba(37,99,235,.07)' : 'var(--card)',
+                  padding: '28px 22px',
+                  display: 'flex', flexDirection: 'column',
+                  position: 'relative',
+                }}>
+                  {plan.highlight && (
+                    <div className="f-mono" style={{
+                      position: 'absolute', top: -1, left: 0, right: 0, height: 2,
+                      background: 'var(--blue)',
+                    }} />
+                  )}
+                  <div className="f-display" style={{ fontSize: 16, fontWeight: 800, marginBottom: 8 }}>{plan.tier}</div>
+                  <div style={{ marginBottom: 4 }}>
+                    <span className="f-display" style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-.03em', color: plan.highlight ? 'var(--blue-hi)' : 'var(--text)' }}>
+                      {plan.price}
+                    </span>
+                    <span className="f-mono" style={{ fontSize: 10, color: 'var(--muted)', letterSpacing: '.08em', marginLeft: 4 }}>{plan.period}</span>
+                  </div>
+                  <div className="f-mono" style={{ fontSize: 10, color: 'var(--blue-hi)', letterSpacing: '.08em', marginBottom: 20, textTransform: 'uppercase' }}>
+                    {plan.requests}
+                  </div>
+                  <ul style={{ listStyle: 'none', flex: 1 }}>
+                    {plan.features.map(f => (
+                      <li key={f} className="f-body" style={{ fontSize: 12, color: 'var(--sub)', paddingLeft: 16, position: 'relative', marginBottom: 7, lineHeight: 1.5 }}>
+                        <span style={{ position: 'absolute', left: 0, top: 4, color: 'var(--blue)', fontSize: 6 }}>◆</span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <p className="f-mono" style={{ fontSize: 10, color: 'var(--muted)', letterSpacing: '.08em', textAlign: 'center' }}>
+              All plans billed monthly in Nigerian Naira · Overage charged at ₦3/request (Starter) or ₦1/request (Growth) · Enterprise flat rate
+            </p>
+          </section>
+
+          {/* ── WAITLIST ── */}
+          <section id="waitlist" style={{ marginBottom: 48 }}>
+            <div className="eyebrow" style={{ marginBottom: 16 }}>API Waitlist</div>
+            <h2 className="f-display" style={{ fontWeight: 800, fontSize: 28, color: 'var(--text)', letterSpacing: '-.03em', marginBottom: 12 }}>
+              Get Early Access
+            </h2>
+            <p style={{ fontSize: 14, color: 'var(--sub)', lineHeight: 1.8, marginBottom: 28 }}>
+              Register your interest now. We open tier access in order of registration — Enterprise
+              and Growth applicants are onboarded first.
+            </p>
+            <ApiWaitlistSection />
+          </section>
 
         </div>
       </main>
