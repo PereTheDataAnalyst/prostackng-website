@@ -15,34 +15,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
+import { PROSTACK_SERVICES } from '@/lib/prostack-services';
+import type { ServiceKey } from '@/lib/prostack-services';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
-
-// ── Registered ProStack services ─────────────────────────────
-export const PROSTACK_SERVICES = {
-  // Managed Services
-  'managed-starter':    { label: 'Managed Service — Starter',    minAmount: 5000000   }, // ₦50,000 in kobo
-  'managed-growth':     { label: 'Managed Service — Growth',     minAmount: 12000000  }, // ₦120,000 in kobo
-  'managed-enterprise': { label: 'Managed Service — Enterprise', minAmount: 20000000  }, // ₦200,000+ in kobo
-
-  // Consulting
-  'consulting-audit':     { label: 'Digital Transformation Audit',          minAmount: 50000000  }, // ₦500,000
-  'consulting-roadmap':   { label: 'Audit + Transformation Roadmap',        minAmount: 120000000 }, // ₦1,200,000
-  'consulting-full':      { label: 'Full Digital Transformation',           minAmount: 300000000 }, // ₦3,000,000+
-
-  // White Label
-  'white-label-setup':    { label: 'White-Label Setup Fee',                 minAmount: 10000000  }, // ₦100,000
-  'white-label-monthly':  { label: 'White-Label Monthly Licence',           minAmount: 5000000   }, // ₦50,000
-
-  // Custom / General
-  'deposit':              { label: 'ProStack NG Deposit',                   minAmount: 1000000   }, // ₦10,000 min
-  'invoice':              { label: 'ProStack NG Invoice Payment',           minAmount: 1000000   },
-} as const;
-
-type ServiceKey = keyof typeof PROSTACK_SERVICES;
 
 function generateReference(): string {
   const timestamp = Date.now().toString(36).toUpperCase();
