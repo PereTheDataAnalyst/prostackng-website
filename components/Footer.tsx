@@ -30,6 +30,7 @@ const COLS = [
       { label: 'Managed Services',    href: '/managed-services', ready: true  },
       { label: 'Build With Us',        href: '/build-with-us',    ready: true  },
       { label: 'Consulting',            href: '/consulting',       ready: true  },
+      { label: 'White Label',          href: '/white-label',      ready: true  },
     ],
   },
   {
