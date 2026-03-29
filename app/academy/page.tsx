@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import ScholarshipForm from '@/components/ScholarshipForm';
+import ScholarshipSection from '@/components/ScholarshipSection';
 import OpenChatButton from '@/components/OpenChatButton';
 
 export const metadata: Metadata = {
@@ -99,6 +99,22 @@ const COURSES = [
     ],
     badge: 'New', badgeClass: 'badge-roadmap',
   },
+  {
+    id: 'web3-nigeria', icon: '⛓',
+    title: 'Building on Ethereum & Solana for Nigerian Developers',
+    tagline: 'Real Web3 — not the hype, the infrastructure',
+    description: 'A practical course teaching Nigerian developers how to build on blockchain infrastructure — smart contracts, DeFi integrations, NFT minting, and Web3 business models that actually work in the African context.',
+    level: 'Intermediate', levelColor: '#7C3AED',
+    duration: '6 weeks', lessons: 38, price: 15000,
+    selarUrl: 'https://selar.co/prostackng-web3',
+    highlights: [
+      'Solidity smart contract development', 'Solana program basics (Rust overview)',
+      'DeFi protocols explained practically', 'Web3.js and ethers.js integration',
+      'Nigerian tokenisation use cases (tender bonds, asset-backed tokens)',
+      'Smart contract auditing fundamentals',
+    ],
+    badge: 'Coming Soon', badgeClass: 'badge-roadmap',
+  },
 ];
 
 const BUNDLES = [
@@ -119,8 +135,8 @@ const BUNDLES = [
   },
   {
     name: "Complete Founder's Pack",
-    includes: ['All 5 courses included'],
-    price: 45000, originalPrice: 55000, selarUrl: 'https://selar.co/prostackng-bundle-all',
+    includes: ['All 5 courses + Web3 (when live)'],
+    price: 45000, originalPrice: 60000, selarUrl: 'https://selar.co/prostackng-bundle-all',
   },
 ];
 
@@ -196,15 +212,11 @@ export default function AcademyPage() {
           position: 'relative', overflow: 'hidden',
           paddingTop: 'clamp(96px,12vw,140px)', paddingBottom: 'clamp(64px,8vw,96px)',
         }}>
-          <div style={{
-            position: 'absolute', inset: 0, pointerEvents: 'none',
-            background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(37,99,235,.18) 0%, transparent 65%)',
-          }} />
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(37,99,235,.18) 0%, transparent 65%)' }} />
           <div style={{ maxWidth: 880, margin: '0 auto', padding: '0 clamp(16px,4vw,56px)', textAlign: 'center', position: 'relative' }}>
             <div className="eyebrow" style={{ marginBottom: 24, justifyContent: 'center' }}>ProStack NG Academy</div>
             <h1 className="f-display" style={{ fontSize: 'clamp(36px,6vw,72px)', fontWeight: 800, letterSpacing: '-.04em', lineHeight: 1.0, marginBottom: 24 }}>
-              Practical Tech Education<br />
-              <span style={{ color: 'var(--blue-hi)' }}>Built for Nigeria.</span>
+              Practical Tech Education<br /><span style={{ color: 'var(--blue-hi)' }}>Built for Nigeria.</span>
             </h1>
             <p className="f-body" style={{ fontSize: 'clamp(15px,2vw,18px)', color: 'var(--sub)', maxWidth: 600, margin: '0 auto 40px', lineHeight: 1.75 }}>
               No fluff. No theory for theory&apos;s sake. Every course is taught by the team that built
@@ -216,9 +228,9 @@ export default function AcademyPage() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', gap: 48, marginTop: 56, flexWrap: 'wrap' }}>
               {[
-                { label: 'Live Courses', value: '5' },
-                { label: 'Naira Pricing', value: '₦ Only' },
-                { label: 'Scholarships Available', value: '✓' },
+                { label: 'Live Courses',              value: '5'          },
+                { label: 'Naira Pricing',             value: '₦ Only'    },
+                { label: 'Scholarships Available',    value: '✓'          },
                 { label: 'Certificate on Completion', value: '✓ Verified' },
               ].map(s => (
                 <div key={s.label} style={{ textAlign: 'center' }}>
@@ -235,25 +247,16 @@ export default function AcademyPage() {
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
             <div style={{ marginBottom: 56 }}>
               <div className="eyebrow" style={{ marginBottom: 16 }}>Our Programmes</div>
-              <h2 className="f-display" style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, letterSpacing: '-.03em' }}>
-                What You&apos;ll Learn
-              </h2>
+              <h2 className="f-display" style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, letterSpacing: '-.03em' }}>What You&apos;ll Learn</h2>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(480px, 1fr))', gap: 20 }}>
               {COURSES.map(course => (
-                <div key={course.id} className="card-hover-blue" style={{
-                  background: 'var(--card)', border: '1px solid var(--border)',
-                  padding: '28px 28px 24px', position: 'relative',
-                }}>
+                <div key={course.id} className="card-hover-blue" style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: '28px 28px 24px', position: 'relative' }}>
                   {course.badge && (
-                    <span className={`badge ${course.badgeClass}`} style={{ position: 'absolute', top: 20, right: 20 }}>
-                      {course.badge}
-                    </span>
+                    <span className={`badge ${course.badgeClass}`} style={{ position: 'absolute', top: 20, right: 20 }}>{course.badge}</span>
                   )}
                   <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', marginBottom: 16 }}>
-                    <div style={{ width: 44, height: 44, background: 'var(--blue-lo)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>
-                      {course.icon}
-                    </div>
+                    <div style={{ width: 44, height: 44, background: 'var(--blue-lo)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{course.icon}</div>
                     <div>
                       <h3 className="f-display" style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-.02em', marginBottom: 4, lineHeight: 1.2 }}>{course.title}</h3>
                       <p style={{ fontSize: 13, color: 'var(--blue-hi)', fontWeight: 500 }}>{course.tagline}</p>
@@ -268,15 +271,14 @@ export default function AcademyPage() {
                   <ul style={{ listStyle: 'none', marginBottom: 24 }}>
                     {course.highlights.map(h => (
                       <li key={h} className="f-body" style={{ fontSize: 13, color: 'var(--sub)', paddingLeft: 16, position: 'relative', marginBottom: 8, lineHeight: 1.5 }}>
-                        <span style={{ position: 'absolute', left: 0, top: 5, color: 'var(--blue)', fontSize: 7 }}>◆</span>
-                        {h}
+                        <span style={{ position: 'absolute', left: 0, top: 5, color: 'var(--blue)', fontSize: 7 }}>◆</span>{h}
                       </li>
                     ))}
                   </ul>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: 20 }}>
                     <span className="f-display" style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-.03em' }}>₦{course.price.toLocaleString()}</span>
                     <a href={course.selarUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ fontSize: 11, padding: '11px 24px' }}>
-                      Enrol on Selar ↗
+                      {course.badge === 'Coming Soon' ? 'Join Waitlist ↗' : 'Enrol on Selar ↗'}
                     </a>
                   </div>
                 </div>
@@ -330,9 +332,7 @@ export default function AcademyPage() {
                   padding: '32px 28px', display: 'flex', flexDirection: 'column', position: 'relative',
                 }}>
                   {tier.highlight && (
-                    <div className="f-mono" style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: 'var(--blue)', color: '#fff', fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', padding: '4px 14px', whiteSpace: 'nowrap' }}>
-                      Most Popular
-                    </div>
+                    <div className="f-mono" style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: 'var(--blue)', color: '#fff', fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', padding: '4px 14px', whiteSpace: 'nowrap' }}>Most Popular</div>
                   )}
                   <h3 className="f-display" style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>{tier.tier}</h3>
                   <p className="f-display" style={{ fontSize: 26, fontWeight: 800, color: 'var(--blue-hi)', letterSpacing: '-.03em', marginBottom: 12 }}>{tier.price}</p>
@@ -360,39 +360,16 @@ export default function AcademyPage() {
         {/* ─── SCHOLARSHIPS ────────────────────────────────────────── */}
         <section id="scholarships" style={{ background: 'var(--s1)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: 'clamp(64px,8vw,96px) clamp(16px,4vw,56px)' }}>
           <div style={{ maxWidth: 860, margin: '0 auto' }}>
-
             <div style={{ marginBottom: 48 }}>
               <div className="eyebrow" style={{ marginBottom: 16 }}>Scholarships</div>
-              <h2 className="f-display" style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, letterSpacing: '-.03em' }}>
-                Apply for a Scholarship
-              </h2>
+              <h2 className="f-display" style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, letterSpacing: '-.03em' }}>Apply for a Scholarship</h2>
               <p className="f-body" style={{ fontSize: 14, color: 'var(--sub)', marginTop: 10, maxWidth: 600, lineHeight: 1.8 }}>
                 We believe cost should never stop a talented Nigerian from accessing quality tech education.
-                Fill in the form below — we review all applications 4 weeks before each cohort and
-                respond to every applicant directly.
+                Click below to start your application — we review every submission and respond to all applicants.
               </p>
             </div>
-
-            {/* Info strip */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px,1fr))', gap: 12, marginBottom: 40 }}>
-              {[
-                { label: 'Application', value: 'Free' },
-                { label: 'Aid Available', value: 'Up to 100%' },
-                { label: 'Response Time', value: 'Before each cohort' },
-                { label: 'Open To', value: 'All Nigerians' },
-              ].map(s => (
-                <div key={s.label} style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: '16px 20px' }}>
-                  <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 6 }}>{s.label}</div>
-                  <div className="f-display" style={{ fontSize: 16, fontWeight: 700, color: 'var(--blue-hi)' }}>{s.value}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* The form — client component */}
-            <div style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: 'clamp(28px,4vw,40px)' }}>
-              <ScholarshipForm />
-            </div>
-
+            {/* Client component — handles button toggle + form */}
+            <ScholarshipSection />
           </div>
         </section>
 
@@ -401,24 +378,19 @@ export default function AcademyPage() {
           <div style={{ maxWidth: 1100, margin: '0 auto' }}>
             <div style={{ marginBottom: 56 }}>
               <div className="eyebrow" style={{ marginBottom: 16 }}>Partnerships</div>
-              <h2 className="f-display" style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, letterSpacing: '-.03em' }}>
-                University & Corporate Partnerships
-              </h2>
+              <h2 className="f-display" style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, letterSpacing: '-.03em' }}>University & Corporate Partnerships</h2>
               <p className="f-body" style={{ fontSize: 14, color: 'var(--sub)', marginTop: 10, maxWidth: 600, lineHeight: 1.8 }}>
                 ProStack NG Academy partners with institutions and companies to deliver specialised
-                tech training at scale — fully customised to your context. Click Enquire to chat with us directly.
+                tech training at scale — fully customised to your context. Click Enquire to chat with our team directly.
               </p>
             </div>
-
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(460px, 1fr))', gap: 20 }}>
               {PARTNERS.map(partner => (
                 <div key={partner.type} style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: '36px' }}>
                   <div style={{ fontSize: 32, marginBottom: 16 }}>{partner.icon}</div>
                   <h3 className="f-display" style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-.02em', marginBottom: 12 }}>{partner.type}</h3>
                   <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.8, marginBottom: 24 }}>{partner.description}</p>
-                  <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 14 }}>
-                    What&apos;s Included
-                  </div>
+                  <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 14 }}>What&apos;s Included</div>
                   <ul style={{ listStyle: 'none', marginBottom: 28 }}>
                     {partner.benefits.map(b => (
                       <li key={b} className="f-body" style={{ fontSize: 13, color: 'var(--sub)', paddingLeft: 18, position: 'relative', marginBottom: 10, lineHeight: 1.5 }}>
@@ -426,11 +398,7 @@ export default function AcademyPage() {
                       </li>
                     ))}
                   </ul>
-                  {/* ✅ OpenChatButton — opens the live chat widget in-app */}
-                  <OpenChatButton
-                    className="btn btn-primary"
-                    style={{ fontSize: 11, cursor: 'pointer', border: 'none' }}
-                  >
+                  <OpenChatButton className="btn btn-primary" style={{ fontSize: 11, cursor: 'pointer', border: 'none' }}>
                     Enquire via Live Chat →
                   </OpenChatButton>
                 </div>
@@ -444,9 +412,7 @@ export default function AcademyPage() {
           <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: 56, alignItems: 'center' }}>
             <div>
               <div className="eyebrow" style={{ marginBottom: 20 }}>Certificates</div>
-              <h2 className="f-display" style={{ fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 800, letterSpacing: '-.03em', marginBottom: 16 }}>
-                ProStack NG Academy Certificates
-              </h2>
+              <h2 className="f-display" style={{ fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 800, letterSpacing: '-.03em', marginBottom: 16 }}>ProStack NG Academy Certificates</h2>
               <p className="f-body" style={{ fontSize: 14, color: 'var(--sub)', lineHeight: 1.8, marginBottom: 24 }}>
                 Every course completion earns you a verifiable ProStack NG Academy certificate.
                 Share it on LinkedIn, include it in tender proposals, or present it during RFP submissions.
@@ -469,8 +435,6 @@ export default function AcademyPage() {
                 Verify a Certificate →
               </Link>
             </div>
-
-            {/* Certificate mock-up */}
             <div style={{ background: 'var(--card)', border: '1px solid var(--blue-dim)', padding: '36px', position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', top: -40, right: -40, width: 180, height: 180, borderRadius: '50%', background: 'var(--blue-lo)', filter: 'blur(40px)' }} />
               <div style={{ position: 'relative', textAlign: 'center' }}>
@@ -478,9 +442,7 @@ export default function AcademyPage() {
                 <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', marginBottom: 28, letterSpacing: '.1em' }}>Certificate of Completion</div>
                 <div className="f-display" style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-.02em', marginBottom: 8 }}>John Doe</div>
                 <div className="f-body" style={{ fontSize: 13, color: 'var(--sub)', marginBottom: 20 }}>has successfully completed</div>
-                <div className="f-display" style={{ fontSize: 16, fontWeight: 700, color: 'var(--blue-hi)', marginBottom: 28, lineHeight: 1.3 }}>
-                  Building SaaS with Next.js + Supabase
-                </div>
+                <div className="f-display" style={{ fontSize: 16, fontWeight: 700, color: 'var(--blue-hi)', marginBottom: 28, lineHeight: 1.3 }}>Building SaaS with Next.js + Supabase</div>
                 <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                   <div style={{ textAlign: 'left' }}>
                     <div className="f-display" style={{ fontSize: 12, fontWeight: 700, marginBottom: 2 }}>Mr Fubara</div>

@@ -366,7 +366,7 @@ export default function ManagedServicesPage() {
                   <Link href="/demo?service=managed" className="btn btn-primary" style={{ fontSize: 12 }}>
                     Book Free Consultation →
                   </Link>
-                  <a href="mailto:hello@prostackng.com.ng?subject=Managed%20Service%20Enquiry" className="btn-outline-border">
+                  <a href="/contact?service=managed-services" className="btn-outline-border">
                     Send an Enquiry
                   </a>
                 </div>

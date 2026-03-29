@@ -10,7 +10,7 @@ const PORTALS = [
     color: '#FF5757',
     icon: '▦',
     desc: 'View your report history, update data sources, manage delivery schedules.',
-    loginUrl: '#',   // Replace with actual URL when live
+    loginUrl: 'https://autoreport.prostackng.com.ng/',
     status: 'live' as const,
   },
   {
@@ -18,7 +18,7 @@ const PORTALS = [
     color: '#06B6D4',
     icon: '◎',
     desc: 'Manage your keyword alerts, view tender history, update your company profile.',
-    loginUrl: '#',
+    loginUrl: 'https://www.protrackng.com.ng/',
     status: 'live' as const,
   },
   {
@@ -26,7 +26,7 @@ const PORTALS = [
     color: '#A78BFA',
     icon: '◈',
     desc: 'Access your venue dashboard, reconciliation history, and staff reports.',
-    loginUrl: '#',
+    loginUrl: '#',  // Migrating from Render to Railway — URL updating soon
     status: 'live' as const,
   },
   {
@@ -130,9 +130,9 @@ export default function ClientPortalPage() {
             <div className="eyebrow" style={{ marginBottom: 20 }}>Quick Resources</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
               {[
-                { icon: '📄', label: 'AutoReport User Guide',    href: '#', tag: 'PDF'   },
-                { icon: '📄', label: 'ProTrackNG Setup Guide',   href: '#', tag: 'PDF'   },
-                { icon: '📄', label: 'NightOps Onboarding',      href: '#', tag: 'PDF'   },
+                { icon: '📄', label: 'AutoReport User Guide',    href: 'https://autoreport.prostackng.com.ng/docs/user-guide', tag: 'Guide'  },
+                { icon: '📄', label: 'ProTrackNG Setup Guide',   href: 'https://www.protrackng.com.ng/docs', tag: 'Guide'  },
+                { icon: '📄', label: 'ClubOps Onboarding',       href: '/docs#clubops', tag: 'Guide' },
                 { icon: '🎥', label: 'Video Walkthroughs',        href: '/media', tag: 'Media' },
                 { icon: '💰', label: 'Billing & Invoices',        href: 'mailto:contact@prostackng.com.ng?subject=Billing enquiry', tag: 'Email' },
                 { icon: '🔄', label: 'Upgrade or Change Plan',    href: '/pricing', tag: 'Pricing' },
