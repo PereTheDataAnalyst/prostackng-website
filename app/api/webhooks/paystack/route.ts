@@ -35,6 +35,11 @@ const PRODUCTS = [
     urlEnvKey: 'AUTOREPORT_WEBHOOK_URL',
     // https://autoreport.prostackng.com.ng/api/webhooks/paystack
   },
+  {
+    name: 'ProTrackNG',
+    urlEnvKey: 'PROTRACKNG_WEBHOOK_URL',
+    // https://protrackng-production.up.railway.app/api/v1/payments/webhook
+  },
   // Future products — add here when ready:
   // { name: 'ProStack Academy', urlEnvKey: 'PROSTACKNG_PAYMENT_HANDLER_URL' },
   // { name: 'NewProduct', urlEnvKey: 'NEWPRODUCT_WEBHOOK_URL' },

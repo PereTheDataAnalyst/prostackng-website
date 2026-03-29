@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
           </div>
         </div>
       `,
-      replyTo: email,
+      reply_to: email,
     });
 
     // ── 3. Confirm to client ────────────────────────────────────────
