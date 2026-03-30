@@ -106,7 +106,7 @@ export default function DocsPage() {
               Integrate ProStack NG platforms into your existing workflow. Automate report delivery, query tender data, and push events via webhooks.
             </p>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <a href="mailto:contact@prostackng.com.ng?subject=API Access Request" className="btn btn-primary">
+              <a href="#waitlist" className="btn btn-primary">
                 Request API Access →
               </a>
               <a href="/demo" className="btn btn-ghost">Book a Technical Demo</a>

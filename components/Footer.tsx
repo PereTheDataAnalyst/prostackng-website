@@ -38,6 +38,7 @@ const COLS = [
     links: [
       { label: 'contact@prostackng.com.ng', href: 'mailto:contact@prostackng.com.ng', ready: true },
       { label: 'WhatsApp: +234 705 944 9360', href: 'https://wa.me/2347059449360',    ready: true },
+      { label: 'Make a Payment',              href: '/payment',                        ready: true  },
       { label: 'Book a Free Demo',            href: '/demo',                           ready: true },
       { label: 'Pricing',                     href: '/pricing',                        ready: true },
       { label: 'Client Portal',               href: '/portal',                         ready: true },

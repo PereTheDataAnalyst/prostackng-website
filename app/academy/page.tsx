@@ -249,7 +249,7 @@ export default function AcademyPage() {
               <div className="eyebrow" style={{ marginBottom: 16 }}>Our Programmes</div>
               <h2 className="f-display" style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, letterSpacing: '-.03em' }}>What You&apos;ll Learn</h2>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(480px, 1fr))', gap: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(480px, 100%), 1fr))', gap: 20 }}>
               {COURSES.map(course => (
                 <div key={course.id} className="card-hover-blue" style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: '28px 28px 24px', position: 'relative' }}>
                   {course.badge && (
@@ -384,7 +384,7 @@ export default function AcademyPage() {
                 tech training at scale — fully customised to your context. Click Enquire to chat with our team directly.
               </p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(460px, 1fr))', gap: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(460px, 100%), 1fr))', gap: 20 }}>
               {PARTNERS.map(partner => (
                 <div key={partner.type} style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: '36px' }}>
                   <div style={{ fontSize: 32, marginBottom: 16 }}>{partner.icon}</div>
@@ -409,7 +409,7 @@ export default function AcademyPage() {
 
         {/* ─── CERTIFICATES ────────────────────────────────────────── */}
         <section style={{ background: 'var(--s1)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: 'clamp(64px,8vw,96px) clamp(16px,4vw,56px)' }}>
-          <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: 56, alignItems: 'center' }}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(440px, 100%), 1fr))', gap: 56, alignItems: 'center' }}>
             <div>
               <div className="eyebrow" style={{ marginBottom: 20 }}>Certificates</div>
               <h2 className="f-display" style={{ fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 800, letterSpacing: '-.03em', marginBottom: 16 }}>ProStack NG Academy Certificates</h2>

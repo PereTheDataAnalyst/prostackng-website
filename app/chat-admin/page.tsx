@@ -26,8 +26,8 @@ type Message = {
   created_at: string;
 };
 
-// Simple PIN auth — change this to something private
-const ADMIN_PIN = '1993';
+// PIN loaded from environment — set ADMIN_PIN in Vercel env vars
+const ADMIN_PIN = process.env.NEXT_PUBLIC_ADMIN_PIN ?? '0000';
 
 export default function ChatAdmin() {
   const [authed, setAuthed]         = useState(false);

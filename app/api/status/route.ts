@@ -1,25 +1,22 @@
 // app/api/status/route.ts
 // Server-side health checks for all ProStack NG platforms.
 // Called by the /status page every 60 seconds.
-// Returns response times + up/down status for each service.
-//
-// ⚠️  UPDATE THE URLS BELOW to match your actual platform domains.
 
 import { NextResponse } from 'next/server';
 
-// Services with a url are actively pinged.
-// Services with comingSoon: true are skipped and shown as "Scheduled" instead.
 type Service = {
   id: string; name: string; color: string;
   url?: string; comingSoon?: boolean;
+  slowStart?: boolean; // Render free tier — retries once on timeout
 };
 
 const SERVICES: Service[] = [
   {
-    id:    'clubops',
-    name:  'ClubOps (NightOps)',
-    color: '#A78BFA',
-    url:   'https://clubops-b6zl.onrender.com/',
+    id:         'clubops',
+    name:       'ClubOps (NightOps)',
+    color:      '#A78BFA',
+    url:        'https://clubops-b6zl.onrender.com/',
+    slowStart:  true, // Render free tier spins down — retry once before marking degraded
   },
   {
     id:    'website',
@@ -47,41 +44,73 @@ const SERVICES: Service[] = [
   },
 ];
 
+// Single ping attempt
+async function attemptPing(url: string, timeoutMs: number) {
+  const start = Date.now();
+  const res = await fetch(url, {
+    method: 'GET',
+    signal: AbortSignal.timeout(timeoutMs),
+    headers: { 'User-Agent': 'ProStack-Status-Monitor/1.0' },
+  });
+  return { ok: res.ok || res.status < 500, ms: Date.now() - start, httpStatus: res.status };
+}
+
 async function pingService(service: Service) {
-  // Coming soon — skip ping, return scheduled status
   if (service.comingSoon) {
     return {
-      ...service,
-      status: 'scheduled',
-      latencyMs: 0,
-      httpStatus: 0,
+      ...service, status: 'scheduled',
+      latencyMs: 0, httpStatus: 0,
       checkedAt: new Date().toISOString(),
     };
   }
 
   const start = Date.now();
+
   try {
-    const res = await fetch(service.url!, {
-      method: 'GET',
-      signal: AbortSignal.timeout(15000), // 15s — Render services need extra time on cold start
-      headers: { 'User-Agent': 'ProStack-Status-Monitor/1.0' },
-    });
-    const ms = Date.now() - start;
+    // First attempt — 15s timeout
+    const result = await attemptPing(service.url!, 15000);
     return {
       ...service,
-      status: res.ok || res.status < 500 ? 'operational' : 'degraded',
-      latencyMs: ms,
-      httpStatus: res.status,
+      status: result.ok ? 'operational' : 'degraded',
+      latencyMs: result.ms,
+      httpStatus: result.httpStatus,
       checkedAt: new Date().toISOString(),
     };
-  } catch (err: any) {
+  } catch (firstErr: any) {
+    const isTimeout = firstErr?.name === 'TimeoutError' || firstErr?.name === 'AbortError';
+
+    // slowStart services (Render free tier) get one retry with a longer 30s window
+    if (isTimeout && service.slowStart) {
+      try {
+        const retry = await attemptPing(service.url!, 30000);
+        return {
+          ...service,
+          status: retry.ok ? 'operational' : 'degraded',
+          latencyMs: Date.now() - start,
+          httpStatus: retry.httpStatus,
+          checkedAt: new Date().toISOString(),
+          note: 'Recovered after cold start',
+        };
+      } catch {
+        // Retry also failed — genuinely degraded, not just sleeping
+        return {
+          ...service,
+          status: 'degraded',
+          latencyMs: Date.now() - start,
+          httpStatus: 0,
+          checkedAt: new Date().toISOString(),
+          error: 'Cold start timeout — service spinning up',
+        };
+      }
+    }
+
     return {
       ...service,
-      status: err?.name === 'TimeoutError' ? 'degraded' : 'down',
+      status: isTimeout ? 'degraded' : 'down',
       latencyMs: Date.now() - start,
       httpStatus: 0,
       checkedAt: new Date().toISOString(),
-      error: err?.message ?? 'Unknown error',
+      error: firstErr?.message ?? 'Unknown error',
     };
   }
 }
@@ -89,7 +118,6 @@ async function pingService(service: Service) {
 export async function GET() {
   const results = await Promise.all(SERVICES.map(pingService));
 
-  // Only count active (non-scheduled) services for overall status
   const active = results.filter(r => r.status !== 'scheduled');
   const overall = active.every(r => r.status === 'operational')
     ? 'operational'
@@ -101,7 +129,6 @@ export async function GET() {
     { overall, services: results, generatedAt: new Date().toISOString() },
     {
       headers: {
-        // Cache for 60s at CDN edge so we don't hammer platforms
         'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=30',
         'Access-Control-Allow-Origin': '*',
       },
