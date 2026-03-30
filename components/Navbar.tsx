@@ -158,7 +158,7 @@ export default function Navbar() {
 
   useEffect(() => { setMobileOpen(false); setOpenSection(null); }, [pathname]);
 
-  if (pathname?.startsWith('/boardroom')) return null;
+  if (pathname?.startsWith('/boardroom') || pathname?.startsWith('/virtual-office')) return null;
 
   const isProductsActive = ['/products', '/pricing'].some(p => pathname?.startsWith(p));
   const isServicesActive = [
