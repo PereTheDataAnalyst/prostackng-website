@@ -28,10 +28,19 @@ const SERVICES = [
     ],
   },
   {
+    group: 'API Access',
+    items: [
+      { key: 'api-starter',    label: 'API — Starter Plan',    amount: 25000, period: '/month' },
+      { key: 'api-growth',     label: 'API — Growth Plan',     amount: 75000, period: '/month' },
+      { key: 'api-enterprise', label: 'API — Enterprise Plan', amount: 0,     period: 'custom' },
+    ],
+  },
+  {
     group: 'General',
     items: [
-      { key: 'deposit', label: 'Project / Service Deposit', amount: 0,  period: 'custom' },
-      { key: 'invoice', label: 'Invoice Payment',           amount: 0,  period: 'custom' },
+      { key: 'deposit', label: 'Project / Service Deposit', amount: 0, period: 'custom' },
+      { key: 'invoice', label: 'Invoice Payment',           amount: 0, period: 'custom' },
+      { key: 'other',   label: 'Other — describe below',    amount: 0, period: 'custom' },
     ],
   },
 ];
@@ -44,11 +53,13 @@ export default function PaymentPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [reference, setReference] = useState('');
+  const [otherDescription, setOtherDescription] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
   const selected = ALL_ITEMS.find(i => i.key === selectedKey);
   const isCustom = selected?.period === 'custom';
+  const isOther = selected?.key === 'other';
   const displayAmount = isCustom
     ? Number(customAmount.replace(/,/g, '')) || 0
     : selected?.amount ?? 0;
@@ -58,6 +69,7 @@ export default function PaymentPage() {
     if (!name.trim())  { setErrorMsg('Please enter your name.'); return; }
     if (!email.trim() || !email.includes('@')) { setErrorMsg('Please enter a valid email.'); return; }
     if (isCustom && !customAmount) { setErrorMsg('Please enter the amount.'); return; }
+    if (isOther && !otherDescription.trim()) { setErrorMsg('Please describe what you are paying for.'); return; }
 
     setErrorMsg('');
     setStatus('loading');
@@ -71,7 +83,7 @@ export default function PaymentPage() {
           amount:  displayAmount * 100, // convert to kobo
           email,
           name,
-          metadata: { reference_note: reference },
+          metadata: { reference_note: reference, other_description: otherDescription },
         }),
       });
 
@@ -205,6 +217,23 @@ export default function PaymentPage() {
                 </div>
               </div>
 
+              {/* Other — describe what you're paying for */}
+              {isOther && (
+                <div>
+                  <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 8 }}>
+                    What are you paying for? *
+                  </label>
+                  <textarea
+                    value={otherDescription}
+                    onChange={e => setOtherDescription(e.target.value)}
+                    rows={3}
+                    placeholder="Describe the service or product you are paying for..."
+                    className="ps-input"
+                    style={{ width: '100%', padding: '12px 14px', resize: 'vertical', lineHeight: 1.7, fontFamily: 'Plus Jakarta Sans, sans-serif', fontSize: 13 }}
+                  />
+                </div>
+              )}
+
               {/* Optional reference */}
               <div>
                 <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 8 }}>
@@ -226,6 +255,15 @@ export default function PaymentPage() {
                   </div>
                 </div>
               )}
+
+              {/* Support instruction */}
+              <div style={{ background: 'rgba(37,99,235,.05)', border: '1px solid rgba(37,99,235,.15)', padding: '16px 20px', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                <span style={{ fontSize: 16, flexShrink: 0 }}>ℹ️</span>
+                <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.75, margin: 0 }}>
+                  After payment, send your receipt and the service you paid for to us via WhatsApp or email.
+                  Our support team will verify and respond within <strong style={{ color: 'var(--text)' }}>24 hours</strong> to onboard you to your service.
+                </p>
+              </div>
 
               {/* Error */}
               {errorMsg && (

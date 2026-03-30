@@ -17,9 +17,15 @@ export const PROSTACK_SERVICES = {
   'white-label-setup':    { label: 'White-Label Setup Fee',               minAmount: 10000000  },
   'white-label-monthly':  { label: 'White-Label Monthly Licence',         minAmount: 5000000   },
 
+  // API Access
+  'api-starter':    { label: 'API — Starter Plan',    minAmount: 2500000   }, // ₦25,000
+  'api-growth':     { label: 'API — Growth Plan',     minAmount: 7500000   }, // ₦75,000
+  'api-enterprise': { label: 'API — Enterprise Plan', minAmount: 10000000  }, // custom
+
   // General
-  'deposit': { label: 'ProStack NG Deposit',                              minAmount: 1000000   },
-  'invoice':  { label: 'ProStack NG Invoice Payment',                     minAmount: 1000000   },
+  'deposit': { label: 'ProStack NG Deposit',          minAmount: 1000000   },
+  'invoice':  { label: 'ProStack NG Invoice Payment', minAmount: 1000000   },
+  'other':    { label: 'Other Service Payment',       minAmount: 1000000   },
 } as const;
 
 export type ServiceKey = keyof typeof PROSTACK_SERVICES;
