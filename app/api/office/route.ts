@@ -23,7 +23,10 @@ const TOKENS: Record<string, { name: string; role: string; color: string }> = {
   'PSN-DEV-001':   { name: 'Dev 01',     role: 'Full-Stack Dev',    color: '#34D399' },
   'PSN-DEV-002':   { name: 'Dev 02',     role: 'Full-Stack Dev',    color: '#60A5FA' },
   'PSN-PM-001':    { name: 'PM 01',      role: 'Product Manager',   color: '#E879F9' },
-  'PSN-GUEST-001': { name: 'Guest',      role: 'Guest',             color: '#636687' },
+  'PSN-SMM-001':   { name: 'SMM 01',     role: 'Social Media Manager', color: '#EC4899' },
+  'PSN-LEGAL-001': { name: 'Legal 01',  role: 'Legal/Compliance',  color: '#10B981' },
+  'PSN-HR-001':    { name: 'HR 01',     role: 'Operations',        color: '#FB923C' },
+  'PSN-GUEST-001': { name: 'Guest',     role: 'Guest',             color: '#636687' },
 };
 
 function getUser(token: string) {

@@ -50,7 +50,9 @@ const ROLE_DESK: Record<string, string> = {
   'Operations':        'hr',
   'Finance Lead':      'finance',
   'Product Manager':   'pm',
+  'Social Media Manager': 'social',
   'Guest':             'guest',
+  'Legal/Compliance':  'legal',
 };
 
 /* ─── Colours ────────────────────────────────────────────────── */
@@ -827,6 +829,407 @@ function AnnouncementsFeed() {
   );
 }
 
+
+/* ═══════════════════════════════════════════════════════════
+   PHASE 2 DESKS
+   HR Office · Lead Marketer · Social Media Manager · Legal
+═══════════════════════════════════════════════════════════ */
+
+/* ─── Report submission form (used by Marketing → HR/CEO) ─── */
+function ReportForm({ user, toCeo = true }: { user: User; toCeo?: boolean }) {
+  const [title, setTitle]   = useState('');
+  const [body, setBody]     = useState('');
+  const [sending, setSending] = useState(false);
+  const [done, setDone]     = useState(false);
+
+  async function submit() {
+    if (!title || !body) return;
+    setSending(true);
+    await fetch('/api/office', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'report', token: user.token,
+        to_desk: toCeo ? 'ceo' : 'hr',
+        title, body,
+      }),
+    });
+    setTitle(''); setBody(''); setDone(true);
+    setTimeout(() => setDone(false), 4000);
+    setSending(false);
+  }
+
+  return (
+    <Card>
+      <SectionLabel>Submit Report → {toCeo ? 'CEO Desk' : 'HR Desk'}</SectionLabel>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div>
+          <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Report Title *</label>
+          <input value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Weekly Marketing Summary — Week 14" className="ps-input" style={{ width: '100%', padding: '10px 12px', fontSize: 13 }} />
+        </div>
+        <div>
+          <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Report Body *</label>
+          <textarea value={body} onChange={e => setBody(e.target.value)} rows={5} placeholder="Write your report..." className="ps-input" style={{ width: '100%', padding: '10px 12px', fontSize: 13, resize: 'vertical', lineHeight: 1.7 }} />
+        </div>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <button onClick={submit} disabled={sending || !title || !body} className="btn btn-primary"
+            style={{ fontSize: 11, padding: '10px 24px', cursor: 'pointer', opacity: (!title || !body) ? .5 : 1 }}>
+            {sending ? 'Sending...' : 'Submit Report →'}
+          </button>
+          {done && <span className="f-mono" style={{ fontSize: 10, color: '#22C55E', letterSpacing: '.1em' }}>SUBMITTED ✓</span>}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+/* ─── HR Desk ─────────────────────────────────────────────── */
+function HrDesk({ user }: { user: User }) {
+  const [tab, setTab]           = useState<'attendance' | 'requests' | 'reports' | 'recruitment'>( 'attendance');
+  const [clocks, setClocks]     = useState<ClockRecord[]>([]);
+  const [requests, setRequests] = useState<WorkRequest[]>([]);
+  const [reports, setReports]   = useState<any[]>([]);
+  const [loading, setLoading]   = useState(false);
+
+  async function load() {
+    setLoading(true);
+    const [c, r, rep] = await Promise.all([
+      fetch('/api/office?action=today_clocks').then(r => r.json()),
+      fetch('/api/office?action=requests').then(r => r.json()),
+      fetch('/api/office?action=reports').then(r => r.json()),
+    ]);
+    setClocks(c.clocks ?? []);
+    setRequests(r.requests ?? []);
+    setReports(rep.reports ?? []);
+    setLoading(false);
+  }
+
+  useEffect(() => { load(); }, []);
+
+  async function resolveRequest(id: string, response: string) {
+    await fetch('/api/office', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'update_request', token: user.token, request_id: id, status: 'resolved', response }),
+    });
+    load();
+  }
+
+  const openReqs = requests.filter(r => r.status === 'open').length;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <ClockWidget user={user} />
+      <AnnouncementsFeed />
+
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', overflowX: 'auto', gap: 0 }}>
+        <CeoDeskTab label="Attendance"   active={tab === 'attendance'}   onClick={() => setTab('attendance')} />
+        <CeoDeskTab label="Requests"     active={tab === 'requests'}     onClick={() => setTab('requests')}   badge={openReqs} />
+        <CeoDeskTab label="Reports"      active={tab === 'reports'}      onClick={() => setTab('reports')} />
+        <CeoDeskTab label="Recruitment"  active={tab === 'recruitment'}  onClick={() => setTab('recruitment')} />
+      </div>
+
+      {tab === 'attendance' && (
+        <div>
+          <SectionLabel>Today's Attendance — {clocks.filter(c => !c.clocked_out_at).length} active now</SectionLabel>
+          {!clocks.length ? (
+            <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>No clock-ins yet today.</p></Card>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {clocks.map(c => (
+                <Card key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: c.clocked_out_at ? 'var(--muted)' : '#22C55E', boxShadow: c.clocked_out_at ? 'none' : '0 0 8px rgba(34,197,94,.5)' }} />
+                    <div>
+                      <div className="f-display" style={{ fontSize: 14, fontWeight: 700 }}>{c.staff_name}</div>
+                      <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.08em' }}>{c.role} · {c.token}{c.note ? ' · "' + c.note + '"' : ''}</div>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div className="f-mono" style={{ fontSize: 11, color: 'var(--text)' }}>In: {fmt(c.clocked_in_at)}</div>
+                    {c.clocked_out_at ? <div className="f-mono" style={{ fontSize: 11, color: 'var(--sub)' }}>Out: {fmt(c.clocked_out_at)}</div>
+                      : <div className="f-mono" style={{ fontSize: 9, color: '#22C55E', letterSpacing: '.1em' }}>ACTIVE</div>}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === 'requests' && (
+        <div>
+          <SectionLabel>Staff Requests & Complaints</SectionLabel>
+          {!requests.length ? (
+            <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>No open requests. ✓</p></Card>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {requests.map(r => (
+                <RequestCard key={r.id} request={r} onResolve={resolveRequest} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === 'reports' && (
+        <div>
+          <SectionLabel>Reports Received</SectionLabel>
+          {!reports.length ? (
+            <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>No reports yet.</p></Card>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {reports.filter(r => r.to_desk === 'hr').map((r: any) => (
+                <Card key={r.id}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 8, flexWrap: 'wrap' }}>
+                    <div>
+                      <div className="f-display" style={{ fontSize: 14, fontWeight: 700, marginBottom: 2 }}>{r.title}</div>
+                      <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.08em' }}>From {r.from_name} ({r.from_role}) · {timeAgo(r.created_at)}</div>
+                    </div>
+                    <span style={{ padding: '3px 10px', fontSize: 9, fontFamily: 'monospace', letterSpacing: '.1em', textTransform: 'uppercase', background: 'rgba(37,99,235,.1)', color: 'var(--blue-hi)', border: '1px solid rgba(37,99,235,.3)' }}>
+                      {r.status}
+                    </span>
+                  </div>
+                  <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7 }}>{r.body}</p>
+                </Card>
+              ))}
+              {!reports.filter((r: any) => r.to_desk === 'hr').length && (
+                <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>No reports directed to HR yet.</p></Card>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === 'recruitment' && (
+        <div>
+          <Card>
+            <SectionLabel>Recruitment Pipeline</SectionLabel>
+            <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7, marginBottom: 16 }}>
+              Job applications submitted via <strong style={{ color: 'var(--text)' }}>/contact</strong> with a role query param appear here.
+              Full recruitment desk with applicant tracking launches in Phase 5.
+            </p>
+            <a href="/careers" target="_blank" rel="noreferrer" className="btn-outline-border" style={{ fontSize: 11, padding: '9px 20px' }}>
+              View Live Careers Page →
+            </a>
+          </Card>
+        </div>
+      )}
+
+      <WorkRequestForm user={user} />
+    </div>
+  );
+}
+
+/* ─── Lead Marketer Desk ─────────────────────────────────── */
+function MarketingDesk({ user }: { user: User }) {
+  const [tab, setTab] = useState<'tasks' | 'report' | 'requests'>( 'tasks');
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <ClockWidget user={user} />
+      <AnnouncementsFeed />
+
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
+        <CeoDeskTab label="My Tasks"     active={tab === 'tasks'}    onClick={() => setTab('tasks')} />
+        <CeoDeskTab label="Submit Report" active={tab === 'report'}   onClick={() => setTab('report')} />
+        <CeoDeskTab label="Requests"      active={tab === 'requests'} onClick={() => setTab('requests')} />
+      </div>
+
+      {tab === 'tasks' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <Card>
+            <SectionLabel>Campaign & Task Tracker</SectionLabel>
+            <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7, marginBottom: 12 }}>
+              Marketing campaign boards, intern task distribution, and content pipeline launch in Phase 3.
+              For now, all tasks assigned to your token appear below.
+            </p>
+          </Card>
+          <MyTasks user={user} />
+        </div>
+      )}
+
+      {tab === 'report' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <Card>
+            <SectionLabel>Weekly Marketing Report</SectionLabel>
+            <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7 }}>
+              Submit your weekly performance report. It routes to the HR desk for review and the CEO desk for awareness.
+            </p>
+          </Card>
+          <ReportForm user={user} toCeo={false} />
+          <ReportForm user={user} toCeo={true} />
+        </div>
+      )}
+
+      {tab === 'requests' && <WorkRequestForm user={user} />}
+    </div>
+  );
+}
+
+/* ─── Social Media Manager Desk ──────────────────────────── */
+function SocialMediaDesk({ user }: { user: User }) {
+  const [tab, setTab] = useState<'tasks' | 'calendar' | 'report'>( 'tasks');
+
+  const PLATFORMS = [
+    { name: 'Twitter / X', handle: '@ProStackNG', url: 'https://x.com/ProStackNG', color: '#1DA1F2' },
+    { name: 'LinkedIn', handle: 'ProStack NG Technologies', url: 'https://www.linkedin.com/company/prostackng', color: '#0A66C2' },
+    { name: 'YouTube', handle: '@ProStackNG', url: 'https://www.youtube.com/@ProStackNG', color: '#FF0000' },
+  ];
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <ClockWidget user={user} />
+      <AnnouncementsFeed />
+
+      {/* Platform quick links */}
+      <div>
+        <SectionLabel>Managed Platforms</SectionLabel>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px,100%),1fr))', gap: 10 }}>
+          {PLATFORMS.map(p => (
+            <a key={p.name} href={p.url} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+              <Card style={{ borderLeft: `3px solid ${p.color}`, transition: 'border-color .15s' }}>
+                <div className="f-display" style={{ fontSize: 13, fontWeight: 700, marginBottom: 4, color: p.color }}>{p.name}</div>
+                <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.08em' }}>{p.handle}</div>
+              </Card>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
+        <CeoDeskTab label="My Tasks"      active={tab === 'tasks'}    onClick={() => setTab('tasks')} />
+        <CeoDeskTab label="Content Ideas" active={tab === 'calendar'} onClick={() => setTab('calendar')} />
+        <CeoDeskTab label="Report"        active={tab === 'report'}   onClick={() => setTab('report')} />
+      </div>
+
+      {tab === 'tasks' && <MyTasks user={user} />}
+
+      {tab === 'calendar' && (
+        <div>
+          <Card>
+            <SectionLabel>Content Calendar</SectionLabel>
+            <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7, marginBottom: 12 }}>
+              Full content calendar with post scheduling, approval workflow, and platform analytics integration
+              launches in Phase 3. Use Work Requests to flag content ideas or approvals needed.
+            </p>
+            <button onClick={() => setTab('tasks')} className="btn-outline-border" style={{ fontSize: 11, padding: '9px 18px' }}>
+              ← View My Tasks
+            </button>
+          </Card>
+        </div>
+      )}
+
+      {tab === 'report' && <ReportForm user={user} toCeo={false} />}
+      <WorkRequestForm user={user} />
+    </div>
+  );
+}
+
+/* ─── Legal & Compliance Desk ────────────────────────────── */
+function LegalDesk({ user }: { user: User }) {
+  const [tab, setTab] = useState<'checklist' | 'ndas' | 'tasks' | 'requests'>( 'checklist');
+
+  const NDPR_CHECKLIST = [
+    { item: 'Privacy Policy published on website', ref: '/privacy' },
+    { item: 'Data collection consent documented', ref: null },
+    { item: 'User data deletion process defined', ref: null },
+    { item: 'Third-party data processors listed', ref: null },
+    { item: 'Data breach response plan in place', ref: null },
+    { item: 'Staff data handling training completed', ref: null },
+    { item: 'DPA (Data Protection Audit) conducted', ref: null },
+  ];
+
+  const NITDA_CHECKLIST = [
+    { item: 'Local content policy compliance reviewed', ref: null },
+    { item: 'IT service provider registration current', ref: null },
+    { item: 'Nigerian data residency requirements checked', ref: null },
+    { item: 'NITDA levy filing up to date', ref: null },
+  ];
+
+  const NDA_LOG = [
+    { party: 'White-Label Enquiries', status: 'template-ready', note: 'Formal NDA sent on enquiry submission' },
+    { party: 'Build With Us clients', status: 'template-ready', note: 'Included in project contract' },
+    { party: 'Partner agreements',    status: 'pending',         note: 'To be drafted when first partner confirmed' },
+  ];
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <ClockWidget user={user} />
+      <AnnouncementsFeed />
+
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
+        <CeoDeskTab label="Compliance"  active={tab === 'checklist'} onClick={() => setTab('checklist')} />
+        <CeoDeskTab label="NDA Tracker" active={tab === 'ndas'}      onClick={() => setTab('ndas')} />
+        <CeoDeskTab label="My Tasks"    active={tab === 'tasks'}     onClick={() => setTab('tasks')} />
+        <CeoDeskTab label="Requests"    active={tab === 'requests'}  onClick={() => setTab('requests')} />
+      </div>
+
+      {tab === 'checklist' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          {[
+            { title: 'NDPR Compliance Checklist', items: NDPR_CHECKLIST, color: '#22C55E' },
+            { title: 'NITDA Compliance Checklist', items: NITDA_CHECKLIST, color: '#2563EB' },
+          ].map(section => (
+            <div key={section.title}>
+              <SectionLabel>{section.title}</SectionLabel>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {section.items.map((item, i) => (
+                  <Card key={i} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div style={{ width: 16, height: 16, border: `1.5px solid ${section.color}`, borderRadius: 2, flexShrink: 0, background: 'transparent' }} />
+                    <span className="f-body" style={{ fontSize: 13, color: 'var(--sub)', flex: 1 }}>{item.item}</span>
+                    {item.ref && (
+                      <a href={item.ref} target="_blank" rel="noreferrer" className="f-mono" style={{ fontSize: 9, color: 'var(--blue-hi)', letterSpacing: '.08em', textDecoration: 'none' }}>
+                        VIEW →
+                      </a>
+                    )}
+                  </Card>
+                ))}
+              </div>
+              <p className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.08em', marginTop: 8 }}>
+                Check items manually. Full digital checklist with audit trail in Phase 5.
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab === 'ndas' && (
+        <div>
+          <SectionLabel>NDA Status Log</SectionLabel>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {NDA_LOG.map((n, i) => (
+              <Card key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
+                <div>
+                  <div className="f-display" style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{n.party}</div>
+                  <div className="f-body" style={{ fontSize: 12, color: 'var(--sub)' }}>{n.note}</div>
+                </div>
+                <span style={{
+                  padding: '3px 10px', fontSize: 9, fontFamily: 'monospace',
+                  letterSpacing: '.1em', textTransform: 'uppercase',
+                  background: n.status === 'template-ready' ? 'rgba(34,197,94,.1)' : 'rgba(245,181,48,.1)',
+                  color: n.status === 'template-ready' ? '#22C55E' : '#F5B530',
+                  border: n.status === 'template-ready' ? '1px solid rgba(34,197,94,.3)' : '1px solid rgba(245,181,48,.3)',
+                  flexShrink: 0,
+                }}>
+                  {n.status.replace('-', ' ')}
+                </span>
+              </Card>
+            ))}
+          </div>
+          <p className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.08em', marginTop: 12 }}>
+            White-label enquiry NDA acknowledgements are logged automatically in the database.
+            Full contract management with document uploads in Phase 5.
+          </p>
+        </div>
+      )}
+
+      {tab === 'tasks' && <MyTasks user={user} />}
+      {tab === 'requests' && <WorkRequestForm user={user} />}
+    </div>
+  );
+}
+
 /* ─── Desk renderer ──────────────────────────────────────────── */
 function DeskRenderer({ user }: { user: User }) {
   const desk = ROLE_DESK[user.role] ?? 'guest';
@@ -839,6 +1242,11 @@ function DeskRenderer({ user }: { user: User }) {
       </div>
     );
   }
+
+  if (desk === 'hr') return <HrDesk user={user} />;
+  if (desk === 'marketing') return <MarketingDesk user={user} />;
+  if (desk === 'social') return <SocialMediaDesk user={user} />;
+  if (desk === 'legal') return <LegalDesk user={user} />;
 
   const DESK_INFO: Record<string, { label: string; description: string; phase: string }> = {
     dev: {
@@ -870,6 +1278,16 @@ function DeskRenderer({ user }: { user: User }) {
       label:       'Product Manager Desk',
       description: 'Roadmap management, feature specifications, stakeholder updates, and sprint planning coordination across dev and design.',
       phase:       'Phase 4',
+    },
+    social: {
+      label:       '📱 Social Media Manager Desk',
+      description: 'Content calendar, platform management, post approvals, and performance reporting.',
+      phase:       'Phase 3',
+    },
+    legal: {
+      label:       '⚖️ Legal & Compliance Office',
+      description: 'NDA tracker, client contracts, NDPR compliance checklist, CAC filings, and regulatory monitoring. Centralised legal document pipeline.',
+      phase:       'Phase 5',
     },
     guest: {
       label:       'Guest Access',
@@ -970,8 +1388,8 @@ export default function VirtualOfficePage() {
                 Enter Your Office Token
               </h2>
               <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7, marginBottom: 24 }}>
-                Use your personal ProStack NG access token (e.g. <span style={{ fontFamily: 'monospace', color: 'var(--blue-hi)' }}>PSN-CEO-001</span>).
-                Contact Operations if you need one issued.
+                Enter your ProStack NG staff access token.
+                Contact Operations if you do not have one.
               </p>
               <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <input
@@ -979,7 +1397,7 @@ export default function VirtualOfficePage() {
                   type="password"
                   value={tokenInput}
                   onChange={e => setTokenInput(e.target.value)}
-                  placeholder="PSN-XXX-000"
+                  placeholder="Enter access token"
                   className="ps-input"
                   style={{ padding: '14px 16px', fontSize: 15, letterSpacing: '.1em', fontFamily: 'JetBrains Mono, monospace', textTransform: 'uppercase', width: '100%' }}
                   autoComplete="off"
@@ -1014,7 +1432,7 @@ export default function VirtualOfficePage() {
   const deskLabels: Record<string, string> = {
     ceo: '🏛 CEO / CTO Office', dev: '💻 Developer Desk', design: '🎨 Design Desk',
     marketing: '📣 Marketing Desk', hr: '👥 HR & Operations', finance: '💰 Finance Desk',
-    pm: '📋 Product Manager', guest: '👤 Guest Access',
+    pm: '📋 Product Manager', social: '📱 Social Media', legal: '⚖️ Legal & Compliance', guest: '👤 Guest Access',
   };
 
   return (
