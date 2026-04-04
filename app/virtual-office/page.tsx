@@ -13,6 +13,7 @@ type User = { name: string; role: string; color: string; token: string };
 type ClockRecord = {
   id: string; token: string; staff_name: string; role: string;
   clocked_in_at: string; clocked_out_at: string | null; note: string | null;
+  date_key: string;
 };
 
 type Announcement = {
