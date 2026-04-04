@@ -1,5 +1,11 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseClient = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 /* ─── Types ──────────────────────────────────────────────────── */
 type User = { name: string; role: string; color: string; token: string };
@@ -76,7 +82,17 @@ function timeAgo(iso: string) {
   return `${Math.floor(h / 24)}d ago`;
 }
 function fmt(iso: string) {
-  return new Date(iso).toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' });
+  const d = new Date(iso);
+  return d.toLocaleString('en-NG', {
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: true,
+  });
+}
+function fmtTime(iso: string) {
+  return new Date(iso).toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+function fmtDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-NG', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
 }
 function naira(kobo: number) {
   return `₦${(kobo / 100).toLocaleString()}`;
@@ -883,16 +899,70 @@ function ReportForm({ user, toCeo = true }: { user: User; toCeo?: boolean }) {
   );
 }
 
+/* ─── Known staff registry (for attendance grid) ───────────── */
+const KNOWN_STAFF = [
+  { token: 'PSN-CEO-001',   name: 'Fubara',      role: 'CEO'                   },
+  { token: 'PSN-ENG-001',   name: 'Eng 01',      role: 'Lead Engineer'         },
+  { token: 'PSN-ENG-002',   name: 'Eng 02',      role: 'Backend Engineer'      },
+  { token: 'PSN-DES-001',   name: 'Design 01',   role: 'UI/UX Designer'        },
+  { token: 'PSN-MKT-001',   name: 'Mkt 01',      role: 'Marketing Lead'        },
+  { token: 'PSN-OPS-001',   name: 'Ops 01',      role: 'Operations'           },
+  { token: 'PSN-HR-001',    name: 'HR 01',        role: 'HR/Operations'         },
+  { token: 'PSN-FIN-001',   name: 'Finance 01',  role: 'Finance Lead'          },
+  { token: 'PSN-DEV-001',   name: 'Dev 01',       role: 'Full-Stack Dev'        },
+  { token: 'PSN-DEV-002',   name: 'Dev 02',       role: 'Full-Stack Dev'        },
+  { token: 'PSN-PM-001',    name: 'PM 01',        role: 'Product Manager'       },
+  { token: 'PSN-SMM-001',   name: 'SMM 01',       role: 'Social Media Manager'  },
+  { token: 'PSN-LEGAL-001', name: 'Legal 01',     role: 'Legal/Compliance'      },
+];
+
+/* ─── Attendance sheet generator ───────────────────────────── */
+function generateAttendanceCSV(clocks: ClockRecord[], month: string): string {
+  const lines: string[] = [
+    'ProStack NG Technologies — Attendance Sheet',
+    `Month: ${month}`,
+    '',
+    'Token,Name,Role,Date,Clock-In,Clock-Out,Hours Worked,Status',
+  ];
+
+  // Group by date then token
+  const byDate: Record<string, ClockRecord[]> = {};
+  clocks.forEach(c => {
+    const d = c.date_key ?? c.clocked_in_at.split('T')[0];
+    if (!byDate[d]) byDate[d] = [];
+    byDate[d].push(c);
+  });
+
+  const sortedDates = Object.keys(byDate).sort();
+  sortedDates.forEach(date => {
+    byDate[date].forEach(c => {
+      const inTime  = new Date(c.clocked_in_at);
+      const outTime = c.clocked_out_at ? new Date(c.clocked_out_at) : null;
+      const hours   = outTime ? ((outTime.getTime() - inTime.getTime()) / 3600000).toFixed(2) : 'Active';
+      const inStr   = inTime.toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit', hour12: true });
+      const outStr  = outTime ? outTime.toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit', hour12: true }) : 'Not clocked out';
+      lines.push(`${c.token},${c.staff_name},${c.role},${date},${inStr},${outStr},${hours},Present`);
+    });
+  });
+
+  return lines.join('\n');
+}
+
 /* ─── HR Desk ─────────────────────────────────────────────── */
 function HrDesk({ user }: { user: User }) {
-  const [tab, setTab]           = useState<'attendance' | 'requests' | 'reports' | 'recruitment'>( 'attendance');
-  const [clocks, setClocks]     = useState<ClockRecord[]>([]);
-  const [requests, setRequests] = useState<WorkRequest[]>([]);
-  const [reports, setReports]   = useState<any[]>([]);
-  const [loading, setLoading]   = useState(false);
+  const [tab, setTab]               = useState<'attendance' | 'requests' | 'reports' | 'recruitment'>( 'attendance');
+  const [clocks, setClocks]         = useState<ClockRecord[]>([]);
+  const [allClocks, setAllClocks]   = useState<ClockRecord[]>([]);
+  const [requests, setRequests]     = useState<WorkRequest[]>([]);
+  const [reports, setReports]       = useState<any[]>([]);
+  const [loading, setLoading]       = useState(false);
+  const [sheetMonth, setSheetMonth] = useState(new Date().toISOString().slice(0, 7));
+  const [generating, setGenerating] = useState(false);
+  const [sheetPosted, setSheetPosted] = useState(false);
 
   async function load() {
     setLoading(true);
+    const today = new Date().toISOString().split('T')[0];
     const [c, r, rep] = await Promise.all([
       fetch('/api/office?action=today_clocks').then(r => r.json()),
       fetch('/api/office?action=requests').then(r => r.json()),
@@ -904,7 +974,14 @@ function HrDesk({ user }: { user: User }) {
     setLoading(false);
   }
 
+  async function loadMonthClocks() {
+    const res = await fetch(`/api/office?action=month_clocks&month=${sheetMonth}`);
+    const d   = await res.json();
+    setAllClocks(d.clocks ?? []);
+  }
+
   useEffect(() => { load(); }, []);
+  useEffect(() => { if (tab === 'attendance') loadMonthClocks(); }, [tab, sheetMonth]);
 
   async function resolveRequest(id: string, response: string) {
     await fetch('/api/office', {
@@ -915,6 +992,35 @@ function HrDesk({ user }: { user: User }) {
     load();
   }
 
+  async function generateAndPostSheet() {
+    setGenerating(true);
+    const csv = generateAttendanceCSV(allClocks, sheetMonth);
+    // Post to CEO desk as a report
+    await fetch('/api/office', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'report', token: user.token,
+        to_desk: 'ceo',
+        title: `Attendance Sheet — ${sheetMonth}`,
+        body: `\`\`\`\n${csv}\n\`\`\``,
+      }),
+    });
+    // Also download CSV locally
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = `attendance-${sheetMonth}.csv`; a.click();
+    URL.revokeObjectURL(url);
+    setSheetPosted(true);
+    setTimeout(() => setSheetPosted(false), 5000);
+    setGenerating(false);
+  }
+
+  // Today's date key
+  const todayKey = new Date().toISOString().split('T')[0];
+  // Which tokens clocked in today
+  const clockedInToday = new Set(clocks.map(c => c.token));
   const openReqs = requests.filter(r => r.status === 'open').length;
 
   return (
@@ -930,30 +1036,123 @@ function HrDesk({ user }: { user: User }) {
       </div>
 
       {tab === 'attendance' && (
-        <div>
-          <SectionLabel>Today's Attendance — {clocks.filter(c => !c.clocked_out_at).length} active now</SectionLabel>
-          {!clocks.length ? (
-            <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>No clock-ins yet today.</p></Card>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {clocks.map(c => (
-                <Card key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: c.clocked_out_at ? 'var(--muted)' : '#22C55E', boxShadow: c.clocked_out_at ? 'none' : '0 0 8px rgba(34,197,94,.5)' }} />
-                    <div>
-                      <div className="f-display" style={{ fontSize: 14, fontWeight: 700 }}>{c.staff_name}</div>
-                      <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.08em' }}>{c.role} · {c.token}{c.note ? ' · "' + c.note + '"' : ''}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+          {/* Today's quick status grid */}
+          <div>
+            <SectionLabel>Today — {fmtDate(todayKey + 'T00:00:00')} — Quick Status</SectionLabel>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(180px,100%), 1fr))', gap: 8 }}>
+              {KNOWN_STAFF.map(staff => {
+                const record = clocks.find(c => c.token === staff.token);
+                const isIn   = !!record && !record.clocked_out_at;
+                const wasIn  = !!record;
+                return (
+                  <div key={staff.token} style={{
+                    background: 'var(--card)', border: `1px solid ${wasIn ? (isIn ? 'rgba(34,197,94,.4)' : 'rgba(100,116,139,.3)') : 'rgba(255,87,87,.3)'}`,
+                    padding: '12px 14px',
+                    display: 'flex', alignItems: 'center', gap: 10,
+                  }}>
+                    <div style={{
+                      width: 10, height: 10, borderRadius: '50%', flexShrink: 0,
+                      background: wasIn ? (isIn ? '#22C55E' : '#64748B') : '#FF5757',
+                      boxShadow: isIn ? '0 0 8px rgba(34,197,94,.6)' : 'none',
+                    }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="f-display" style={{ fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{staff.name}</div>
+                      <div className="f-mono" style={{ fontSize: 8, color: 'var(--muted)', letterSpacing: '.06em' }}>
+                        {isIn ? `IN · ${fmtTime(record!.clocked_in_at)}` : wasIn ? `OUT · ${fmtTime(record!.clocked_in_at)}` : 'NOT CLOCKED IN'}
+                      </div>
                     </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div className="f-mono" style={{ fontSize: 11, color: 'var(--text)' }}>In: {fmt(c.clocked_in_at)}</div>
-                    {c.clocked_out_at ? <div className="f-mono" style={{ fontSize: 11, color: 'var(--sub)' }}>Out: {fmt(c.clocked_out_at)}</div>
-                      : <div className="f-mono" style={{ fontSize: 9, color: '#22C55E', letterSpacing: '.1em' }}>ACTIVE</div>}
-                  </div>
-                </Card>
-              ))}
+                );
+              })}
             </div>
-          )}
+            <div style={{ display: 'flex', gap: 16, marginTop: 10, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#22C55E' }} />
+                <span className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.1em' }}>CLOCKED IN</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#64748B' }} />
+                <span className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.1em' }}>CLOCKED OUT</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#FF5757' }} />
+                <span className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.1em' }}>ABSENT</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Today's detailed clock log */}
+          <div>
+            <SectionLabel>Today's Clock Log</SectionLabel>
+            {!clocks.length ? (
+              <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>No clock-ins yet today.</p></Card>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {clocks.map(c => (
+                  <Card key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
+                    <div>
+                      <div className="f-display" style={{ fontSize: 13, fontWeight: 700, marginBottom: 2 }}>{c.staff_name}</div>
+                      <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.06em' }}>{c.role} · {c.token}</div>
+                      {c.note && <div className="f-body" style={{ fontSize: 11, color: 'var(--sub)', marginTop: 4, fontStyle: 'italic' }}>"{c.note}"</div>}
+                    </div>
+                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                      <div className="f-mono" style={{ fontSize: 11, color: 'var(--text)' }}>
+                        IN: {fmtTime(c.clocked_in_at)}
+                      </div>
+                      {c.clocked_out_at ? (
+                        <>
+                          <div className="f-mono" style={{ fontSize: 11, color: 'var(--sub)' }}>
+                            OUT: {fmtTime(c.clocked_out_at)}
+                          </div>
+                          <div className="f-mono" style={{ fontSize: 9, color: '#22C55E', letterSpacing: '.08em', marginTop: 2 }}>
+                            {((new Date(c.clocked_out_at).getTime() - new Date(c.clocked_in_at).getTime()) / 3600000).toFixed(1)}h worked
+                          </div>
+                        </>
+                      ) : (
+                        <div className="f-mono" style={{ fontSize: 9, color: '#22C55E', letterSpacing: '.1em' }}>● ACTIVE</div>
+                      )}
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Attendance sheet generation */}
+          <div style={{ background: 'rgba(37,99,235,.05)', border: '1px solid var(--blue-dim)', padding: '20px 24px' }}>
+            <SectionLabel>Generate Attendance Sheet</SectionLabel>
+            <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7, marginBottom: 16 }}>
+              Select a month and generate the full attendance report. Downloads as CSV and posts to the CEO desk for payroll review.
+            </p>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+              <input
+                type="month"
+                value={sheetMonth}
+                onChange={e => setSheetMonth(e.target.value)}
+                className="ps-input"
+                style={{ padding: '10px 14px', fontSize: 13, width: 'auto' }}
+              />
+              <button
+                onClick={generateAndPostSheet}
+                disabled={generating}
+                className="btn btn-primary"
+                style={{ fontSize: 11, padding: '10px 24px', cursor: generating ? 'not-allowed' : 'pointer', opacity: generating ? .6 : 1 }}
+              >
+                {generating ? 'Generating...' : 'Generate & Post to CEO →'}
+              </button>
+              {sheetPosted && (
+                <span className="f-mono" style={{ fontSize: 10, color: '#22C55E', letterSpacing: '.1em' }}>
+                  ✓ DOWNLOADED & POSTED TO CEO DESK
+                </span>
+              )}
+            </div>
+            <p className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.08em', marginTop: 10 }}>
+              Sheet includes: token, name, role, date, clock-in time, clock-out time, hours worked, status
+            </p>
+          </div>
+
         </div>
       )}
 
@@ -975,45 +1174,38 @@ function HrDesk({ user }: { user: User }) {
       {tab === 'reports' && (
         <div>
           <SectionLabel>Reports Received</SectionLabel>
-          {!reports.length ? (
-            <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>No reports yet.</p></Card>
+          {!reports.filter((r: any) => r.to_desk === 'hr').length ? (
+            <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>No reports directed to HR yet.</p></Card>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {reports.filter(r => r.to_desk === 'hr').map((r: any) => (
+              {reports.filter((r: any) => r.to_desk === 'hr').map((r: any) => (
                 <Card key={r.id}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 8, flexWrap: 'wrap' }}>
                     <div>
                       <div className="f-display" style={{ fontSize: 14, fontWeight: 700, marginBottom: 2 }}>{r.title}</div>
-                      <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.08em' }}>From {r.from_name} ({r.from_role}) · {timeAgo(r.created_at)}</div>
+                      <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.08em' }}>
+                        From {r.from_name} ({r.from_role}) · {fmtDate(r.created_at)}
+                      </div>
                     </div>
-                    <span style={{ padding: '3px 10px', fontSize: 9, fontFamily: 'monospace', letterSpacing: '.1em', textTransform: 'uppercase', background: 'rgba(37,99,235,.1)', color: 'var(--blue-hi)', border: '1px solid rgba(37,99,235,.3)' }}>
-                      {r.status}
-                    </span>
                   </div>
                   <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7 }}>{r.body}</p>
                 </Card>
               ))}
-              {!reports.filter((r: any) => r.to_desk === 'hr').length && (
-                <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>No reports directed to HR yet.</p></Card>
-              )}
             </div>
           )}
         </div>
       )}
 
       {tab === 'recruitment' && (
-        <div>
-          <Card>
-            <SectionLabel>Recruitment Pipeline</SectionLabel>
-            <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7, marginBottom: 16 }}>
-              Job applications submitted via <strong style={{ color: 'var(--text)' }}>/contact</strong> with a role query param appear here.
-              Full recruitment desk with applicant tracking launches in Phase 5.
-            </p>
-            <a href="/careers" target="_blank" rel="noreferrer" className="btn-outline-border" style={{ fontSize: 11, padding: '9px 20px' }}>
-              View Live Careers Page →
-            </a>
-          </Card>
-        </div>
+        <Card>
+          <SectionLabel>Recruitment Pipeline</SectionLabel>
+          <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7, marginBottom: 16 }}>
+            Full applicant tracking with resume uploads launches in Phase 5. Live job listings below.
+          </p>
+          <a href="/careers" target="_blank" rel="noreferrer" className="btn-outline-border" style={{ fontSize: 11, padding: '9px 20px' }}>
+            View Live Careers Page →
+          </a>
+        </Card>
       )}
 
       <WorkRequestForm user={user} />
@@ -1315,6 +1507,7 @@ export default function VirtualOfficePage() {
   const [tokenError, setTokenError] = useState('');
   const [loading, setLoading]     = useState(false);
   const [user, setUser]           = useState<User | null>(null);
+  const [alert, setAlert]         = useState<{ title: string; body: string } | null>(null);
   const inputRef                  = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -1322,6 +1515,24 @@ export default function VirtualOfficePage() {
     const saved = sessionStorage.getItem('psn_office_user');
     if (saved) { try { setUser(JSON.parse(saved)); setScreen('office'); } catch {} }
   }, []);
+
+  // Realtime — listen for urgent announcements (push alert banner)
+  useEffect(() => {
+    if (screen !== 'office') return;
+    const channel = supabaseClient
+      .channel('office-alerts')
+      .on('postgres_changes', {
+        event: 'INSERT', schema: 'public', table: 'office_announcements',
+        filter: 'priority=eq.urgent',
+      }, (payload) => {
+        const a = payload.new as { title: string; body: string };
+        setAlert({ title: a.title, body: a.body });
+        // Auto-dismiss after 15s
+        setTimeout(() => setAlert(null), 15000);
+      })
+      .subscribe();
+    return () => { supabaseClient.removeChannel(channel); };
+  }, [screen]);
 
   useEffect(() => {
     if (screen === 'login') setTimeout(() => inputRef.current?.focus(), 100);
@@ -1481,6 +1692,32 @@ export default function VirtualOfficePage() {
           Exit
         </button>
       </div>
+
+      {/* ── Urgent alert banner ── */}
+      {alert && (
+        <div style={{
+          position: 'fixed', top: 56, left: 0, right: 0, zIndex: 60,
+          background: 'rgba(220,38,38,.95)', backdropFilter: 'blur(10px)',
+          borderBottom: '1px solid rgba(255,87,87,.4)',
+          padding: '12px clamp(16px,4vw,40px)',
+          display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap',
+          animation: 'fadeUp .3s ease forwards',
+        }}>
+          <span style={{ fontSize: 18, flexShrink: 0 }}>🚨</span>
+          <div style={{ flex: 1 }}>
+            <div className="f-display" style={{ fontSize: 13, fontWeight: 800, color: '#fff', marginBottom: 2 }}>
+              URGENT ALERT — {alert.title}
+            </div>
+            <div className="f-body" style={{ fontSize: 12, color: 'rgba(255,255,255,.85)' }}>{alert.body}</div>
+          </div>
+          <button
+            onClick={() => setAlert(null)}
+            style={{ background: 'rgba(255,255,255,.15)', border: '1px solid rgba(255,255,255,.3)', color: '#fff', padding: '5px 14px', cursor: 'pointer', fontSize: 11, fontFamily: 'monospace', letterSpacing: '.06em', flexShrink: 0 }}
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
 
       {/* ── Desk content ── */}
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px,4vw,40px) clamp(16px,4vw,40px)' }}>

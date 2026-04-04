@@ -74,6 +74,25 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    // ── Monthly clock records ────────────────────────────────
+    if (action === 'month_clocks') {
+      const month = searchParams.get('month'); // format: YYYY-MM
+      if (!month) return NextResponse.json({ error: 'month param required' }, { status: 400 });
+      const startDate = `${month}-01`;
+      // Get last day of month properly
+      const [y, m] = month.split('-').map(Number);
+      const lastDay = new Date(y, m, 0).getDate();
+      const endDate = `${month}-${String(lastDay).padStart(2, '0')}`;
+      const { data } = await supabase
+        .from('office_clock_ins')
+        .select('*')
+        .gte('date_key', startDate)
+        .lte('date_key', endDate)
+        .order('date_key', { ascending: true })
+        .order('clocked_in_at', { ascending: true });
+      return NextResponse.json({ clocks: data ?? [] });
+    }
+
     // ── Today's clock status for a token ────────────────────
     if (action === 'clock_status' && token) {
       const today = new Date().toISOString().split('T')[0];
