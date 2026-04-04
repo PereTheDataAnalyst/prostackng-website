@@ -74,6 +74,46 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    // ── Finance dashboard ─────────────────────────────────────
+    if (action === 'finance_dashboard') {
+      const [payments, whiteLabel, consulting, projects, apiWaitlist] = await Promise.all([
+        supabase.from('prostack_payments').select('*').order('created_at', { ascending: false }).limit(50),
+        supabase.from('white_label_enquiries').select('full_name, company, platform, timeline, status, created_at').order('created_at', { ascending: false }).limit(10),
+        supabase.from('consulting_enquiries').select('full_name, company, package, status, created_at').order('created_at', { ascending: false }).limit(10),
+        supabase.from('project_intakes').select('full_name, company, package, budget, status, created_at').order('created_at', { ascending: false }).limit(10),
+        supabase.from('api_waitlist').select('full_name, company, tier, created_at').order('created_at', { ascending: false }).limit(10),
+      ]);
+      const paid   = (payments.data ?? []).filter((p: any) => p.status === 'paid');
+      const totalRevenue = paid.reduce((sum: number, p: any) => sum + (p.amount_kobo ?? 0), 0);
+      return NextResponse.json({
+        payments:      payments.data ?? [],
+        white_label:   whiteLabel.data ?? [],
+        consulting:    consulting.data ?? [],
+        projects:      projects.data ?? [],
+        api_waitlist:  apiWaitlist.data ?? [],
+        total_revenue: totalRevenue,
+        paid_count:    paid.length,
+      });
+    }
+
+    // ── All tasks — dev / PM view ──────────────────────────────
+    if (action === 'dev_tasks') {
+      const { data } = await supabase
+        .from('office_tasks')
+        .select('*')
+        .order('created_at', { ascending: false });
+      return NextResponse.json({ tasks: data ?? [] });
+    }
+
+    // ── All open tasks (PM view) ───────────────────────────────
+    if (action === 'all_tasks') {
+      const { data } = await supabase
+        .from('office_tasks')
+        .select('*')
+        .order('created_at', { ascending: false });
+      return NextResponse.json({ tasks: data ?? [] });
+    }
+
     // ── Monthly clock records ────────────────────────────────
     if (action === 'month_clocks') {
       const month = searchParams.get('month'); // format: YYYY-MM
@@ -356,6 +396,24 @@ export async function POST(req: NextRequest) {
 
       if (error) throw error;
       return NextResponse.json({ success: true });
+    }
+
+    // ── Post bug report (dev → PM/CEO) ──────────────────────
+    if (action === 'bug_report') {
+      const { data, error } = await supabase
+        .from('office_reports')
+        .insert({
+          from_token: userToken,
+          from_name:  user.name,
+          from_role:  user.role,
+          to_desk:    'ceo',
+          title:      `[BUG] ${body.title}`,
+          body:       `Platform: ${body.platform}\nSeverity: ${body.severity}\n\n${body.body}`,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return NextResponse.json({ success: true, report: data });
     }
 
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 });

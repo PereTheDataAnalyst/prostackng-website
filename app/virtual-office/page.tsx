@@ -847,6 +847,517 @@ function AnnouncementsFeed() {
 }
 
 
+
+/* ═══════════════════════════════════════════════════════════
+   PHASE 3 DESKS
+   Finance · Developer · Design · Product Manager
+═══════════════════════════════════════════════════════════ */
+
+/* ─── Finance Desk ───────────────────────────────────────── */
+function FinanceDesk({ user }: { user: User }) {
+  const [tab, setTab] = useState<'overview' | 'payments' | 'pipeline' | 'tasks'>( 'overview');
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/office?action=finance_dashboard')
+      .then(r => r.json())
+      .then(d => { setData(d); setLoading(false); });
+  }, []);
+
+  if (loading) return <Card><p className="f-mono" style={{ fontSize: 10, color: 'var(--muted)', letterSpacing: '.1em' }}>Loading Finance Desk...</p></Card>;
+
+  const payments     = data?.payments     ?? [];
+  const consulting   = data?.consulting   ?? [];
+  const projects     = data?.projects     ?? [];
+  const whiteLabel   = data?.white_label  ?? [];
+  const apiWaitlist  = data?.api_waitlist ?? [];
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <ClockWidget user={user} />
+      <AnnouncementsFeed />
+
+      {/* Revenue stat row */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px,100%),1fr))', gap: 12 }}>
+        {[
+          { label: 'Total Revenue',      value: naira(data?.total_revenue ?? 0),  color: '#22C55E' },
+          { label: 'Paid Transactions',   value: String(data?.paid_count ?? 0),    color: '#2563EB' },
+          { label: 'Pending Payments',    value: String(payments.filter((p: any) => p.status === 'pending').length), color: '#F5B530' },
+          { label: 'Active Enquiries',    value: String(consulting.length + projects.length + whiteLabel.length), color: '#A78BFA' },
+        ].map(s => (
+          <Card key={s.label} style={{ textAlign: 'center' }}>
+            <div className="f-display" style={{ fontSize: 24, fontWeight: 800, color: s.color, letterSpacing: '-.03em', marginBottom: 4 }}>{s.value}</div>
+            <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)' }}>{s.label}</div>
+          </Card>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
+        <CeoDeskTab label="Overview"  active={tab === 'overview'}  onClick={() => setTab('overview')} />
+        <CeoDeskTab label="Payments"  active={tab === 'payments'}  onClick={() => setTab('payments')} />
+        <CeoDeskTab label="Pipeline"  active={tab === 'pipeline'}  onClick={() => setTab('pipeline')} />
+        <CeoDeskTab label="My Tasks"  active={tab === 'tasks'}     onClick={() => setTab('tasks')} />
+      </div>
+
+      {tab === 'overview' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Recent paid transactions */}
+          <div>
+            <SectionLabel>Recent Confirmed Payments</SectionLabel>
+            {!payments.filter((p: any) => p.status === 'paid').length ? (
+              <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>No confirmed payments yet.</p></Card>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {payments.filter((p: any) => p.status === 'paid').slice(0, 8).map((p: any) => (
+                  <div key={p.id} style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                    <div>
+                      <div className="f-display" style={{ fontSize: 13, fontWeight: 700 }}>{p.service_label}</div>
+                      <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.06em' }}>{p.name ?? p.email} · {fmtDate(p.created_at)}</div>
+                    </div>
+                    <div className="f-display" style={{ fontSize: 18, fontWeight: 800, color: '#22C55E' }}>{naira(p.amount_kobo)}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Pending payments */}
+          {payments.filter((p: any) => p.status === 'pending').length > 0 && (
+            <div>
+              <SectionLabel>Pending / Unconfirmed Payments</SectionLabel>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {payments.filter((p: any) => p.status === 'pending').map((p: any) => (
+                  <div key={p.id} style={{ background: 'var(--card)', border: '1px solid rgba(245,181,48,.3)', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                    <div>
+                      <div className="f-display" style={{ fontSize: 13, fontWeight: 700 }}>{p.service_label}</div>
+                      <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.06em' }}>{p.email} · {fmtDate(p.created_at)}</div>
+                    </div>
+                    <div className="f-display" style={{ fontSize: 16, fontWeight: 800, color: '#F5B530' }}>{naira(p.amount_kobo)}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === 'payments' && (
+        <div>
+          <SectionLabel>All Payment Records</SectionLabel>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {!payments.length ? (
+              <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>No payment records.</p></Card>
+            ) : payments.map((p: any) => (
+              <div key={p.id} style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                <div style={{ flex: 1 }}>
+                  <div className="f-display" style={{ fontSize: 13, fontWeight: 700, marginBottom: 2 }}>{p.service_label}</div>
+                  <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.06em' }}>
+                    {p.name ?? '—'} · {p.email} · {fmtDate(p.created_at)}
+                  </div>
+                  {p.reference && <div className="f-mono" style={{ fontSize: 8, color: 'var(--muted)', letterSpacing: '.06em', marginTop: 2 }}>REF: {p.reference}</div>}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+                  <span className="f-display" style={{ fontSize: 16, fontWeight: 800, color: p.status === 'paid' ? '#22C55E' : '#F5B530' }}>
+                    {naira(p.amount_kobo)}
+                  </span>
+                  <span style={{ padding: '2px 8px', fontSize: 8, fontFamily: 'monospace', letterSpacing: '.1em', textTransform: 'uppercase', background: p.status === 'paid' ? 'rgba(34,197,94,.1)' : 'rgba(245,181,48,.1)', color: p.status === 'paid' ? '#22C55E' : '#F5B530', border: p.status === 'paid' ? '1px solid rgba(34,197,94,.3)' : '1px solid rgba(245,181,48,.3)' }}>
+                    {p.status}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab === 'pipeline' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          {[
+            { label: 'Consulting Enquiries', items: consulting, fields: ['full_name', 'company', 'package'] },
+            { label: 'Build With Us Projects', items: projects, fields: ['full_name', 'company', 'package', 'budget'] },
+            { label: 'White-Label Enquiries', items: whiteLabel, fields: ['full_name', 'company', 'platform'] },
+            { label: 'API Waitlist', items: apiWaitlist, fields: ['full_name', 'company', 'tier'] },
+          ].map(section => (
+            <div key={section.label}>
+              <SectionLabel>{section.label} ({section.items.length})</SectionLabel>
+              {!section.items.length ? (
+                <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>None yet.</p></Card>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  {section.items.map((item: any, i: number) => (
+                    <div key={i} style={{ background: 'var(--card)', border: '1px solid var(--border)', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                      <div>
+                        <div className="f-display" style={{ fontSize: 13, fontWeight: 700 }}>{item.full_name}{item.company ? ` — ${item.company}` : ''}</div>
+                        <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.06em' }}>
+                          {section.fields.slice(1).map((f: string) => item[f] ?? '—').join(' · ')} · {timeAgo(item.created_at)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab === 'tasks' && <MyTasks user={user} />}
+      <WorkRequestForm user={user} />
+    </div>
+  );
+}
+
+/* ─── Developer Desk (shared: Lead Eng, Backend, Full-Stack) ─ */
+function DevDesk({ user }: { user: User }) {
+  const [tab, setTab]       = useState<'tasks' | 'bugs' | 'report' | 'all'>( 'tasks');
+  const [allTasks, setAllTasks] = useState<Task[]>([]);
+  const [platform, setPlatform] = useState('ProStack Website');
+  const [severity, setSeverity] = useState('medium');
+  const [bugTitle, setBugTitle] = useState('');
+  const [bugBody, setBugBody]   = useState('');
+  const [sending, setSending]   = useState(false);
+  const [done, setDone]         = useState(false);
+
+  const PLATFORMS = ['ProStack Website', 'AutoReport', 'ProTrackNG', 'ClubOps', 'Virtual Office', 'Academy', 'Other'];
+  const SEVERITIES = ['critical', 'high', 'medium', 'low'];
+  const SEV_COLOR: Record<string, string> = { critical: '#FF5757', high: '#F5B530', medium: '#2563EB', low: '#22C55E' };
+
+  useEffect(() => {
+    if (tab === 'all') {
+      fetch('/api/office?action=all_tasks')
+        .then(r => r.json())
+        .then(d => setAllTasks(d.tasks ?? []));
+    }
+  }, [tab]);
+
+  async function submitBug() {
+    if (!bugTitle || !bugBody) return;
+    setSending(true);
+    await fetch('/api/office', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'bug_report', token: user.token, title: bugTitle, body: bugBody, platform, severity }),
+    });
+    setBugTitle(''); setBugBody(''); setDone(true);
+    setTimeout(() => setDone(false), 4000);
+    setSending(false);
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <ClockWidget user={user} />
+      <AnnouncementsFeed />
+
+      {/* Stack quick links */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(160px,100%),1fr))', gap: 8 }}>
+        {[
+          { name: 'ProStack Main', url: 'https://prostackng.com.ng', color: '#2563EB' },
+          { name: 'AutoReport', url: 'https://autoreport.prostackng.com.ng', color: '#FF5757' },
+          { name: 'ProTrackNG', url: 'https://www.protrackng.com.ng', color: '#06B6D4' },
+          { name: 'ClubOps', url: 'https://clubops-b6zl.onrender.com', color: '#A78BFA' },
+          { name: 'Vercel Dashboard', url: 'https://vercel.com/dashboard', color: '#ffffff' },
+          { name: 'Supabase', url: 'https://supabase.com/dashboard', color: '#3ECF8E' },
+        ].map(link => (
+          <a key={link.name} href={link.url} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+            <Card style={{ borderLeft: `3px solid ${link.color}`, padding: '10px 14px' }}>
+              <div className="f-display" style={{ fontSize: 12, fontWeight: 700, color: link.color, marginBottom: 2 }}>{link.name}</div>
+              <div className="f-mono" style={{ fontSize: 8, color: 'var(--muted)', letterSpacing: '.06em' }}>OPEN →</div>
+            </Card>
+          </a>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
+        <CeoDeskTab label="My Tasks"    active={tab === 'tasks'} onClick={() => setTab('tasks')} />
+        <CeoDeskTab label="Log a Bug"   active={tab === 'bugs'}  onClick={() => setTab('bugs')} />
+        <CeoDeskTab label="All Tasks"   active={tab === 'all'}   onClick={() => setTab('all')} />
+        <CeoDeskTab label="Submit Report" active={tab === 'report'} onClick={() => setTab('report')} />
+      </div>
+
+      {tab === 'tasks' && <MyTasks user={user} />}
+
+      {tab === 'bugs' && (
+        <Card>
+          <SectionLabel>Log a Bug Report → CEO Desk</SectionLabel>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px,100%),1fr))', gap: 12 }}>
+              <div>
+                <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Platform</label>
+                <select value={platform} onChange={e => setPlatform(e.target.value)} className="ps-input" style={{ width: '100%', padding: '10px 12px', fontSize: 12 }}>
+                  {PLATFORMS.map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Severity</label>
+                <select value={severity} onChange={e => setSeverity(e.target.value)} className="ps-input" style={{ width: '100%', padding: '10px 12px', fontSize: 12, color: SEV_COLOR[severity] }}>
+                  {SEVERITIES.map(s => <option key={s} value={s}>{s.toUpperCase()}</option>)}
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Bug Title *</label>
+              <input value={bugTitle} onChange={e => setBugTitle(e.target.value)} placeholder="Short description of the bug" className="ps-input" style={{ width: '100%', padding: '10px 12px', fontSize: 13 }} />
+            </div>
+            <div>
+              <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Steps to Reproduce / Details *</label>
+              <textarea value={bugBody} onChange={e => setBugBody(e.target.value)} rows={5} placeholder="1. Go to...&#10;2. Click...&#10;3. Expected: ...&#10;4. Actual: ..." className="ps-input" style={{ width: '100%', padding: '10px 12px', fontSize: 13, resize: 'vertical', lineHeight: 1.7 }} />
+            </div>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <button onClick={submitBug} disabled={sending || !bugTitle || !bugBody} className="btn btn-primary"
+                style={{ fontSize: 11, padding: '10px 24px', cursor: 'pointer', opacity: (!bugTitle || !bugBody) ? .5 : 1 }}>
+                {sending ? 'Logging...' : 'Log Bug Report →'}
+              </button>
+              {done && <span className="f-mono" style={{ fontSize: 10, color: '#22C55E', letterSpacing: '.1em' }}>LOGGED → CEO DESK ✓</span>}
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {tab === 'all' && (
+        <div>
+          <SectionLabel>All Open Tasks (Team View)</SectionLabel>
+          {!allTasks.filter(t => t.status !== 'done').length ? (
+            <Card><p className="f-body" style={{ fontSize: 13, color: 'var(--muted)' }}>No open tasks across the team.</p></Card>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {allTasks.filter(t => t.status !== 'done').map(t => (
+                <Card key={t.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
+                  <div>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 3, flexWrap: 'wrap' }}>
+                      <span className="f-display" style={{ fontSize: 13, fontWeight: 700 }}>{t.title}</span>
+                      <span className="badge" style={{ background: `${PRIORITY_COLOR[t.priority]}18`, color: PRIORITY_COLOR[t.priority], border: `1px solid ${PRIORITY_COLOR[t.priority]}40`, fontSize: 8 }}>{t.priority}</span>
+                    </div>
+                    <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.06em' }}>→ {t.assigned_name} · {timeAgo(t.created_at)}</div>
+                  </div>
+                  <span style={{ padding: '3px 10px', fontSize: 9, fontFamily: 'monospace', letterSpacing: '.1em', textTransform: 'uppercase', background: `${STATUS_COLOR[t.status]}18`, color: STATUS_COLOR[t.status], border: `1px solid ${STATUS_COLOR[t.status]}40` }}>
+                    {t.status.replace('_', ' ')}
+                  </span>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === 'report' && <ReportForm user={user} toCeo={true} />}
+      <WorkRequestForm user={user} />
+    </div>
+  );
+}
+
+/* ─── Design Desk ────────────────────────────────────────── */
+function DesignDesk({ user }: { user: User }) {
+  const [tab, setTab] = useState<'tasks' | 'assets' | 'report'>( 'tasks');
+
+  const BRAND = [
+    { label: 'Primary Blue',  value: '#2563EB' },
+    { label: 'Blue Hi',       value: '#3B82F6' },
+    { label: 'Background',    value: '#080B14' },
+    { label: 'Surface 1',     value: '#0C0F1C' },
+    { label: 'Card',          value: '#111428' },
+    { label: 'Text',          value: '#EEF0FF' },
+    { label: 'Subtext',       value: '#7A7DA0' },
+    { label: 'Success',       value: '#22C55E' },
+    { label: 'Warning',       value: '#F5B530' },
+    { label: 'Error',         value: '#FF5757' },
+  ];
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <ClockWidget user={user} />
+      <AnnouncementsFeed />
+
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
+        <CeoDeskTab label="My Tasks"    active={tab === 'tasks'}  onClick={() => setTab('tasks')} />
+        <CeoDeskTab label="Brand Guide" active={tab === 'assets'} onClick={() => setTab('assets')} />
+        <CeoDeskTab label="Report"      active={tab === 'report'} onClick={() => setTab('report')} />
+      </div>
+
+      {tab === 'tasks' && <MyTasks user={user} />}
+
+      {tab === 'assets' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <Card>
+            <SectionLabel>Brand Colour Palette</SectionLabel>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(120px,100%),1fr))', gap: 8 }}>
+              {BRAND.map(c => (
+                <div key={c.label} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div style={{ width: '100%', height: 48, background: c.value, border: '1px solid var(--border)' }} />
+                  <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.06em' }}>{c.label}</div>
+                  <div className="f-mono" style={{ fontSize: 10, color: 'var(--text)' }}>{c.value}</div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          <Card>
+            <SectionLabel>Typography</SectionLabel>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {[
+                { name: 'Syne',              use: 'Headings, display, nav',   sample: 'Bold. Sharp. Unforgettable.', style: { fontFamily: 'Syne, sans-serif', fontWeight: 800 } },
+                { name: 'Plus Jakarta Sans', use: 'Body text, UI labels',      sample: 'Clear. Readable. Professional.', style: { fontFamily: 'Plus Jakarta Sans, sans-serif' } },
+                { name: 'JetBrains Mono',    use: 'Code, labels, meta',        sample: 'PRECISE. MONO. TECHNICAL.', style: { fontFamily: 'JetBrains Mono, monospace' } },
+              ].map(t => (
+                <div key={t.name} style={{ padding: '12px 0', borderBottom: '1px solid var(--border)' }}>
+                  <div className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.1em', marginBottom: 4 }}>{t.name} — {t.use}</div>
+                  <div style={{ fontSize: 18, color: 'var(--text)', ...t.style }}>{t.sample}</div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {tab === 'report' && <ReportForm user={user} toCeo={true} />}
+      <WorkRequestForm user={user} />
+    </div>
+  );
+}
+
+/* ─── Product Manager Desk ───────────────────────────────── */
+function PmDesk({ user }: { user: User }) {
+  const [tab, setTab]         = useState<'tasks' | 'roadmap' | 'assign' | 'report'>( 'tasks');
+  const [allTasks, setAllTasks] = useState<Task[]>([]);
+  const [aToken, setAToken]   = useState('');
+  const [aTitle, setATitle]   = useState('');
+  const [aDesc, setADesc]     = useState('');
+  const [aPri, setAPri]       = useState('normal');
+  const [aDue, setADue]       = useState('');
+  const [sending, setSending] = useState(false);
+  const [done, setDone]       = useState(false);
+
+  useEffect(() => {
+    fetch('/api/office?action=all_tasks')
+      .then(r => r.json())
+      .then(d => setAllTasks(d.tasks ?? []));
+  }, []);
+
+  async function assign() {
+    if (!aToken || !aTitle) return;
+    setSending(true);
+    await fetch('/api/office', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'task', token: user.token, assigned_to: aToken, title: aTitle, description: aDesc, priority: aPri, due_date: aDue || null }),
+    });
+    setAToken(''); setATitle(''); setADesc(''); setADue(''); setDone(true);
+    setTimeout(() => setDone(false), 3000);
+    setSending(false);
+    // Refresh
+    fetch('/api/office?action=all_tasks').then(r => r.json()).then(d => setAllTasks(d.tasks ?? []));
+  }
+
+  const ROADMAP = [
+    { phase: 'Live', items: ['ProStack Website v2', 'Academy (6 streams)', 'AutoReport', 'ProTrackNG', 'ClubOps', 'Virtual Office Phase 1–3'], color: '#22C55E' },
+    { phase: 'Phase 3 — In Progress', items: ['Virtual Office Finance Desk ✓', 'Dev/Design/PM Desks ✓', 'Academy Selar integration', 'Web3 Course content'], color: '#2563EB' },
+    { phase: 'Phase 4', items: ['Recruitment applicant tracking', 'Smart contract audit service page', 'Academy Web3 course live', 'Tokenised tender bond concept page'], color: '#F5B530' },
+    { phase: 'Phase 5', items: ['Legal/Compliance document vault', 'Finance payroll module', 'Customer Success desk', 'Partner desk'], color: '#A78BFA' },
+  ];
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <ClockWidget user={user} />
+      <AnnouncementsFeed />
+
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
+        <CeoDeskTab label="My Tasks"  active={tab === 'tasks'}   onClick={() => setTab('tasks')} />
+        <CeoDeskTab label="Roadmap"   active={tab === 'roadmap'} onClick={() => setTab('roadmap')} />
+        <CeoDeskTab label="Assign"    active={tab === 'assign'}  onClick={() => setTab('assign')} />
+        <CeoDeskTab label="Report"    active={tab === 'report'}  onClick={() => setTab('report')} />
+      </div>
+
+      {tab === 'tasks' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* All team tasks board */}
+          <div>
+            <SectionLabel>Team Task Board</SectionLabel>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px,100%),1fr))', gap: 12 }}>
+              {['pending', 'in_progress', 'blocked', 'done'].map(status => (
+                <div key={status}>
+                  <div className="f-mono" style={{ fontSize: 9, letterSpacing: '.14em', textTransform: 'uppercase', color: STATUS_COLOR[status], marginBottom: 8 }}>
+                    {status.replace('_', ' ')} ({allTasks.filter(t => t.status === status).length})
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    {allTasks.filter(t => t.status === status).slice(0, 5).map(t => (
+                      <div key={t.id} style={{ background: 'var(--card)', border: `1px solid ${STATUS_COLOR[status]}30`, padding: '10px 12px' }}>
+                        <div className="f-display" style={{ fontSize: 12, fontWeight: 700, marginBottom: 2 }}>{t.title}</div>
+                        <div className="f-mono" style={{ fontSize: 8, color: 'var(--muted)', letterSpacing: '.06em' }}>{t.assigned_name}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <MyTasks user={user} />
+        </div>
+      )}
+
+      {tab === 'roadmap' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <SectionLabel>ProStack NG Product Roadmap</SectionLabel>
+          {ROADMAP.map(phase => (
+            <Card key={phase.phase} style={{ borderLeft: `3px solid ${phase.color}` }}>
+              <div className="f-mono" style={{ fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase', color: phase.color, marginBottom: 12 }}>{phase.phase}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {phase.items.map(item => (
+                  <div key={item} className="f-body" style={{ fontSize: 13, color: 'var(--sub)', paddingLeft: 16, position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: 0, top: 5, color: phase.color, fontSize: 7 }}>◆</span>
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {tab === 'assign' && (
+        <Card>
+          <SectionLabel>Assign Task to Team Member</SectionLabel>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px,100%),1fr))', gap: 12 }}>
+              <div>
+                <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Assign To (Token) *</label>
+                <input value={aToken} onChange={e => setAToken(e.target.value)} placeholder="e.g. PSN-DEV-001" className="ps-input" style={{ width: '100%', padding: '10px 12px', fontSize: 12 }} />
+              </div>
+              <div>
+                <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Priority</label>
+                <select value={aPri} onChange={e => setAPri(e.target.value)} className="ps-input" style={{ width: '100%', padding: '10px 12px', fontSize: 12 }}>
+                  {['low','normal','high','urgent'].map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Due Date</label>
+                <input type="date" value={aDue} onChange={e => setADue(e.target.value)} className="ps-input" style={{ width: '100%', padding: '10px 12px', fontSize: 12 }} />
+              </div>
+            </div>
+            <div>
+              <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Task Title *</label>
+              <input value={aTitle} onChange={e => setATitle(e.target.value)} placeholder="What needs to be done?" className="ps-input" style={{ width: '100%', padding: '10px 12px', fontSize: 13 }} />
+            </div>
+            <div>
+              <label className="f-mono" style={{ fontSize: 9, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Description</label>
+              <textarea value={aDesc} onChange={e => setADesc(e.target.value)} rows={3} placeholder="Additional context..." className="ps-input" style={{ width: '100%', padding: '10px 12px', fontSize: 12, resize: 'vertical' }} />
+            </div>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <button onClick={assign} disabled={sending || !aToken || !aTitle} className="btn btn-primary" style={{ fontSize: 11, padding: '10px 24px', cursor: 'pointer', opacity: (!aToken || !aTitle) ? .5 : 1 }}>
+                {sending ? 'Assigning...' : 'Assign Task →'}
+              </button>
+              {done && <span className="f-mono" style={{ fontSize: 10, color: '#22C55E', letterSpacing: '.1em' }}>ASSIGNED ✓</span>}
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {tab === 'report' && <ReportForm user={user} toCeo={true} />}
+      <WorkRequestForm user={user} />
+    </div>
+  );
+}
+
+
 /* ═══════════════════════════════════════════════════════════
    PHASE 2 DESKS
    HR Office · Lead Marketer · Social Media Manager · Legal
@@ -1440,6 +1951,10 @@ function DeskRenderer({ user }: { user: User }) {
   if (desk === 'marketing') return <MarketingDesk user={user} />;
   if (desk === 'social') return <SocialMediaDesk user={user} />;
   if (desk === 'legal') return <LegalDesk user={user} />;
+  if (desk === 'finance') return <FinanceDesk user={user} />;
+  if (desk === 'dev') return <DevDesk user={user} />;
+  if (desk === 'design') return <DesignDesk user={user} />;
+  if (desk === 'pm') return <PmDesk user={user} />;
 
   const DESK_INFO: Record<string, { label: string; description: string; phase: string }> = {
     dev: {
