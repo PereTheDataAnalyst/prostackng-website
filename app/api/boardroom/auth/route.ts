@@ -15,6 +15,8 @@ const TOKENS: Record<string, { name: string; role: string; color: string }> = {
   'PSN-SMM-001':   { name: 'SMM 01',     role: 'Social Media Manager', color: '#EC4899' },
   'PSN-LEGAL-001': { name: 'Legal 01',  role: 'Legal/Compliance',  color: '#10B981' },
   'PSN-HR-001':    { name: 'HR 01',     role: 'Operations',        color: '#FB923C' },
+  'PSN-CS-001':    { name: 'CS 01',     role: 'Customer Success',  color: '#10B981' },
+  'PSN-PARTNER-001': { name: 'Partner',  role: 'Partner',           color: '#F59E0B' },
   'PSN-GUEST-001': { name: 'Guest',     role: 'Guest',             color: '#636687' },
 };
 

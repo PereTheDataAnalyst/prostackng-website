@@ -88,7 +88,7 @@ export async function GET(req: NextRequest) {
               If you have any questions, reply to this email or WhatsApp us at +234 705 944 9360.
             </p>
             <div style="font-size: 12px; color: #32365A; font-family: monospace; letter-spacing: .08em; border-top: 1px solid #181C30; padding-top: 20px;">
-              ProStack NG Technologies · Port Harcourt, Nigeria · hello@prostackng.com.ng
+              ProStack NG Technologies · Port Harcourt, Nigeria · support@prostackng.com.ng
             </div>
           </div>
         `,
@@ -97,7 +97,7 @@ export async function GET(req: NextRequest) {
       // Notify admin
       await resend.emails.send({
         from:    'ProStack NG <hello@prostackng.com.ng>',
-        to:      ['hello@prostackng.com.ng'],
+        to:      ['support@prostackng.com.ng'],
         subject: `Payment Received — ${metadata?.service_label ?? reference} (₦${(amount / 100).toLocaleString()})`,
         html: `
           <div style="font-family: monospace; max-width: 500px; background: #080B14; color: #EEF0FF; padding: 24px; border: 1px solid #181C30;">

@@ -59,7 +59,9 @@ const ROLE_DESK: Record<string, string> = {
   'Product Manager':   'pm',
   'Social Media Manager': 'social',
   'Guest':             'guest',
-  'Legal/Compliance':  'legal',
+  'Legal/Compliance':    'legal',
+  'Customer Success':    'cs',
+  'Partner':             'partner',
 };
 
 /* ─── Colours ────────────────────────────────────────────────── */
@@ -1358,6 +1360,164 @@ function PmDesk({ user }: { user: User }) {
 }
 
 
+
+/* ═══════════════════════════════════════════════════════════
+   PHASE 4 DESKS
+   Customer Success · Partner
+═══════════════════════════════════════════════════════════ */
+
+/* ─── Customer Success Desk ──────────────────────────────── */
+function CustomerSuccessDesk({ user }: { user: User }) {
+  const [tab, setTab] = useState<'tickets' | 'onboarding' | 'tasks' | 'report'>( 'tickets');
+
+  const ONBOARDING = [
+    { stage: '1', label: 'Contract Signed',         desc: 'Confirm signed agreement received and filed.' },
+    { stage: '2', label: 'Payment Confirmed',        desc: 'Verify payment on Finance desk before proceeding.' },
+    { stage: '3', label: 'Kickoff Call Scheduled',   desc: 'Book 30-min call with client to align on timeline.' },
+    { stage: '4', label: 'Access Granted',           desc: 'Provision client credentials, portal access, or API key.' },
+    { stage: '5', label: 'Onboarding Session Done',  desc: 'Walk client through the platform. Record questions.' },
+    { stage: '6', label: '30-Day Check-in',          desc: 'Follow up at 30 days to confirm satisfaction and resolve friction.' },
+    { stage: '7', label: 'Client Healthy',           desc: 'Mark as healthy once client is using the product independently.' },
+  ];
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <ClockWidget user={user} />
+      <AnnouncementsFeed />
+
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
+        <CeoDeskTab label="Tickets"    active={tab === 'tickets'}    onClick={() => setTab('tickets')} />
+        <CeoDeskTab label="Onboarding" active={tab === 'onboarding'} onClick={() => setTab('onboarding')} />
+        <CeoDeskTab label="My Tasks"   active={tab === 'tasks'}      onClick={() => setTab('tasks')} />
+        <CeoDeskTab label="Report"     active={tab === 'report'}     onClick={() => setTab('report')} />
+      </div>
+
+      {tab === 'tickets' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <Card>
+            <SectionLabel>Client Support Tickets</SectionLabel>
+            <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7, marginBottom: 16 }}>
+              Full support ticket system with client email integration launches in Phase 5.
+              For now, direct all client support to{' '}
+              <a href="mailto:support@prostackng.com.ng" style={{ color: 'var(--blue-hi)', textDecoration: 'none' }}>
+                support@prostackng.com.ng
+              </a>
+              {' '}and log outcomes here as work requests.
+            </p>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <a href="mailto:support@prostackng.com.ng" className="btn btn-primary" style={{ fontSize: 11, padding: '9px 20px' }}>
+                Open Support Mailbox →
+              </a>
+            </div>
+          </Card>
+          <WorkRequestForm user={user} />
+        </div>
+      )}
+
+      {tab === 'onboarding' && (
+        <div>
+          <SectionLabel>Client Onboarding Checklist</SectionLabel>
+          <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7, marginBottom: 16 }}>
+            Follow this sequence for every new client regardless of service type.
+            Tick each stage once complete. Client-specific tracking launches in Phase 5.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {ONBOARDING.map((step) => (
+              <Card key={step.stage} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+                <div style={{
+                  width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                  background: 'var(--blue-lo)', border: '1px solid var(--blue-dim)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: 'var(--blue-hi)', fontWeight: 700,
+                }}>{step.stage}</div>
+                <div>
+                  <div className="f-display" style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{step.label}</div>
+                  <p className="f-body" style={{ fontSize: 12, color: 'var(--sub)', lineHeight: 1.65 }}>{step.desc}</p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab === 'tasks' && <MyTasks user={user} />}
+      {tab === 'report' && <ReportForm user={user} toCeo={true} />}
+    </div>
+  );
+}
+
+/* ─── Partner Desk ───────────────────────────────────────── */
+function PartnerDesk({ user }: { user: User }) {
+  const [tab, setTab] = useState<'overview' | 'tasks' | 'report'>( 'overview');
+
+  const PARTNERSHIP_TYPES = [
+    { type: 'Technology Partner', desc: 'Software vendors, API providers, cloud infrastructure partnerships. Integration and reseller agreements.', icon: '⚙️' },
+    { type: 'Distribution Partner', desc: 'Firms that resell or bundle ProStack NG products to their own client base. Referral fee structures apply.', icon: '📦' },
+    { type: 'Implementation Partner', desc: 'Consultancies and agencies that deploy ProStack NG platforms for their clients under our brand or theirs.', icon: '🤝' },
+    { type: 'Strategic Partner', desc: 'Organisations providing non-cash value — market access, government relationships, data sharing, co-marketing.', icon: '🌍' },
+  ];
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <ClockWidget user={user} />
+      <AnnouncementsFeed />
+
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
+        <CeoDeskTab label="Overview"  active={tab === 'overview'} onClick={() => setTab('overview')} />
+        <CeoDeskTab label="My Tasks"  active={tab === 'tasks'}   onClick={() => setTab('tasks')} />
+        <CeoDeskTab label="Report"    active={tab === 'report'}  onClick={() => setTab('report')} />
+      </div>
+
+      {tab === 'overview' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Partnership types */}
+          <div>
+            <SectionLabel>Partnership Frameworks</SectionLabel>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px,100%),1fr))', gap: 12 }}>
+              {PARTNERSHIP_TYPES.map(p => (
+                <Card key={p.type} style={{ borderLeft: '3px solid var(--blue-dim)' }}>
+                  <div style={{ fontSize: 20, marginBottom: 10 }}>{p.icon}</div>
+                  <div className="f-display" style={{ fontSize: 14, fontWeight: 700, marginBottom: 6 }}>{p.type}</div>
+                  <p className="f-body" style={{ fontSize: 12, color: 'var(--sub)', lineHeight: 1.65 }}>{p.desc}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Active partnerships */}
+          <Card>
+            <SectionLabel>Active Partners</SectionLabel>
+            <p className="f-body" style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.7, marginBottom: 12 }}>
+              No partners onboarded yet. Partner CRM with agreement tracking, revenue sharing, and communication log launches in Phase 5.
+            </p>
+            <p className="f-body" style={{ fontSize: 13, color: 'var(--sub)', lineHeight: 1.7 }}>
+              When a partner is confirmed, use Work Requests to notify the CEO desk and initiate the onboarding process.
+            </p>
+          </Card>
+
+          {/* Quick actions */}
+          <Card>
+            <SectionLabel>Partner Communications</SectionLabel>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <a href="mailto:hello@prostackng.com.ng" className="btn-outline-border" style={{ fontSize: 11, padding: '9px 18px' }}>
+                Open Partner Inbox
+              </a>
+              <a href="/white-label" target="_blank" rel="noreferrer" className="btn-outline-border" style={{ fontSize: 11, padding: '9px 18px' }}>
+                View White-Label Page →
+              </a>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {tab === 'tasks' && <MyTasks user={user} />}
+      {tab === 'report' && <ReportForm user={user} toCeo={true} />}
+      <WorkRequestForm user={user} />
+    </div>
+  );
+}
+
+
 /* ═══════════════════════════════════════════════════════════
    PHASE 2 DESKS
    HR Office · Lead Marketer · Social Media Manager · Legal
@@ -1955,6 +2115,8 @@ function DeskRenderer({ user }: { user: User }) {
   if (desk === 'dev') return <DevDesk user={user} />;
   if (desk === 'design') return <DesignDesk user={user} />;
   if (desk === 'pm') return <PmDesk user={user} />;
+  if (desk === 'cs') return <CustomerSuccessDesk user={user} />;
+  if (desk === 'partner') return <PartnerDesk user={user} />;
 
   const DESK_INFO: Record<string, { label: string; description: string; phase: string }> = {
     dev: {
@@ -1997,6 +2159,16 @@ function DeskRenderer({ user }: { user: User }) {
       description: 'NDA tracker, client contracts, NDPR compliance checklist, CAC filings, and regulatory monitoring. Centralised legal document pipeline.',
       phase:       'Phase 5',
     },
+    cs: {
+      label:       '🎯 Customer Success Desk',
+      description: 'Client onboarding pipeline, support ticket management, health monitoring, and 30-day check-ins.',
+      phase:       'Phase 4',
+    },
+    partner: {
+      label:       '🌍 Partner Desk',
+      description: 'Partnership pipeline, agreement tracking, revenue sharing, and co-marketing coordination.',
+      phase:       'Phase 4',
+    },
     guest: {
       label:       'Guest Access',
       description: 'Limited read-only access. Contact the CEO or Operations to request a staff token.',
@@ -2023,6 +2195,13 @@ export default function VirtualOfficePage() {
   const [tokenError, setTokenError] = useState('');
   const [loading, setLoading]     = useState(false);
   const [user, setUser]           = useState<User | null>(null);
+  const [failCount, setFailCount] = useState(() => {
+    try { return parseInt(localStorage.getItem('psn_vo_fails') || '0', 10); } catch { return 0; }
+  });
+  const [lockUntil, setLockUntil] = useState<number>(() => {
+    try { return parseInt(localStorage.getItem('psn_vo_lock') || '0', 10); } catch { return 0; }
+  });
+  const [lockSecs, setLockSecs]   = useState(0);
   const [alert, setAlert]         = useState<{ title: string; body: string } | null>(null);
   const inputRef                  = useRef<HTMLInputElement>(null);
 
@@ -2054,9 +2233,21 @@ export default function VirtualOfficePage() {
     if (screen === 'login') setTimeout(() => inputRef.current?.focus(), 100);
   }, [screen]);
 
+  // Lockout countdown timer
+  useEffect(() => {
+    if (lockUntil <= Date.now()) { setLockSecs(0); return; }
+    const t = setInterval(() => {
+      const rem = Math.ceil((lockUntil - Date.now()) / 1000);
+      if (rem <= 0) { setLockSecs(0); clearInterval(t); } else { setLockSecs(rem); }
+    }, 1000);
+    setLockSecs(Math.ceil((lockUntil - Date.now()) / 1000));
+    return () => clearInterval(t);
+  }, [lockUntil]);
+
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     if (!tokenInput.trim()) return;
+    if (lockUntil > Date.now()) return;
     setLoading(true);
     setTokenError('');
     try {
@@ -2067,10 +2258,23 @@ export default function VirtualOfficePage() {
       });
       const data = await res.json();
       if (!data.success) {
-        setTokenError(data.error ?? 'Invalid token');
+        const newFails = failCount + 1;
+        setFailCount(newFails);
+        try { localStorage.setItem('psn_vo_fails', String(newFails)); } catch {}
+        if (newFails >= 5) {
+          const until = Date.now() + 5 * 60 * 1000;
+          setLockUntil(until);
+          try { localStorage.setItem('psn_vo_lock', String(until)); } catch {}
+          setTokenError('Too many failed attempts. Locked for 5 minutes.');
+        } else {
+          setTokenError(`${data.error ?? 'Invalid token'} — ${5 - newFails} attempt${5 - newFails === 1 ? '' : 's'} remaining.`);
+        }
         setLoading(false);
         return;
       }
+      // Success — clear lockout
+      try { localStorage.removeItem('psn_vo_fails'); localStorage.removeItem('psn_vo_lock'); } catch {}
+      setFailCount(0); setLockUntil(0);
       const u = { ...data.user };
       sessionStorage.setItem('psn_office_user', JSON.stringify(u));
       setUser(u);
@@ -2134,7 +2338,7 @@ export default function VirtualOfficePage() {
                 )}
                 <button
                   type="submit"
-                  disabled={loading || !tokenInput.trim()}
+                  disabled={loading || !tokenInput.trim() || lockSecs > 0}
                   className="btn btn-primary"
                   style={{ width: '100%', justifyContent: 'center', fontSize: 12, padding: '14px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? .6 : 1 }}
                 >
@@ -2144,7 +2348,12 @@ export default function VirtualOfficePage() {
             </div>
           </div>
 
-          <p className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.1em', textAlign: 'center', marginTop: 20 }}>
+          <div style={{ textAlign: 'center', marginTop: 16 }}>
+            <a href="/" className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.1em', textDecoration: 'none', textTransform: 'uppercase' }}>
+              ← Back to prostackng.com.ng
+            </a>
+          </div>
+          <p className="f-mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '.1em', textAlign: 'center', marginTop: 8 }}>
             PROSTACK NG TECHNOLOGIES · PRIVATE ACCESS ONLY
           </p>
         </div>

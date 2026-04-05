@@ -45,6 +45,13 @@ export default function BoardroomPage() {
   const [tokenInput, setTokenInput]     = useState('');
   const [tokenError, setTokenError]     = useState('');
   const [authLoading, setAuthLoading]   = useState(false);
+  const [failCount, setFailCount]       = useState(() => {
+    try { return parseInt(localStorage.getItem('psn_br_fails') || '0', 10); } catch { return 0; }
+  });
+  const [lockUntil, setLockUntil]       = useState<number>(() => {
+    try { return parseInt(localStorage.getItem('psn_br_lock') || '0', 10); } catch { return 0; }
+  });
+  const [lockSecs, setLockSecs]         = useState(0);
   const [user, setUser]                 = useState<User|null>(null);
   const [sidebarOpen, setSidebarOpen]   = useState(false);
   const [isMobile, setIsMobile]         = useState(false);
@@ -79,7 +86,10 @@ export default function BoardroomPage() {
   const [muted, setMuted]               = useState(false);
   const [camOff, setCamOff]             = useState(false);
   const [sharing, setSharing]           = useState(false);
-  const [incomingCall, setIncomingCall] = useState<{from:string;fromColor:string;mode:'audio'|'video';room:string}|null>(null);
+  const [incomingCall, setIncomingCall] = useState<{from:string;fromColor:string;fromToken:string;mode:'audio'|'video';room:string}|null>(null);
+  const [callModal, setCallModal]       = useState<'audio'|'video'|null>(null);
+  const [callTargets, setCallTargets]   = useState<string[]>([]);
+  const [onlineStaff, setOnlineStaff]   = useState<{token:string;name:string;color:string;role:string}[]>([]);
   const pcsRef                          = useRef<Record<string, RTCPeerConnection>>({});
   const localVideoRef                   = useRef<HTMLVideoElement>(null);
   const signalChannelRef                = useRef<any>(null);
@@ -120,6 +130,17 @@ export default function BoardroomPage() {
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
+
+  // ── Lockout countdown ─────────────────────────────────
+  useEffect(() => {
+    if (lockUntil <= Date.now()) { setLockSecs(0); return; }
+    const t = setInterval(() => {
+      const rem = Math.ceil((lockUntil - Date.now()) / 1000);
+      if (rem <= 0) { setLockSecs(0); clearInterval(t); } else { setLockSecs(rem); }
+    }, 1000);
+    setLockSecs(Math.ceil((lockUntil - Date.now()) / 1000));
+    return () => clearInterval(t);
+  }, [lockUntil]);
 
   const switchRoom = (roomId: string) => {
     setActiveRoom(roomId);
@@ -280,15 +301,30 @@ export default function BoardroomPage() {
     setPeers([]); setMuted(false); setCamOff(false); setSharing(false);
   }, [localStream, screenStream, callRoom]);
 
-  const startCall = useCallback(async (mode: 'audio'|'video') => {
+  const startCall = useCallback(async (mode: 'audio'|'video', targets?: string[]) => {
     if (!user) return;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: mode === 'video' ? { width: 1280, height: 720 } : false });
       setLocalStream(stream); setCallActive(true); setCallMode(mode); setCallRoom(activeRoom);
       setTimeout(() => { if (localVideoRef.current) { localVideoRef.current.srcObject = stream; localVideoRef.current.muted = true; localVideoRef.current.play().catch(() => {}); } }, 100);
+
+      // Send invite only to selected targets via their personal incoming channel
+      const invitePayload = { from: user.displayName || user.name, fromColor: user.color, fromToken: user.token, fromId: myPeerId.current, mode, room: activeRoom };
+      if (targets && targets.length > 0) {
+        // Targeted: ring each selected staff on their personal channel
+        for (const targetToken of targets) {
+          const targetCh = supabase.channel(`incoming-${targetToken}`);
+          targetCh.subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              targetCh.send({ type: 'broadcast', event: 'call_invite', payload: invitePayload });
+              setTimeout(() => supabase.removeChannel(targetCh), 3000);
+            }
+          });
+        }
+      }
+
       const ch = getSignalChannel(activeRoom).subscribe(async (status: string) => {
         if (status !== 'SUBSCRIBED') return;
-        ch.send({ type: 'broadcast', event: 'call_invite', payload: { from: user.displayName || user.name, fromColor: user.color, fromId: myPeerId.current, mode, room: activeRoom } });
       });
       signalChannelRef.current = ch;
       ch.on('broadcast', { event: 'call_accept' }, async ({ payload }: any) => {
@@ -315,7 +351,7 @@ export default function BoardroomPage() {
 
   const acceptCall = useCallback(async () => {
     if (!incomingCall || !user) return;
-    const { from, fromColor, mode, room } = incomingCall;
+    const { from, fromColor, fromToken, mode, room } = incomingCall;
     setIncomingCall(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: mode === 'video' ? { width: 1280, height: 720 } : false });
@@ -352,6 +388,33 @@ export default function BoardroomPage() {
       }).subscribe();
     return () => { supabase.removeChannel(ch); };
   }, [screen, user, callActive, playRing]);
+
+  // ── Presence — track who is online in boardroom ───────────
+  useEffect(() => {
+    if (screen !== 'app' || !user) return;
+    const presenceChannel = supabase.channel('boardroom-presence', {
+      config: { presence: { key: user.token } },
+    });
+    presenceChannel
+      .on('presence', { event: 'sync' }, () => {
+        const state = presenceChannel.presenceState();
+        const staff = Object.values(state).flat().map((p: any) => ({
+          token: p.token, name: p.name, color: p.color, role: p.role,
+        })).filter((s: any) => s.token !== user.token);
+        setOnlineStaff(staff as any);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await presenceChannel.track({
+            token: user.token,
+            name:  user.displayName || user.name,
+            color: user.color,
+            role:  user.role,
+          });
+        }
+      });
+    return () => { supabase.removeChannel(presenceChannel); };
+  }, [screen, user]);
 
   // ── Thread subscription ─────────────────────────────────
   useEffect(() => {
@@ -571,13 +634,30 @@ export default function BoardroomPage() {
   // ── Auth ───────────────────────────────────────────────
   const handleLogin = async () => {
     if (!tokenInput.trim()) return;
+    // Check lockout
+    if (lockUntil > Date.now()) return;
     setAuthLoading(true); setTokenError('');
     try {
       const res  = await fetch('/api/boardroom/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: tokenInput }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
+      // Success — clear fail count
+      try { localStorage.removeItem('psn_br_fails'); localStorage.removeItem('psn_br_lock'); } catch {}
+      setFailCount(0); setLockUntil(0);
       setUser(data.user); await loadProfile(data.user); setScreen('app');
-    } catch (err: any) { setTokenError(err.message || 'Invalid token'); }
+    } catch (err: any) {
+      const newFails = failCount + 1;
+      setFailCount(newFails);
+      try { localStorage.setItem('psn_br_fails', String(newFails)); } catch {}
+      if (newFails >= 5) {
+        const until = Date.now() + 5 * 60 * 1000; // 5 min lockout
+        setLockUntil(until);
+        try { localStorage.setItem('psn_br_lock', String(until)); } catch {}
+        setTokenError('Too many failed attempts. Locked for 5 minutes.');
+      } else {
+        setTokenError(`Invalid token. ${5 - newFails} attempt${5 - newFails === 1 ? '' : 's'} remaining.`);
+      }
+    }
     finally { setAuthLoading(false); }
   };
 
@@ -704,13 +784,23 @@ export default function BoardroomPage() {
           <div style={{ fontFamily: 'monospace', color: '#272A45', fontSize: 10, letterSpacing: '.15em', marginBottom: 8 }}>STAFF ACCESS TOKEN</div>
           <div style={{ color: '#EEF0FF', fontWeight: 700, fontSize: 17, marginBottom: 6 }}>Enter your token</div>
           <div style={{ color: '#636687', fontSize: 13, lineHeight: 1.6, marginBottom: 24 }}>Each staff member has a unique token. Contact your administrator if you don't have one.</div>
-          <input value={tokenInput} onChange={e => setTokenInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleLogin()} placeholder="PSN-XXX-000" autoFocus
+          {lockSecs > 0 && (
+            <div style={{ background: 'rgba(255,87,87,.08)', border: '1px solid rgba(255,87,87,.3)', padding: '10px 14px', marginBottom: 16, fontFamily: 'monospace', fontSize: 12, color: '#FF5757', letterSpacing: '.06em' }}>
+              🔒 Too many attempts — locked for {Math.floor(lockSecs / 60)}:{String(lockSecs % 60).padStart(2, '0')}
+            </div>
+          )}
+          <input value={tokenInput} onChange={e => setTokenInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && !lockSecs && handleLogin()} placeholder="Enter your access token" autoFocus disabled={lockSecs > 0}
             style={{ width: '100%', background: '#07080F', border: `1px solid ${tokenError ? '#FF5757' : '#1B1E35'}`, color: '#EEF0FF', padding: '13px 16px', fontSize: 15, fontFamily: 'monospace', letterSpacing: '.1em', outline: 'none', boxSizing: 'border-box', marginBottom: 8 }} />
           {tokenError && <div style={{ color: '#FF5757', fontSize: 12, fontFamily: 'monospace', marginBottom: 12 }}>⚠ {tokenError}</div>}
-          <button onClick={handleLogin} disabled={authLoading}
+          <button onClick={handleLogin} disabled={authLoading || lockSecs > 0}
             style={{ width: '100%', background: '#2563EB', color: '#000', border: 'none', padding: '14px 0', fontWeight: 700, fontSize: 13, letterSpacing: '.08em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'Instrument Sans, sans-serif' }}>
             {authLoading ? 'Verifying…' : 'Enter BoardRoom →'}
           </button>
+          <div style={{ marginTop: 16, textAlign: 'center' }}>
+            <a href="/" style={{ fontFamily: 'monospace', fontSize: 10, color: '#272A45', letterSpacing: '.1em', textDecoration: 'none', textTransform: 'uppercase' }}>
+              ← Back to prostackng.com.ng
+            </a>
+          </div>
           <div style={{ marginTop: 24, paddingTop: 18, borderTop: '1px solid #131526', display: 'flex', justifyContent: 'center', gap: 24, flexWrap: 'wrap' }}>
             {[{ icon: '💬', label: 'Real-time chat' }, { icon: '🎤', label: 'Voice notes' }, { icon: '📞', label: 'P2P Calls' }, { icon: '🖥', label: 'Screen share' }].map(f => (
               <div key={f.label} style={{ textAlign: 'center' }}>
@@ -763,6 +853,64 @@ export default function BoardroomPage() {
       )}
 
       {/* ── INCOMING CALL ── */}
+      {/* ── Call target selector modal ── */}
+      {callModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(5,7,9,.92)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)', padding: 16 }}>
+          <div style={{ background: '#0D0F1E', border: '1px solid #1B1E35', padding: '32px 24px', maxWidth: 380, width: '100%', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg,#2563EB,#EC4899,transparent)' }} />
+            <div style={{ fontFamily: 'monospace', color: '#2563EB', fontSize: 10, letterSpacing: '.14em', marginBottom: 12 }}>
+              {callModal.toUpperCase()} CALL — SELECT PARTICIPANTS
+            </div>
+            <p style={{ color: '#636687', fontSize: 12, lineHeight: 1.6, marginBottom: 20 }}>
+              Select who you want to call. Only selected staff will receive a ring.
+              {onlineStaff.length === 0 && ' No other staff currently online.'}
+            </p>
+
+            {onlineStaff.length === 0 ? (
+              <div style={{ padding: '16px', background: '#07080F', border: '1px solid #131526', marginBottom: 20 }}>
+                <p style={{ color: '#272A45', fontSize: 12, fontFamily: 'monospace', letterSpacing: '.08em', margin: 0 }}>
+                  No other staff online right now. Start the call anyway to wait for others to join.
+                </p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
+                {onlineStaff.map(s => (
+                  <label key={s.token} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', background: callTargets.includes(s.token) ? 'rgba(37,99,235,.1)' : '#07080F', border: `1px solid ${callTargets.includes(s.token) ? '#2563EB' : '#131526'}`, cursor: 'pointer', transition: 'all .15s' }}>
+                    <input type="checkbox" checked={callTargets.includes(s.token)}
+                      onChange={e => setCallTargets(prev => e.target.checked ? [...prev, s.token] : prev.filter(t => t !== s.token))}
+                      style={{ accentColor: '#2563EB', width: 14, height: 14, flexShrink: 0 }} />
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: s.color, flexShrink: 0, boxShadow: `0 0 6px ${s.color}80` }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ color: '#EEF0FF', fontSize: 14, fontWeight: 600 }}>{s.name}</div>
+                      <div style={{ color: '#272A45', fontSize: 10, fontFamily: 'monospace', letterSpacing: '.08em' }}>{s.role}</div>
+                    </div>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E', boxShadow: '0 0 6px rgba(34,197,94,.6)' }} />
+                  </label>
+                ))}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button
+                onClick={() => { setCallModal(null); setCallTargets([]); }}
+                style={{ flex: 1, background: 'transparent', border: '1px solid #1B1E35', color: '#636687', padding: '12px 0', cursor: 'pointer', fontSize: 13, fontWeight: 600, fontFamily: 'Instrument Sans, sans-serif' }}>
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const mode = callModal;
+                  const targets = callTargets.length > 0 ? callTargets : undefined;
+                  setCallModal(null); setCallTargets([]);
+                  startCall(mode, targets);
+                }}
+                style={{ flex: 2, background: '#2563EB', border: 'none', color: '#000', padding: '12px 0', cursor: 'pointer', fontWeight: 700, fontSize: 13, fontFamily: 'Instrument Sans, sans-serif' }}>
+                {callModal === 'video' ? '📹' : '🎙'} {callTargets.length > 0 ? `Call ${callTargets.length} person${callTargets.length > 1 ? 's' : ''}` : 'Start call (no ring)'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {incomingCall && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(5,7,9,.9)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(6px)', padding: 16 }}>
           <div style={{ background: BG2, border: '1px solid #1B1E35', padding: '40px 28px', textAlign: 'center', maxWidth: 360, width: '100%', position: 'relative' }}>
@@ -795,11 +943,11 @@ export default function BoardroomPage() {
           <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexShrink: 0 }}>
             <button onClick={() => setSearchOpen(s => !s)}
               style={{ width: 32, height: 32, background: searchOpen ? 'rgba(37,99,235,.07)' : 'transparent', border: `1px solid ${searchOpen ? '#2563EB' : '#1B1E35'}`, color: searchOpen ? '#2563EB' : '#636687', cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🔍</button>
-            <button onClick={() => startCall('audio')} disabled={callActive}
+            <button onClick={() => !callActive && setCallModal('audio')} disabled={callActive}
               style={{ height: 32, padding: isMobile ? '0 8px' : '0 10px', background: 'transparent', border: '1px solid #1B1E35', color: callActive ? '#131526' : '#2563EB', cursor: callActive ? 'default' : 'pointer', fontWeight: 600, fontSize: 12, fontFamily: 'Instrument Sans, sans-serif', flexShrink: 0 }}>
               {isMobile ? '🎙' : '🎙 Audio'}
             </button>
-            <button onClick={() => startCall('video')} disabled={callActive}
+            <button onClick={() => !callActive && setCallModal('video')} disabled={callActive}
               style={{ height: 32, padding: isMobile ? '0 8px' : '0 10px', background: callActive ? '#1B1E35' : '#2563EB', color: callActive ? '#131526' : '#000', border: 'none', cursor: callActive ? 'default' : 'pointer', fontWeight: 700, fontSize: 12, fontFamily: 'Instrument Sans, sans-serif', flexShrink: 0 }}>
               {isMobile ? '📹' : '📹 Video'}
             </button>
